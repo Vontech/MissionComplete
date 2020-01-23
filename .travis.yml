@@ -1,0 +1,13 @@
+dist: xenial
+language: node_js
+node_js:
+  - "9.11.2"
+services:
+  - mongodb
+cache: npm
+install:
+  - "npm install && cd frontend && npm install && cd .."
+script:
+  - "npm run test-server"
+after_success:
+  - "npm run server-coverage"
