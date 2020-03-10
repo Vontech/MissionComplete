@@ -6,7 +6,7 @@ config.logFileDir = path.join(__dirname, '../../log');
 config.logFileName = 'app.log';
 config.dbHost = process.env.dbHost || 'localhost';
 config.dbPort = process.env.dbPort || '27017';
-config.dbName = process.env.dbName || 'taskk';
+config.dbName = process.env.dbName || 'mission-complete';
 
 // Client id and client secret for OAuth 2.0
 // NOTE: The client secret should be kepy secret! Preferably set this variable
@@ -23,7 +23,7 @@ if (process.env.NODE_ENV == 'test') {
     console.log("USING TEST ENV")
     config.dbHost = 'localhost';
     config.dbPort = '27017';
-    config.dbName = 'taskk-test';
+    config.dbName = 'mission-complete-test';
     config.serverPort = 6000;
 }
 
