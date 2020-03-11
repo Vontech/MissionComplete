@@ -29,13 +29,11 @@ controller.createUser = async (req, res, next) => {
         username: req.body.username,
         password: hash,
       };
-      logger.info("Creating actual user...");
       Users.create(userData, (err, user) => {
         if (err) {
           logger.error(err);
           return next(err);
         }
-        logger.info(`New user '${user.username}' has been created`);
         return res.json({ message: `User with username '${user.username}' has been created` });
       });
     });

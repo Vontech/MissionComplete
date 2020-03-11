@@ -32,6 +32,14 @@ export const testUserAuth = {
     grant_type: 'password'
 }
 
+export const testTask = {
+	name: 'Task1',
+	notes: 'Notes',
+	completed: false,
+	parent: null,
+	children: []
+}
+
 const testUserHashed = {
     email: 'mocha@tester.com',
     username: 'mocha',
