@@ -21,7 +21,11 @@ describe('Tasks', () => {
 					if (err) return done(err);
 					res.should.have.status(200);
 					res.body.should.be.a('object');
-					expect (res.body.name === 'New task with the name Untitled has been created');
+					expect (res.body['createdTask']['name']).to.equal('Untitled');
+					expect (res.body['createdTask']['notes']).to.equal(null);
+					expect (res.body['createdTask']['completed']).to.equal(false);
+					expect (res.body['createdTask']['parent']).to.equal(null);
+					expect (JSON.stringify(res.body['createdTask']['children'])).to.equal(JSON.stringify([]));
 					done();
 				});s
 			});
@@ -33,7 +37,11 @@ describe('Tasks', () => {
 					if (err) return done(err);
 					res.should.have.status(200);
 					res.body.should.be.a('object');
-					expect (res.body.name === 'New task with the name Task1 has been created');
+					expect (res.body['createdTask']['name']).to.equal('Task1');
+					expect (res.body['createdTask']['notes']).to.equal('Notes');
+					expect (res.body['createdTask']['completed']).to.equal(false);
+					expect (res.body['createdTask']['parent']).to.equal(null);
+					expect (JSON.stringify(res.body['createdTask']['children'])).to.equal(JSON.stringify([]));
 					done();
 				});
 			});

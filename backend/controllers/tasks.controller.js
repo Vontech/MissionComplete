@@ -11,15 +11,12 @@ controller.createTask = async (req, res, next) => {
 		parent: req.body.parent || null,
 		children: req.body.children,
 	};
-	logger.info("Creating a task")
 	Tasks.create(taskData, (err, createdTask) => {
 		if (err) {
 			logger.error(err);
 			return next(err);
 		}
-		logger.info(`New task '${createdTask.name}' has been created`);
 		return res.json({ createdTask });
-
 	});
 };
 
