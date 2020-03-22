@@ -47,6 +47,11 @@ function attachUser(req, res, next) {
 app.use('/api/s', app.oauth.authenticate(), attachUser, authedRoutes);
 app.use('/api', openRoutes);
 
+app.use(function (err, req, res, next) {
+  console.log(err)
+  next()
+})
+
 app.alreadyStarted = false;
 
 app.server = app.listen(config.serverPort, async () => {
