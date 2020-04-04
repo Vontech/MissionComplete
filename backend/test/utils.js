@@ -40,6 +40,20 @@ export const testTask = {
 	children: []
 }
 
+export const testTask2 = {
+	name: 'Task2',
+	notes: 'Notes',
+	completed: false,
+	parent: null,
+	children: []
+}
+
+export let updates = {
+	name: 'updated name', 
+	notes: 'updated notes', 
+	completed: true,
+}
+
 const testUserHashed = {
     email: 'mocha@tester.com',
     username: 'mocha',
