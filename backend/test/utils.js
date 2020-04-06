@@ -54,6 +54,16 @@ export let updates = {
 	completed: true,
 }
 
+export let child1 = {
+	name: 'child1',
+	notes: 'child1 notes'
+}
+
+export let child2 = {
+	name: 'child2',
+	notes: 'child2 notes'
+}
+
 const testUserHashed = {
     email: 'mocha@tester.com',
     username: 'mocha',

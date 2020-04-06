@@ -20,25 +20,12 @@ controller.createTask = async (req, res, next) => {
 	});
 };
 
-function isTaskIdDefined(baseError, task_id, res) {
-	if (task_id === null) {
-		res.status(400);
-		res.json({ message: `${baseError} given null task ID` });
-		return true;
-	} else if (task_id === '') {
-		res.status(400);
-		res.json({ message: `${baseError} given empty task ID` });
-		return true;
-	} else if (!task_id) {
-		res.status(400);
-		res.json({ message: `${baseError} given undefined task ID` });
-		return true;
-	}
-}
-
 controller.removeTask = async (req, res, next) => {
 	let baseError = 'Error deleting task -';
-	if (isTaskIdDefined(baseError, req.body.task_id, res)) return;
+	if (!req.body.hasOwnProperty('task_id') || !req.body.task_id) {
+		res.status(400);
+		return res.json({ message: `${baseError} invalid task ID` });
+	}
 	Tasks.findByIdAndDelete(req.body.task_id, (err) => {
 		if (err) {
 			res.status(400);
@@ -52,7 +39,10 @@ controller.removeTask = async (req, res, next) => {
 
 controller.getTask = async (req, res, next) => {
 	let baseError = 'Error getting task -';
-	if (isTaskIdDefined(baseError, req.body.task_id, res)) return;
+	if (!req.body.hasOwnProperty('task_id') || !req.body.task_id) {
+		res.status(400);
+		return res.json({ message: `${baseError} invalid task ID` });
+	}
 	Tasks.findById(req.body.task_id, (err, retrievedTask) => {
 		if (err) {
 			res.status(400);
@@ -66,7 +56,10 @@ controller.getTask = async (req, res, next) => {
 
 controller.updateTask = async (req, res, next) => {
 	let baseError = 'Error getting task -';
-	if (isTaskIdDefined(baseError, req.body.task_id, res)) return;
+	if (!req.body.hasOwnProperty('task_id') || !req.body.task_id) {
+		res.status(400);
+		return res.json({ message: `${baseError} invalid task ID` });
+	}
 	let currentTask;
 	// Get the task by task_id
 	await Tasks.findById(req.body.task_id, (err, found_task) => {
@@ -122,7 +115,10 @@ controller.updateTask = async (req, res, next) => {
 
 controller.addChildren = async (req, res, next) => {
 	let baseError = 'Error getting task -';
-	if (isTaskIdDefined(baseError, req.body.task_id, res)) return;
+	if (!req.body.hasOwnProperty('task_id') || !req.body.task_id) {
+		res.status(400);
+		return res.json({ message: `${baseError} invalid task ID` });
+	}
 	// For each child to be added, set its parent as the given task
 	req.body.child_ids.forEach(child_id => {
 		Tasks.findByIdAndUpdate(child_id, { '$set': { 'parent': req.body.task_id }}, 
@@ -146,8 +142,11 @@ controller.addChildren = async (req, res, next) => {
 }
 
 controller.removeChildren = async (req, res, next) => {
-	let baseError = 'Error getting task-';
-	if (isTaskIdDefined(baseError, req.body.task_id, res)) return;
+	let baseError = 'Error getting task -';
+	if (!req.body.hasOwnProperty('task_id') || !req.body.task_id) {
+		res.status(400);
+		return res.json({ message: `${baseError} invalid task ID` });
+	}
 	// For each child to be added, set its parent as the given task
 	req.body.child_ids.forEach(async function (child_id) {
 		await Tasks.findByIdAndUpdate(child_id, { '$set': { 'parent': null }}, 

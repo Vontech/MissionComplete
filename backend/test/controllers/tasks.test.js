@@ -1,7 +1,7 @@
 import chai from 'chai';
 import chaiHttp from 'chai-http';
 import chaiAsPromised from 'chai-as-promised';
-import {prepareServer, teardownServer, testTask, testTask2, updates, withLogin, app} from '../utils';
+import {prepareServer, teardownServer, testTask, testTask2, updates, child1, child2, withLogin, app} from '../utils';
 
 const { expect, assert } = chai;
 const should = chai.should();
@@ -57,7 +57,7 @@ describe('Tasks', () => {
 				req.end((err, res) => {
 					if (err) return done(err);
 					res.should.have.status(400);
-					res.body.should.have.property('message').contains('Error getting task - given undefined task ID');
+					res.body.should.have.property('message').contains('Error getting task - invalid task ID');
 					done();
 				});
 			});
@@ -68,7 +68,7 @@ describe('Tasks', () => {
 				req.end((err, res) => {
 					if (err) return done(err);
 					res.should.have.status(400);
-					res.body.should.have.property('message').eql('Error getting task - given empty task ID');
+					res.body.should.have.property('message').eql('Error getting task - invalid task ID');
 					done();
 				});
 			});
@@ -99,7 +99,7 @@ describe('Tasks', () => {
 				req.end((err, res) => {
 					if (err) return done(err);
 					res.should.have.status(400);
-					res.body.should.have.property('message').eql('Error getting task - given undefined task ID');
+					res.body.should.have.property('message').eql('Error getting task - invalid task ID');
 					done();
 				});
 			});
@@ -110,7 +110,7 @@ describe('Tasks', () => {
 				req.end((err, res) => {
 					if (err) return done(err);
 					res.should.have.status(400);
-					res.body.should.have.property('message').eql('Error getting task - given undefined task ID');
+					res.body.should.have.property('message').eql('Error getting task - invalid task ID');
 					done();
 				});
 			});
@@ -121,7 +121,7 @@ describe('Tasks', () => {
 				req.end((err, res) => {
 					if (err) return done(err);
 					res.should.have.status(400);
-					res.body.should.have.property('message').eql('Error getting task - given empty task ID');
+					res.body.should.have.property('message').eql('Error getting task - invalid task ID');
 					done();
 				});
 			});
@@ -132,7 +132,7 @@ describe('Tasks', () => {
 				req.end((err, res) => {
 					if (err) return done(err);
 					res.should.have.status(400);
-					res.body.should.have.property('message').eql('Error getting task - given empty task ID');
+					res.body.should.have.property('message').eql('Error getting task - invalid task ID');
 					done();
 				});
 			});
@@ -155,8 +155,8 @@ describe('Tasks', () => {
 			withLogin(chai.request(app).post('/api/s/createTask').send(testTask2), req => {
 				req.end((err, res) => {
 					if (err) return done(err);
-					updates.parent = res.body._id;
-					updates.task_id = test_task_id;
+					updates.parent = res.body._id; // Set created task as the parent to the updated task object
+					updates.task_id = test_task_id; // Set testTask's ID as update's taskID so updates overwrites testTask
 					withLogin(chai.request(app).put('/api/s/updateTask').send(updates), req => {
 						req.end((err, res) => {
 							if (err) return done(err);
@@ -167,24 +167,147 @@ describe('Tasks', () => {
 							expect (res.body.completed).to.equal(true);
 							expect (res.body.parent).to.equal(updates.parent);
 							expect (JSON.stringify(res.body.children)).to.equal(JSON.stringify([]));
-							// Add GET and check for updated children list for parent
+							// Check that parent task has testTask as a child
 							withLogin(chai.request(app).get('/api/s/getTask').send({ task_id: updates.parent }), req => {
 								req.end((err, res) => {
 									if (err) return done(err);
 									res.should.have.status(200);
 									res.body.should.be.a('object');
-									expect (JSON.stringify(res.body.children)).to.equal(JSON.stringify([]));
+									expect (JSON.stringify(res.body.children)).to.equal(JSON.stringify([test_task_id]));
 									done();
 								});
 							});
 						});
-						
 					});
 				});
 			});
 		});
+	});
 
+	describe('adding task children', () => {
 
+		it('PUT /api/s/addChildren (no task ID)', (done) => {
+			withLogin(chai.request(app).put('/api/s/addChildren'), req => {
+				req.end((err, res) => {
+					if (err) return done(err);
+					res.should.have.status(400);
+					res.body.should.have.property('message').eql('Error getting task - invalid task ID');
+					done();
+				});
+			});
+		});
+
+		it('PUT /api/s/addChildren (null task ID)', (done) => {
+			withLogin(chai.request(app).put('/api/s/addChildren').send({ task_id: null }), req => {
+				req.end((err, res) => {
+					if (err) return done(err);
+					res.should.have.status(400);
+					res.body.should.have.property('message').eql('Error getting task - invalid task ID');
+					done();
+				});
+			});
+		});
+
+		it('PUT /api/s/addChildren (empty task ID)', (done) => {
+			withLogin(chai.request(app).put('/api/s/addChildren').send({ task_id: '' }), req => {
+				req.end((err, res) => {
+					if (err) return done(err);
+					res.should.have.status(400);
+					res.body.should.have.property('message').eql('Error getting task - invalid task ID');
+					done();
+				});
+			});
+		});
+
+		it('PUT /api/s/addChildren (valid task ID)', (done) => {
+			// Create 2 new tasks to add as children for test_task
+			withLogin(chai.request(app).post('/api/s/createTask').send(testTask2), req => {
+				req.end((err, res) => {
+					if (err) return done(err);
+					child1.task_id = res.body._id;
+					console.log('here1');
+					// Create second task to be added as a child
+					withLogin(chai.request(app).post('/api/s/createTask').send(testTask2), req => {
+						req.end((err, res) => {
+							if (err) return done(err);
+							child2.task_id = res.body._id;
+							console.log('here2');
+							// Add the two children to testTask
+							withLogin(chai.request(app).put('/api/s/addChildren').send({ task_id: test_task_id, child_ids: [child1, child2]}), req => {
+								req.end((err, res) => {
+									console.log('here3');
+									if (err) return done(err);
+									res.should.have.status(200);
+									res.body.should.be.a('object');
+									expect (res.body.name).to.equal('updated name'); // Check that other fields didn't change
+									expect (res.body.notes).to.equal('updated notes');
+									expect (res.body.completed).to.equal(true);
+									expect (res.body.parent).to.equal(updates.parent);
+									expect (JSON.stringify(res.body.children)).to.equal(JSON.stringify([child1.task_id, child2.task_id]));
+									// Check that testTask is the parent of child1 and child2
+									withLogin(chai.request(app).get('/api/s/getTask').send({ task_id: child1.task_id }), req => {
+										req.end((err, res) => {
+											console.log('here4');
+											if (err) return done(err);
+											res.should.have.status(200);
+											res.body.should.be.a('object');
+											expect (res.body.parent).to.equal(test_task_id);
+											// Check child2
+											withLogin(chai.request(app).get('/api/s/getTask').send({ task_id: child2.task_id }), req => {
+												req.end((err, res) => {
+													console.log('here5');
+													if (err) return done(err);
+													res.should.have.status(200);
+													res.body.should.be.a('object');
+													expect (res.body.parent).to.equal(test_task_id);
+													done();
+												});
+											});
+										});
+									});
+								});
+							});
+						});
+					});
+				});
+			});
+		});
+	});
+
+	describe('removing task children', () => {
+
+		it('PUT /api/s/removeChildren (no task ID)', (done) => {
+			withLogin(chai.request(app).put('/api/s/removeChildren'), req => {
+				req.end((err, res) => {
+					if (err) return done(err);
+					res.should.have.status(400);
+					res.body.should.have.property('message').eql('Error getting task - invalid task ID');
+					done();
+				});
+			});
+		});
+
+		it('PUT /api/s/removeChildren (null task ID)', (done) => {
+			withLogin(chai.request(app).put('/api/s/removeChildren').send({ task_id: null }), req => {
+				req.end((err, res) => {
+					if (err) return done(err);
+					res.should.have.status(400);
+					res.body.should.have.property('message').eql('Error getting task - invalid task ID');
+					done();
+				});
+			});
+		});
+
+		it('PUT /api/s/removeChildren (empty task ID)', (done) => {
+			withLogin(chai.request(app).put('/api/s/removeChildren').send({ task_id: '' }), req => {
+				req.end((err, res) => {
+					if (err) return done(err);
+					res.should.have.status(400);
+					res.body.should.have.property('message').eql('Error getting task - invalid task ID');
+					done();
+				});
+			});
+		});
 
 	});
 
@@ -195,7 +318,7 @@ describe('Tasks', () => {
 				req.end((err, res) => {
 					if (err) return done(err);
 					res.should.have.status(400);
-					res.body.should.have.property('message').eql('Error deleting task - given undefined task ID');
+					res.body.should.have.property('message').eql('Error deleting task - invalid task ID');
 					done();
 				});
 			});
@@ -206,7 +329,7 @@ describe('Tasks', () => {
 				req.end((err, res) => {
 					if (err) return done(err);
 					res.should.have.status(400);
-					res.body.should.have.property('message').eql('Error deleting task - given empty task ID');
+					res.body.should.have.property('message').eql('Error deleting task - invalid task ID');
 					done();
 				});
 			});
@@ -217,7 +340,7 @@ describe('Tasks', () => {
 				req.end((err, res) => {
 					if (err) return done(err);
 					res.should.have.status(400);
-					res.body.should.have.property('message').eql('Error deleting task - given empty task ID');
+					res.body.should.have.property('message').eql('Error deleting task - invalid task ID');
 					done();
 				});
 			});
