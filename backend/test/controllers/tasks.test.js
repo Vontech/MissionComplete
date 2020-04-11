@@ -233,7 +233,7 @@ describe('Tasks', () => {
 							child2.task_id = res.body._id;
 							console.log('here2');
 							// Add the two children to testTask
-							withLogin(chai.request(app).put('/api/s/addChildren').send({ task_id: test_task_id, child_ids: [child1, child2]}), req => {
+							withLogin(chai.request(app).put('/api/s/addChildren').send({ task_id: test_task_id, child_ids: [child1.task_id, child2.task_id] }), req => {
 								req.end((err, res) => {
 									console.log('here3');
 									if (err) return done(err);
@@ -309,6 +309,39 @@ describe('Tasks', () => {
 			});
 		});
 
+		it('PUT /api/s/removeChildren (valid task ID)', (done) => {
+			withLogin(chai.request(app).put('/api/s/removeChildren').send({ task_id: test_task_id, child_ids: [child1.task_id, child2.task_id] }), req => {
+				req.end((err, res) => {
+					if (err) return done(err);
+					res.should.have.status(200);
+					res.body.should.be.a('object');
+					expect (res.body.name).to.equal('updated name'); // Check that other fields didn't change
+					expect (res.body.notes).to.equal('updated notes');
+					expect (res.body.completed).to.equal(true);
+					expect (res.body.parent).to.equal(updates.parent);
+					expect (JSON.stringify(res.body.children)).to.equal(JSON.stringify([])); // list of children should be empty
+					// Check that testTask is no longer the parent of child1 and child2
+					withLogin(chai.request(app).get('/api/s/getTask').send({ task_id: child1.task_id }), req => {
+						req.end((err, res) => {
+							if (err) return done(err);
+							res.should.have.status(200);
+							res.body.should.be.a('object');
+							expect (res.body.parent).to.equal(null);
+							// Check child2
+							withLogin(chai.request(app).get('/api/s/getTask').send({ task_id: child2.task_id }), req => {
+								req.end((err, res) => {
+									if (err) return done(err);
+									res.should.have.status(200);
+									res.body.should.be.a('object');
+									expect (res.body.parent).to.equal(null);
+									done();
+								});
+							});
+						});
+					});
+				});
+			});
+		});
 	});
 
 	describe('task deletion', () => {

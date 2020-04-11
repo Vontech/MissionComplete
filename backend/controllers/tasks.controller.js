@@ -156,7 +156,7 @@ controller.removeChildren = async (req, res, next) => {
 				return res.json({ message: `${baseError} could not find task with id '${child_id}'`});
 			}
 		});
-	});
+	});``
 	await Tasks.findByIdAndUpdate(req.body.task_id, { $pull: { children: { $in: req.body.child_ids }}}, 
 	{ new: true }, (err, updatedTask) => {
 		if (err) {
