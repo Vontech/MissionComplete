@@ -8,11 +8,11 @@ const router = express.Router();
 router.post('/logout', userController.logoutUser);
 
 // Task Routes
-router.post('/createTask', taskController.createTask);
-router.delete('/removeTask', taskController.removeTask);
-router.get('/getTask', taskController.getTask);
-router.put('/updateTask', taskController.updateTask);
-router.put('/addChildren', taskController.addChildren);
-router.put('/removeChildren', taskController.removeChildren);
+router.post('/task', taskController.createTask);
+router.get('/allTasks', taskController.getTasks);
+router.delete('/task', taskController.removeTask);
+router.get('/task', taskController.getTask);
+router.patch('/task', taskController.updateTask);
+router.post('/removeChildren', taskController.removeChildren);
 
 export default router;

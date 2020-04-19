@@ -42,8 +42,8 @@ class App extends Component {
     return (
       <Board>
         <Task 
-          x={5500}
-          y={5500}
+          x={18}
+          y={18}
           title="Create app infra" />
       </Board>
     );

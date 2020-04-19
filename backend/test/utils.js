@@ -32,38 +32,6 @@ export const testUserAuth = {
     grant_type: 'password'
 }
 
-export const testTask = {
-	name: 'Task1',
-	notes: 'Notes',
-	completed: false,
-	parent: null,
-	children: []
-}
-
-export const testTask2 = {
-	name: 'Task2',
-	notes: 'Notes',
-	completed: false,
-	parent: null,
-	children: []
-}
-
-export let updates = {
-	name: 'updated name', 
-	notes: 'updated notes', 
-	completed: true,
-}
-
-export let child1 = {
-	name: 'child1',
-	notes: 'child1 notes'
-}
-
-export let child2 = {
-	name: 'child2',
-	notes: 'child2 notes'
-}
-
 const testUserHashed = {
     email: 'mocha@tester.com',
     username: 'mocha',
@@ -156,27 +124,4 @@ export function withLogin(request, done) {
             auth(res[0]);
         }
     });
-}
-
-export function getRawTestEvents() {
-    return [
-        {
-            "title": "My New Event 1!",
-            "startDate": "2019-01-02T03:30:00.000Z",
-            "endDate": "2019-01-02T04:30:00.000Z",
-            "description": "This is my new event description.",
-        },
-        {
-            "title": "My New Event 2!",
-            "startDate": "2019-01-02T03:30:00.000Z",
-            "endDate": "2019-01-02T04:30:00.000Z",
-            "description": "This is my new event description.",
-        },
-        {
-            "title": "My New Event 3!",
-            "startDate": "2019-01-02T03:30:00.000Z",
-            "endDate": "2019-01-02T04:30:00.000Z",
-            "description": "This is my newest event description.",
-        }
-    ]
 }

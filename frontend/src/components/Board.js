@@ -22,12 +22,12 @@ class Board extends Component<Props, State> {
       super(props);
       this.container = React.createRef();
       this.activeScrollExecutor = null;
-      this.posX = 5000;
-      this.posY = 5000;
+      this.posX = 0;
+      this.posY = 0;
     }
 
     componentDidMount() {
-      this.scroll(5000, 5000);
+      this.scroll(0, 0);
     }
 
     scroll(x, y) {
