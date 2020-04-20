@@ -9,6 +9,8 @@ import Taskk from "./Models.js"
 
 import '../node_modules/antd/dist/antd.css';
 
+import MissionCompleteApi from './utils/api';
+
 import { Card } from 'antd';
 
 class App extends Component {
@@ -18,6 +20,12 @@ class App extends Component {
     this.state = {
       tasks: this.getExampleTasks()
     }
+    this.api = new MissionCompleteApi();
+    //this.api.createUser('vontell', 'asdadad@gmail.com', 'wert', () => {
+      this.api.login('vontell', 'wert', (resp) => {console.log('Access Token?'); console.log(localStorage.accessToken)});
+    //});
+
+    
   }
 
   componentDidMount() {

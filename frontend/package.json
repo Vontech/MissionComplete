@@ -8,6 +8,7 @@
     "@material-ui/icons": "^3.0.1",
     "animejs": "^3.0.1",
     "antd": "^3.26.5",
+    "axios": "^0.19.2",
     "d3-ease": "^1.0.5",
     "moment": "^2.23.0",
     "react": "^16.7.0",
