@@ -228,8 +228,6 @@ controller.removeChildren = async (req, res, next) => {
 	let baseError = 'Error removing child -'
 	let child_ids = req.body.child_ids;
 
-	console.log(req.body)
-
 	if (!(req.body.hasOwnProperty('child_ids') && req.body.child_ids)) {
 		res.status(500);
 		return res.json({ message: `Error removing children - no children given`})

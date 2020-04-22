@@ -58,16 +58,12 @@ const testsToFinish = {
 
 export function teardownServer(test, done) {
 
-    console.log("Tearing down", test)
-
     testsToFinish[test] = true;
-    console.log(testsToFinish);
 
     if (Object.values(testsToFinish).reduce((prev, current) => prev && current)) {
         console.log("\nTEARING DOWN TEST SERVER");
         app.server.close();
         mongoose.connection.close(done);
-        console.log("All tore down?")
         done();
     } else {
         done();

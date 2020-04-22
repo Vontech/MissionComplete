@@ -10,10 +10,6 @@ const should = chai.should();
 chai.use(chaiHttp);
 chai.use(chaiAsPromised);
 
-async function deleteAllTasks(callback) {
-	await Tasks.deleteMany({});
-}
-
 const testTask = {
 	name: 'Task1',
 	notes: 'Notes',
@@ -22,9 +18,16 @@ const testTask = {
 	children: []
 }
 
-async function createTestTask() {
-	let task = await Tasks.create(testTask);
-	return task.id
+async function createTestTask(callback) {
+	Tasks.create(testTask, (err, createdTask) => {
+		callback(createdTask.id);
+	});
+}
+
+async function deleteAllTasks(callback) {
+	Tasks.deleteMany({}, (err) => {
+		callback();
+	});
 }
 
 describe('Tasks', () => {
@@ -33,10 +36,11 @@ describe('Tasks', () => {
 
 	describe('task creation', () => {
 
+		afterEach((done) => { deleteAllTasks(done); })
+
 		it('POST /api/s/task (no task given)', (done) => {
 			withLogin(chai.request(app).post('/api/s/task'), req => {
 				req.end((err, res) => {
-					deleteAllTasks();
 					if (err) return done(err);
 					res.should.have.status(200);
 					res.body.should.be.a('object');
@@ -53,7 +57,6 @@ describe('Tasks', () => {
 		it('POST /api/s/task (given task)', (done) => {
 			withLogin(chai.request(app).post('/api/s/task').send(testTask), req => {
 				req.end((err, res) => {
-					deleteAllTasks();
 					if (err) return done(err);
 					res.should.have.status(200);
 					res.body.should.be.a('object');
@@ -69,6 +72,8 @@ describe('Tasks', () => {
 	});
 
 	describe('getting tasks', () => {
+
+		afterEach((done) => { deleteAllTasks(done); })
 
 		it('GET /api/s/task (no task ID)', (done) => {
 			withLogin(chai.request(app).get('/api/s/task'), req => {
@@ -92,20 +97,20 @@ describe('Tasks', () => {
 			});
 		});
 
-		it('GET /api/s/task (valid task ID)', async (done) => {
-			let test_task_id = await createTestTask();
-			withLogin(chai.request(app).get('/api/s/task').send({ task_id: test_task_id }), req => {
-				req.end((err, res) => {
-					deleteAllTasks();
-					if (err) return done(err);
-					res.should.have.status(200);
-					res.body.should.be.a('object');
-					expect (res.body.name).to.equal('Task1');
-					expect (res.body.notes).to.equal('Notes');
-					expect (res.body.completed).to.equal(false);
-					expect (res.body.parent).to.equal(null);
-					expect (JSON.stringify(res.body.children)).to.equal(JSON.stringify([]));
-					done();
+		it('GET /api/s/task (valid task ID)', (done) => {
+			createTestTask((test_task_id) => {
+				withLogin(chai.request(app).get('/api/s/task').send({ task_id: test_task_id }), req => {
+					req.end((err, res) => {
+						if (err) return done(err);
+						res.should.have.status(200);
+						res.body.should.be.a('object');
+						expect (res.body.name).to.equal('Task1');
+						expect (res.body.notes).to.equal('Notes');
+						expect (res.body.completed).to.equal(false);
+						expect (res.body.parent).to.equal(null);
+						expect (JSON.stringify(res.body.children)).to.equal(JSON.stringify([]));
+						done();
+					});
 				});
 			});
 		});
@@ -113,6 +118,8 @@ describe('Tasks', () => {
 	});
 
 	describe('task updating', () => {
+
+		afterEach((done) => { deleteAllTasks(done); })
 
 		it('PATCH /api/s/task (no task ID #1)', (done) => {
 			withLogin(chai.request(app).patch('/api/s/task'), req => {
@@ -158,60 +165,66 @@ describe('Tasks', () => {
 			});
 		});
 
-		it('PATCH /api/s/task (invalid parent task ID)', async (done) => {
-			let test_task_id = await createTestTask();
-			withLogin(chai.request(app).patch('/api/s/task').send({ task_id: test_task_id,
-			parent: 'invalid_parent_id'}), req => {
-				req.end((err, res) => {
-					deleteAllTasks();
-					if (err) return done(err);
-					res.should.have.status(400);
-					res.body.should.have.property('message').eql(`Could not find desired parent task with id 'invalid_parent_id'`);
-					done();
-				});
+		it('PATCH /api/s/task (invalid parent task ID)', (done) => {
+			createTestTask((test_task_id) => { 
+				withLogin(chai.request(app).patch('/api/s/task').send({ task_id: test_task_id,
+					parent: 'invalid_parent_id'}), req => {
+						req.end((err, res) => {
+							if (err) return done(err);
+							res.should.have.status(400);
+							res.body.should.have.property('message').eql(`Could not find desired parent task with id 'invalid_parent_id'`);
+							done();
+						});
+					});
 			});
 		});
 
 		it('PATCH /api/s/task (valid task ID)', (done) => {
 			// Create a new task to be the parent of testTask
-			let test_task_id = await createTestTask();
-			let new_task = await Tasks.create({
-				name: 'Task1',
-				notes: 'Notes',
-				completed: false,
-				parent: null,
-				children: []
-			});
-			let updates = {
-				name: 'updated name', 
-				notes: 'updated notes', 
-				completed: true,
-				parent: new_task.id,
-				task_id: test_task_id
-			}
-			withLogin(chai.request(app).patch('/api/s/task').send(updates), req => {
-				req.end((err, res) => {
-					if (err) {
-						deleteAllTasks();
-						return done(err);
+			createTestTask((test_task_id) => {
+				Tasks.create({
+					name: 'Task1',
+					notes: 'Notes',
+					completed: false,
+					parent: null,
+					children: []
+				}, (err, new_task) => {
+
+					let updates = {
+						name: 'updated name', 
+						notes: 'updated notes', 
+						completed: true,
+						parent: new_task.id,
+						task_id: test_task_id
 					}
-					res.should.have.status(200);
-					res.body.should.be.a('object');
-					expect (res.body.name).to.equal('updated name');
-					expect (res.body.notes).to.equal('updated notes');
-					expect (res.body.completed).to.equal(true);
-					expect (res.body.parent).to.equal(updates.parent);
-					expect (JSON.stringify(res.body.children)).to.equal(JSON.stringify([]));
-					// Check that parent task has testTask as a child
-					let parentTask = await Tasks.findById(new_task.id);
-					expect (JSON.stringify(parentTask.children)).to.equal(JSON.stringify([test_task_id]));
-					deleteAllTasks();
+					withLogin(chai.request(app).patch('/api/s/task').send(updates), req => {
+						req.end((err, res) => {
+							if (err) {
+								return done(err);
+							}
+							res.should.have.status(200);
+							res.body.should.be.a('object');
+							expect (res.body.name).to.equal('updated name');
+							expect (res.body.notes).to.equal('updated notes');
+							expect (res.body.completed).to.equal(true);
+							expect (res.body.parent).to.equal(updates.parent);
+							expect (JSON.stringify(res.body.children)).to.equal(JSON.stringify([]));
+							// Check that parent task has testTask as a child
+							Tasks.findById(new_task.id, (err, parentTask) => {
+								expect (err).to.be.null;
+								expect (JSON.stringify(parentTask.children)).to.equal(JSON.stringify([test_task_id]));
+								done();
+							})
+						});
+					});
 				});
 			});
 		});
 	});
 
 	describe('removing task children', () => {
+
+		afterEach((done) => { deleteAllTasks(done); })
 
 		it('POST /api/s/removeChildren (no child IDs)', (done) => {
 			withLogin(chai.request(app).post('/api/s/removeChildren'), req => {
@@ -235,33 +248,51 @@ describe('Tasks', () => {
 			});
 		});
 
-		it('POST /api/s/removeChildren (valid child IDs)', async (done) => {
-			let test_task_id_1 = await createTestTask();
-			let test_task_id_2 = await createTestTask();
-			console.log("Sending", [test_task_id_1, test_task_id_2])
-			withLogin(chai.request(app).post('/api/s/removeChildren').send({ child_ids: [test_task_id_1, test_task_id_2] }), req => {
-				req.end(async (err, res) => {
-					if (err) return done(err);
-					res.should.have.status(200);
-					res.body.should.be.a('object');
-					expect (res.body.errors).to.be.empty();
-					// Check that testTask is no longer the parent of child1 and child2
-					withLogin(chai.request(app).get('/api/s/task').send({ task_id: child1.task_id }), req => {
+		it('POST /api/s/removeChildren (valid child IDs)', (done) => {
+
+			// Create the two tasks
+			createTestTask((test_task_id_1) => {
+				createTestTask((test_task_id_2) => {
+					// Attach the child to the parent
+					let updates = {
+						parent: test_task_id_1,
+						task_id: test_task_id_2
+					}
+					withLogin(chai.request(app).patch('/api/s/task').send(updates), req => {
 						req.end((err, res) => {
-							if (err) return done(err);
-							res.should.have.status(200);
-							res.body.should.be.a('object');
-							expect (res.body.parent).to.equal(null);
-							// Check child2
-							withLogin(chai.request(app).get('/api/s/task').send({ task_id: child2.task_id }), req => {
-								req.end((err, res) => {
-									if (err) return done(err);
-									res.should.have.status(200);
-									res.body.should.be.a('object');
-									expect (res.body.parent).to.equal(null);
-									done();
-								});
-							});
+							if (err) {
+								return done(err);
+							}
+							// Assert that we are in a state where there is a parent and child
+							Tasks.findById(test_task_id_1).exec()
+								.then((task_1) => {
+									expect (JSON.stringify(task_1.children)).to.equal(JSON.stringify([test_task_id_2]))
+									return Tasks.findById(test_task_id_2).exec()
+								})
+								.then((task_2) => {
+									expect (task_2.parent).to.equal(test_task_id_1)
+									// Now do the actual child remove operation
+									withLogin(chai.request(app).post('/api/s/removeChildren').send({ child_ids: [test_task_id_2] }), req => {
+										req.end((err, res) => {
+											if (err) return done(err);
+											res.should.have.status(200);
+											res.body.should.be.a('object');
+											expect (res.body.errors).to.be.empty;
+											// Check that test_task_id_1 is no longer the parent of test_task_id_1
+											Tasks.findById(test_task_id_1).exec()
+												.then((task1) => {
+													expect (JSON.stringify(task1.children)).to.equal(JSON.stringify([]))
+													return Tasks.findById(test_task_id_2).exec();
+												})
+												.then((task2) => {
+													expect (task2.parent).to.be.null;
+													done();
+												})
+												.catch((err) => done(err))
+										});
+									});
+								})
+								.catch((err) => done(err))
 						});
 					});
 				});
@@ -270,6 +301,8 @@ describe('Tasks', () => {
 	});
 
 	describe('task deletion', () => {
+
+		afterEach((done) => { deleteAllTasks(done); })
 
 		it('DELETE /api/s/task (no task ID)', (done) => {
 			withLogin(chai.request(app).delete('/api/s/task'), req => {
@@ -315,15 +348,15 @@ describe('Tasks', () => {
 			});
 		});
 
-		it('DELETE /api/s/task (valid task ID)', async (done) => {
-			let test_task_id = await createTestTask();
-			withLogin(chai.request(app).delete('/api/s/task').send({ task_id: test_task_id }), req => {
-				req.end(async (err, res) => {
-					await deleteAllTasks();
-					if (err) return done(err);
-					res.should.have.status(200);
-					res.body.should.have.property('message').eql(`Successfully deleted task with id '${test_task_id}'`);
-					done();
+		it('DELETE /api/s/task (valid task ID)', (done) => {
+			createTestTask((test_task_id) => {
+				withLogin(chai.request(app).delete('/api/s/task').send({ task_id: test_task_id }), req => {
+					req.end((err, res) => {
+						if (err) return done(err);
+						res.should.have.status(200);
+						res.body.should.have.property('message').eql(`Successfully deleted task with id '${test_task_id}'`);
+						done();
+					});
 				});
 			});
 		});

@@ -1,7 +1,9 @@
 
 import React, { Component } from "react";
 
-import { Card, Button, Icon, Tooltip } from 'antd';
+import { Card, Button, Icon, Tooltip, Popconfirm, message } from 'antd';
+import { DownloadOutlined, ApartmentOutlined } from '@ant-design/icons';
+import defaultStyles from '../styles.js';
 
 type Props = {
     x: int,
@@ -31,10 +33,10 @@ class Task extends Component<Props, State> {
       if (this.state.isHovered) {
         return [
           <Tooltip placement="bottom" title="Create Next">
-            <Icon type="download" key="createNext" />
+            <DownloadOutlined key="createNext"/>
           </Tooltip>,
           <Tooltip placement="bottom" title="Create New Branch">
-            <Icon type="apartment" key="createBranch" />
+            <ApartmentOutlined key="createBranch"/>
           </Tooltip>
         ]
       }
@@ -54,13 +56,25 @@ class Task extends Component<Props, State> {
           onMouseEnter={() => this.setHover(true)}
           onMouseLeave={() => this.setHover(false)}>
           <Card 
-            title={this.props.title} 
+            title={<i>{this.props.title}</i>} 
             actions={this.getActions()}
             extra={<a href="#">Edit</a>} 
             style={{ width: 300 }}>
-            <p>Card content</p>
-            <p>Card content</p>
-            <p>Card content</p>
+              <div style={defaultStyles.DESCRIPTION}>
+                <p>Card content</p>
+                <p>Card content</p>
+                <p>Card content</p>
+              </div>
+            
+            <Popconfirm
+              title="Delete this task?"
+              onConfirm={console.log("DELETE")}
+              onCancel={console.log("DONT")}
+              okText="Yes"
+              cancelText="No"
+            >
+              <a href="#">Delete</a>
+            </Popconfirm>,
           </Card>
         </div>
       )
