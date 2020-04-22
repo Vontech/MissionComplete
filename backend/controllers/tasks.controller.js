@@ -167,23 +167,6 @@ controller.updateTask = async (req, res, next) => {
 			return res.json({ message: `${baseError} could not find desired parent task with id '${req.body.parent}'`});
 		}
 		new_parent = req.body.parent;
-
-		await Tasks.findById(req.body.parent, (err, parentTask) => {
-			if (err) {
-				res.status(400);
-				return res.json({ message: `Error updating task - could not find parent task with id '${req.body.parent}'`});
-			} else {
-				// If a new parent is defined, add the given task to its list of children
-				new_parent = req.body.parent;
-				Tasks.findByIdAndUpdate(new_parent, { $addToSet: { children: req.body.task_id }}, 
-				{ new: true }, (err, updatedTask) => {
-					if (err) {
-						res.status(400);
-						return res.json({ message: `Error adding children` });
-					}
-				});
-			}
-		});
 	} else {
 		new_parent = currentTask.parent;
 	}
