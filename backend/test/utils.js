@@ -80,6 +80,10 @@ export function getTestAuthClone() {
 }
 
 export async function dropDB() {
+    if (config.dbName == 'mission-complete') {
+        console.error('STOPPING TESTS - PROD DB IN USE');
+        process.exit(1);
+    }
     await mongoose.connection.db.dropDatabase();
 }
 
