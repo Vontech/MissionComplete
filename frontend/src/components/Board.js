@@ -49,6 +49,7 @@ class Board extends Component<Props, State> {
     }
 
     handleHotEdge(e) {
+      return;
       let x = e.screenX;
       let y = e.screenY - 29;
       let height = window.innerHeight;
