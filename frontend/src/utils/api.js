@@ -4,7 +4,9 @@ import axios from 'axios'
 const Endpoints = {
     USERS: '/api/users',
     LOGIN: '/oauth/token',
-    LOGOUT: '/api/s/logout'
+    LOGOUT: '/api/s/logout',
+    ALL_TASKS: '/api/s/allTasks',
+    TASK: '/api/s/task'
 }
 
 export default class MissionCompleteApi {
@@ -73,6 +75,26 @@ export default class MissionCompleteApi {
         });
     }
 
+    getTasks(callback) {
+        this.getBearerInstance().get(Endpoints.ALL_TASKS)
+        .then(function(response) {
+            callback(response);
+        })
+        .catch(function (error) {
+            callback(error);
+        });
+    }
+
+    addTask(task, callback) {
+        this.getBearerInstance().post(Endpoints.TASK, new URLSearchParams(task))
+        .then(function(response) {
+            callback(response);
+        })
+        .catch(function (error) {
+            callback(error);
+        });
+    }
+
 }
 
 
@@ -81,5 +103,5 @@ function storeAccessToken(token) {
 }
 
 function getAccessToken() {
-    localStorage.removeItem('accessToken')
+    return localStorage.accessToken;
 }

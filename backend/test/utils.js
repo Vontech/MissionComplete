@@ -32,14 +32,6 @@ export const testUserAuth = {
     grant_type: 'password'
 }
 
-export const testTask = {
-	name: 'Task1',
-	notes: 'Notes',
-	completed: false,
-	parent: null,
-	children: []
-}
-
 const testUserHashed = {
     email: 'mocha@tester.com',
     username: 'mocha',
@@ -60,7 +52,8 @@ export function prepareServer(done) {
 }
 
 const testsToFinish = {
-    'users': false
+    'users': false,
+    'tasks': false
 }
 
 export function teardownServer(test, done) {
@@ -68,9 +61,10 @@ export function teardownServer(test, done) {
     testsToFinish[test] = true;
 
     if (Object.values(testsToFinish).reduce((prev, current) => prev && current)) {
-        app.server.close();
         console.log("\nTEARING DOWN TEST SERVER");
+        app.server.close();
         mongoose.connection.close(done);
+        done();
     } else {
         done();
     }
@@ -86,6 +80,10 @@ export function getTestAuthClone() {
 }
 
 export async function dropDB() {
+    if (config.dbName == 'mission-complete') {
+        console.error('STOPPING TESTS - PROD DB IN USE');
+        process.exit(1);
+    }
     await mongoose.connection.db.dropDatabase();
 }
 
@@ -126,27 +124,4 @@ export function withLogin(request, done) {
             auth(res[0]);
         }
     });
-}
-
-export function getRawTestEvents() {
-    return [
-        {
-            "title": "My New Event 1!",
-            "startDate": "2019-01-02T03:30:00.000Z",
-            "endDate": "2019-01-02T04:30:00.000Z",
-            "description": "This is my new event description.",
-        },
-        {
-            "title": "My New Event 2!",
-            "startDate": "2019-01-02T03:30:00.000Z",
-            "endDate": "2019-01-02T04:30:00.000Z",
-            "description": "This is my new event description.",
-        },
-        {
-            "title": "My New Event 3!",
-            "startDate": "2019-01-02T03:30:00.000Z",
-            "endDate": "2019-01-02T04:30:00.000Z",
-            "description": "This is my newest event description.",
-        }
-    ]
 }

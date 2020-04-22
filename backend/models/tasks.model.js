@@ -12,7 +12,8 @@ const TaskSchema = new mongoose.Schema({
   },
   completed: { type: Boolean },
   parent: { type: String },
-  children: { type: [String] }
+  children: { type: [String] },
+  user: { type: String },
 });
 
 const Tasks = mongoose.model('Tasks', TaskSchema);
