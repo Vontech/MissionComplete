@@ -2,7 +2,7 @@
 import React, { Component } from "react";
 
 import { Form, Input, Button, Checkbox, Row, Col, Drawer } from 'antd';
-import { MenuOutlined } from '@ant-design/icons';
+import { MenuOutlined, ImportOutlined } from '@ant-design/icons';
 
 class DrawerPanel extends Component {
 
@@ -35,6 +35,9 @@ class DrawerPanel extends Component {
                     <p>Some contents...</p>
                     <p>Some contents...</p>
                     <p>Some contents...</p>
+                    <Button type="link" icon={<ImportOutlined />} style={styles.logout} onClick={this.props.handleLogout}>
+                        Logout
+                    </Button>
                 </Drawer>
             </div>
         );
@@ -47,6 +50,11 @@ const styles = {
         position: 'fixed',
         top: 32,
         right: 32
+    },
+    logout: {
+        position: 'absolute',
+        bottom: 16,
+        left: 8
     }
 }
 

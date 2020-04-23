@@ -62,15 +62,8 @@ export default class MissionCompleteApi {
             })
     }
 
-    logout(callback) {
-        this.getBearerInstance().post(Endpoints.LOGOUT)
-        .then(function (response) {
-
-            callback(response);
-        })
-        .catch(function (error) {
-            callback(error);
-        });
+    logout() {
+        return this.getBearerInstance().post(Endpoints.LOGOUT)
     }
 
     getTasks() {

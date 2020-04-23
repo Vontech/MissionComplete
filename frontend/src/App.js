@@ -51,6 +51,11 @@ class App extends Component {
     });
   }
 
+  handleLogout = () => {
+    this.api.logout()
+      .then(() => this.showLogin())
+  }
+
   showLogin = () => {
     this.setState({appState: 'logged-out'});
   }
@@ -73,7 +78,7 @@ class App extends Component {
         let newTasks = [];
         console.log(tasks)
         for (let task of tasks.data) {
-          newTasks.push(new Taskk(task.name, task.notes));
+          newTasks.push(new Taskk(task));
         }
         this.setState({tasks: newTasks});
         console.log("GOT NEW TASKS")
@@ -86,7 +91,7 @@ class App extends Component {
 
   getDrawer() {
     return (
-      <DrawerPanel />
+      <DrawerPanel handleLogout={this.handleLogout}/>
     )
   }
 
@@ -99,7 +104,7 @@ class App extends Component {
             return <Task 
                     x={600}
                     y={50 + 250*i}
-                    title={task.title} />
+                    task={task} />
           })}
         </Board>
         {this.getDrawer()}

@@ -5,18 +5,7 @@ import { Card, Button, Icon, Tooltip, Popconfirm, message } from 'antd';
 import { DownloadOutlined, ApartmentOutlined } from '@ant-design/icons';
 import defaultStyles from '../styles.js';
 
-type Props = {
-    x: int,
-    y: int,
-    title: String,
-    date: Any
-  }
-
-type State = {
-    isHovered: Boolean
-}
-
-class Task extends Component<Props, State> {
+class Task extends Component {
 
     constructor(props) {
       super(props);
@@ -56,14 +45,12 @@ class Task extends Component<Props, State> {
           onMouseEnter={() => this.setHover(true)}
           onMouseLeave={() => this.setHover(false)}>
           <Card 
-            title={<i>{this.props.title}</i>} 
+            title={<i>{this.props.task.name}</i>} 
             actions={this.getActions()}
             extra={<a href="#">Edit</a>} 
             style={{ width: 300 }}>
               <div style={defaultStyles.DESCRIPTION}>
-                <p>Card content</p>
-                <p>Card content</p>
-                <p>Card content</p>
+                {this.props.task.notes}
               </div>
             
             <Popconfirm
