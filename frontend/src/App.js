@@ -35,6 +35,12 @@ class App extends Component {
     // });
   }
 
+  getAppContext() {
+    return {
+      api: this.api
+    }
+  }
+
   componentDidMount() {
     this.updateTasks()
   }
@@ -116,7 +122,7 @@ class App extends Component {
     return (
       <Row style={{height: "100%"}}>
         <Col>
-          <LoginPanel handleLogin={this.attemptLogin}/>
+          <LoginPanel context={this.getAppContext()} finish={this.showTaskPanel}/>
         </Col>
       </Row>
     )
