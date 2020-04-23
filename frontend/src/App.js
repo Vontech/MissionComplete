@@ -6,14 +6,13 @@ import Colors from "./colors";
 import Board from "./components/Board.js"
 import Task from "./components/Task.js"
 import NewTaskButton from "./components/NewTaskButton.js"
+import LoginPanel from "./components/LoginPanel.js"
+import DrawerPanel from "./components/DrawerPanel.js"
 import Taskk from "./Models.js"
 
 import '../node_modules/antd/dist/antd.css';
 
 import MissionCompleteApi from './utils/api';
-
-import { Card, Drawer } from 'antd';
-import { PlusOutlined } from '@ant-design/icons';
 
 class App extends Component {
 
@@ -21,18 +20,19 @@ class App extends Component {
     super(props);
     this.state = {
       tasks: [],
-      drawerVisible: true
+      appState: 'unknown'
     }
     this.api = new MissionCompleteApi();
-    this.api.createUser('vontell', 'asdadad@gmail.com', 'wert', () => {
-      this.api.login('vontell', 'wert', (resp) => {
-        console.log('Access Token?'); console.log(localStorage.accessToken)
-        this.api.getTasks(resp => {
-          console.log("GETTING TASKS")
-          console.log(resp);
-        });
-      });
-    });
+    if (this.api.isLoggedIn()) {
+      this.state.appState = 'logged-in'
+    }
+    // this.api.login('vontell', 'wert', (resp) => {
+    //   console.log('Access Token?'); console.log(localStorage.accessToken)
+    //   this.api.getTasks(resp => {
+    //     console.log("GETTING TASKS")
+    //     console.log(resp);
+    //   });
+    // });
   }
 
   componentDidMount() {
@@ -51,36 +51,46 @@ class App extends Component {
     });
   }
 
+  showLogin = () => {
+    this.setState({appState: 'logged-out'});
+  }
+
+  showTaskPanel = () => {
+    this.setState({appState: 'logged-in'})
+    this.updateTasks();
+  }
+
+  attemptLogin = (loginValues) => {
+    console.log(loginValues);
+    this.api.login(loginValues.username, loginValues.password)
+      .then(() => {this.showTaskPanel()})
+      .catch((err) => {console.log(err)})
+  }
+
   updateTasks() {
-    this.api.getTasks((tasks) => {
-      let newTasks = [];
-      console.log(tasks)
-      for (let task of tasks.data) {
-        newTasks.push(new Taskk(task.name, task.notes));
-      }
-      this.setState({tasks: newTasks});
-      console.log("GOT NEW TASKS")
-      console.log(newTasks);
-    })
+    this.api.getTasks()
+      .then((tasks) => {
+        let newTasks = [];
+        console.log(tasks)
+        for (let task of tasks.data) {
+          newTasks.push(new Taskk(task.name, task.notes));
+        }
+        this.setState({tasks: newTasks});
+        console.log("GOT NEW TASKS")
+        console.log(newTasks);
+      })
+      .catch((err) => {
+        this.showLogin();
+      });
   }
 
   getDrawer() {
     return (
-      <Drawer
-        title="Basic Drawer"
-        placement="right"
-        closable={false}
-        onClose={this.hideDrawer}
-        visible={this.state.drawerVisible}
-      >
-        <p>Some contents...</p>
-        <p>Some contents...</p>
-        <p>Some contents...</p>
-      </Drawer>
+      <DrawerPanel />
     )
   }
 
-  render() {
+  getTasksPane() {
     return (
       <div>
         <Board>
@@ -93,6 +103,35 @@ class App extends Component {
           })}
         </Board>
         {this.getDrawer()}
+      </div>
+    )
+  }
+
+  getLoginPane() {
+    return (
+      <Row style={{height: "100%"}}>
+        <Col>
+          <LoginPanel handleLogin={this.attemptLogin}/>
+        </Col>
+      </Row>
+    )
+  }
+
+  getRegistrationPane() {
+    return (
+      <div>
+        Register
+      </div>
+    )
+  }
+
+  render() {
+    return (
+      <div id="primary-panel">
+        {this.state.appState === 'unknown' && <div />}
+        {this.state.appState === 'logged-out' && this.getLoginPane()}
+        {this.state.appState === 'registering' && this.getRegistrationPane()}
+        {this.state.appState === 'logged-in' && this.getTasksPane()}
       </div>
     );
   }

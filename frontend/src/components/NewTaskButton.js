@@ -66,12 +66,7 @@ class NewTaskButton extends Component<Props, State> {
         <div>
           <div style={styles.fixedBottomRight}>
             <Popover placement="rightBottom" title={'Create Task'} content={this.getForm()} trigger="click">
-              <Button size="large" icon={<PlusOutlined />} type="primary" shape="circle" onClick={() => {
-                    this.props.createNewTask({
-                        'name': Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15),
-                        'notes': "These are some notes"
-                    })
-                }}>
+              <Button size="large" icon={<PlusOutlined />} type="primary" shape="circle">
               </Button>
             </Popover>
           </div>

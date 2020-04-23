@@ -48,26 +48,24 @@ export default class MissionCompleteApi {
         });
     }
 
-    login(username, password, callback) {
+    login(username, password) {
 
         const params = new URLSearchParams();
         params.append('username', username);
         params.append('password', password);
         params.append('grant_type', 'password');
 
-        this.getBasicInstance().post(Endpoints.LOGIN, params)
-        .then(function (response) {
-            storeAccessToken(response.data['access_token']);
-            callback(response);
-        })
-        .catch(function (error) {
-            callback(error);
-        });
+        return this.getBasicInstance().post(Endpoints.LOGIN, params)
+            .then(function (response) {
+                storeAccessToken(response.data['access_token']);
+                return;
+            })
     }
 
     logout(callback) {
         this.getBearerInstance().post(Endpoints.LOGOUT)
         .then(function (response) {
+
             callback(response);
         })
         .catch(function (error) {
@@ -75,14 +73,8 @@ export default class MissionCompleteApi {
         });
     }
 
-    getTasks(callback) {
-        this.getBearerInstance().get(Endpoints.ALL_TASKS)
-        .then(function(response) {
-            callback(response);
-        })
-        .catch(function (error) {
-            callback(error);
-        });
+    getTasks() {
+        return this.getBearerInstance().get(Endpoints.ALL_TASKS)
     }
 
     addTask(task, callback) {
@@ -95,11 +87,19 @@ export default class MissionCompleteApi {
         });
     }
 
+    isLoggedIn() {
+        return localStorage.accessToken != null;
+    }
+
 }
 
 
 function storeAccessToken(token) {
     localStorage.accessToken = token;
+}
+
+function deleteAccessToken(token) {
+    localStorage.removeItem('accessToken');
 }
 
 function getAccessToken() {
