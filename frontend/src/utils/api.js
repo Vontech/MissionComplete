@@ -70,14 +70,8 @@ export default class MissionCompleteApi {
         return this.getBearerInstance().get(Endpoints.ALL_TASKS)
     }
 
-    addTask(task, callback) {
-        this.getBearerInstance().post(Endpoints.TASK, new URLSearchParams(task))
-        .then(function(response) {
-            callback(response);
-        })
-        .catch(function (error) {
-            callback(error);
-        });
+    addTask(task) {
+        return this.getBearerInstance().post(Endpoints.TASK, new URLSearchParams(task))
     }
 
     isLoggedIn() {

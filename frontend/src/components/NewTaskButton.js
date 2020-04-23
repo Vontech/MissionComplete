@@ -12,14 +12,16 @@ type Props = {
 }
 
 type State = {
-    
+    isVisible: Boolean,
 }
 
 class NewTaskButton extends Component<Props, State> {
 
     constructor(props) {
       super(props);
-      this.state = {}
+      this.state = {
+		  isVisible: false,
+	  }
     }
 
     componentDidMount() {
@@ -27,7 +29,8 @@ class NewTaskButton extends Component<Props, State> {
     }
 
     onFinish = values => {
-      console.log('Success:', values);
+	  this.props.createNewTask(values);
+	  this.togglePanelVisibility();
     };
   
     onFinishFailed = errorInfo => {
@@ -59,14 +62,18 @@ class NewTaskButton extends Component<Props, State> {
           </Form>
         </div>
       );
-    }
+	}
+	
+	togglePanelVisibility() {
+		this.setState({isVisible: !this.state.isVisible})
+	}
 
     render() {
       return (
         <div>
           <div style={styles.fixedBottomRight}>
-            <Popover placement="rightBottom" title={'Create Task'} content={this.getForm()} trigger="click">
-              <Button size="large" icon={<PlusOutlined />} type="primary" shape="circle">
+            <Popover placement="rightBottom" title={'Create Task'} content={this.getForm()} visible={this.state.isVisible}>
+              <Button size="large" icon={<PlusOutlined />} type="primary" shape="circle" onClick={this.togglePanelVisibility.bind(this)}>
               </Button>
             </Popover>
           </div>

@@ -72,6 +72,15 @@ class App extends Component {
       .catch((err) => {console.log(err)})
   }
 
+
+  addTask(taskValues) {
+	  console.log(taskValues);
+	  this.api.addTask(taskValues)
+	  .then((task) => {
+		  this.updateTasks();
+	  })
+  }
+
   updateTasks() {
     this.api.getTasks()
       .then((tasks) => {
@@ -99,7 +108,7 @@ class App extends Component {
     return (
       <div>
         <Board>
-          <NewTaskButton createNewTask={(task) => this.api.addTask(task, this.updateTasks.bind(this))}/>
+          <NewTaskButton createNewTask={this.addTask.bind(this)}/>
           {this.state.tasks.map((task, i) => {
             return <Task 
                     x={600}
