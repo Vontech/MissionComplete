@@ -33,19 +33,13 @@ export default class MissionCompleteApi {
         });
     }
     
-    createUser(username, email, password, callback) {
-        axios.post(Endpoints.USERS, {
+    createUser(username, email, password) {
+        return axios.post(Endpoints.USERS, {
             username: username,
             email: email,
             password: password,
             passwordConf: password
         })
-        .then(function (response) {
-            callback(response);
-        })
-        .catch(function (error) {
-            callback(error);
-        });
     }
 
     login(username, password) {
