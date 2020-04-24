@@ -8,7 +8,7 @@ class Taskk {
         this.notes = api_obj.notes;
         this.complete = api_obj.completed;
         this.parent = api_obj.parent;
-        this.children = api_obj.parent;
+        this.children = api_obj.children;
     }
 
 }
