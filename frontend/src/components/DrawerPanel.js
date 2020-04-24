@@ -1,8 +1,10 @@
 
 import React, { Component } from "react";
 
-import { Form, Input, Button, Checkbox, Row, Col, Drawer } from 'antd';
-import { MenuOutlined, ImportOutlined } from '@ant-design/icons';
+import { Form, Input, Button, Checkbox, Row, Col, Drawer, Tree } from 'antd';
+import { MenuOutlined, ImportOutlined, DownOutlined } from '@ant-design/icons';
+
+const { TreeNode } = Tree;
 
 class DrawerPanel extends Component {
 
@@ -21,6 +23,42 @@ class DrawerPanel extends Component {
         this.setState({isOpen: !this.state.isOpen})
     }
 
+    renderTaskTree() {
+
+        let {taskTree, taskMap} = this.props.tasks;
+
+        function recurseOverComps(currentTree) {
+            let task = taskMap.get(currentTree.id);
+            if (!currentTree.children) {
+                return (<TreeNode 
+                    key={task.id}
+                    title={task.name} />);
+            }
+            return (
+                <TreeNode 
+                    key={task.id}
+                    title={task.name}>
+                        {currentTree.children.map((childTree) => {return recurseOverComps(childTree)})}
+                    </TreeNode>
+            );
+        }
+
+        let components = [];
+        for (let child of taskTree) {
+            components.push(recurseOverComps(child));
+        }
+
+        return (
+            <Tree
+              showLine
+              switcherIcon={<DownOutlined />}
+              onSelect={() => {}}
+            >
+              {components}
+            </Tree>
+          );
+    }
+
     render() {
         return (
             <div>
@@ -32,9 +70,7 @@ class DrawerPanel extends Component {
                     onClose={this.toggle.bind(this)}
                     visible={this.state.isOpen}
                 >
-                    <p>Some contents...</p>
-                    <p>Some contents...</p>
-                    <p>Some contents...</p>
+                    {this.renderTaskTree()}
                     <Button type="link" icon={<ImportOutlined />} style={styles.logout} onClick={this.props.handleLogout}>
                         Logout
                     </Button>

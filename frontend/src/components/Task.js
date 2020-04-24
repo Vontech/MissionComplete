@@ -51,7 +51,6 @@ class Task extends Component {
 
     render() {
       let propStyles = {'top': this.props.y, 'left': this.props.x}
-      console.log(propStyles);
       return (
         <div 
           style={{...styles.container, ...propStyles}}

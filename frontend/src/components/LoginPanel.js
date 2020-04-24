@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 
-import { Form, Input, Button, Checkbox, Row, Col, Alert } from 'antd';
+import { Form, Input, Button, Checkbox, Alert } from 'antd';
 import { UserOutlined, LockOutlined, MailOutlined, UnlockOutlined } from '@ant-design/icons';
 
 class LoginPanel extends Component {
@@ -30,8 +30,8 @@ class LoginPanel extends Component {
         this.setState({isLoading: true})
         this.props.context.api.login(loginValues.username, loginValues.password)
             .then(() => {
-                this.props.finish()
                 this.setState({isLoading: false})
+                this.props.finish()
             })
             .catch((err) => {
                 console.log(err)

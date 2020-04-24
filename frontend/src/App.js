@@ -9,6 +9,7 @@ import NewTaskButton from "./components/NewTaskButton.js"
 import LoginPanel from "./components/LoginPanel.js"
 import DrawerPanel from "./components/DrawerPanel.js"
 import Taskk from "./Models.js"
+import {getIdTree} from "./utils/algos.js"
 
 import '../node_modules/antd/dist/antd.css';
 
@@ -19,20 +20,14 @@ class App extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      tasks: [],
+      taskMap: new Map(),
+      taskTree: [],
       appState: 'unknown'
     }
     this.api = new MissionCompleteApi();
     if (this.api.isLoggedIn()) {
       this.state.appState = 'logged-in'
     }
-    // this.api.login('vontell', 'wert', (resp) => {
-    //   console.log('Access Token?'); console.log(localStorage.accessToken)
-    //   this.api.getTasks(resp => {
-    //     console.log("GETTING TASKS")
-    //     console.log(resp);
-    //   });
-    // });
   }
 
   getAppContext() {
@@ -91,23 +86,49 @@ class App extends Component {
     this.api.getTasks()
       .then((tasks) => {
         let newTasks = [];
-        console.log(tasks)
         for (let task of tasks.data) {
           newTasks.push(new Taskk(task));
         }
-        this.setState({tasks: newTasks});
-        console.log("GOT NEW TASKS")
-        console.log(newTasks);
+        let {tree, taskMap} = getIdTree(newTasks);
+        this.setState({taskMap: taskMap, taskTree: tree});
       })
       .catch((err) => {
+        console.log(err);
         this.showLogin();
       });
   }
 
   getDrawer() {
     return (
-      <DrawerPanel handleLogout={this.handleLogout}/>
+      <DrawerPanel 
+        handleLogout={this.handleLogout}
+        tasks={{taskTree: this.state.taskTree, taskMap: this.state.taskMap}}/>
     )
+  }
+
+  renderTaskGraph() {
+    let listOfTaskComps = [];
+    let {taskTree, taskMap} = this.state;
+
+    function recurseOverComps(currentTree, level) {
+      let task = taskMap.get(currentTree.id);
+      listOfTaskComps.push(<Task 
+        key={task.id}
+        x={100 + 100*level}
+        y={50 + 200*listOfTaskComps.length}
+        task={task} />
+      );
+      for (let child of currentTree.children) {
+        recurseOverComps(child, level + 1);
+      }
+    }
+
+    for (let child of taskTree) {
+      recurseOverComps(child, 0);
+    }
+
+    return listOfTaskComps;
+
   }
 
   getTasksPane() {
@@ -115,12 +136,7 @@ class App extends Component {
       <div>
         <Board>
           <NewTaskButton createNewTask={this.addTask.bind(this)}/>
-          {this.state.tasks.map((task, i) => {
-            return <Task 
-                    x={600}
-                    y={50 + 250*i}
-                    task={task} />
-          })}
+          {this.renderTaskGraph()}
         </Board>
         {this.getDrawer()}
       </div>
@@ -129,11 +145,9 @@ class App extends Component {
 
   getLoginPane() {
     return (
-      <Row style={{height: "100%"}}>
-        <Col>
-          <LoginPanel context={this.getAppContext()} finish={this.showTaskPanel}/>
-        </Col>
-      </Row>
+      <div style={{height: "100%"}}>
+        <LoginPanel context={this.getAppContext()} finish={this.showTaskPanel.bind(this)}/>
+      </div>
     )
   }
 
