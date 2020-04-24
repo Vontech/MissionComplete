@@ -1,11 +1,17 @@
 
 import React, { Component } from "react";
 
-import { Card, Button, Icon, Tooltip, Popconfirm, message } from 'antd';
-import { DownloadOutlined, ApartmentOutlined } from '@ant-design/icons';
+import { Card, Button, Icon, Tooltip, Popconfirm, message, Skeleton, Avatar } from 'antd';
+import { EditTwoTone, CheckCircleTwoTone, DeleteTwoTone } from '@ant-design/icons';
 import defaultStyles from '../styles.js';
 
+const { Meta } = Card;
+
 class Task extends Component {
+
+	state = {
+		loading: false,
+	}
 
     constructor(props) {
       super(props);
@@ -15,22 +21,29 @@ class Task extends Component {
     }
 
     componentDidMount() {
-
+		// this.setState({ loading: !this.state.loading });
     }
 
     getActions() {
       if (this.state.isHovered) {
         return [
-          <Tooltip placement="bottom" title="Create Next">
-            <DownloadOutlined key="createNext"/>
-          </Tooltip>,
-          <Tooltip placement="bottom" title="Create New Branch">
-            <ApartmentOutlined key="createBranch"/>
-          </Tooltip>
+			<Tooltip placement="bottom" title="Delete Task">
+				<DeleteTwoTone twoToneColor="#eb2f96" key="delete"/>
+          	</Tooltip>,
+			<Tooltip placement="bottom" title="Edit Task">
+				<EditTwoTone key="edit"/>
+			</Tooltip>,
+			<Tooltip placement="bottom" title="Mark as Done">
+				<CheckCircleTwoTone twoToneColor="#52c41a" key="complete"/>
+			</Tooltip>
         ]
       }
       return []
     }
+
+	onTabChange(key) {
+		console.log("Key: " + key);
+	}
 
     setHover(isHovered) {
       this.setState({isHovered: isHovered})
@@ -45,23 +58,17 @@ class Task extends Component {
           onMouseEnter={() => this.setHover(true)}
           onMouseLeave={() => this.setHover(false)}>
           <Card 
-            title={<i>{this.props.task.name}</i>} 
             actions={this.getActions()}
-            extra={<a href="#">Edit</a>} 
             style={{ width: 300 }}>
-              <div style={defaultStyles.DESCRIPTION}>
-                {this.props.task.notes}
-              </div>
-            
-            <Popconfirm
-              title="Delete this task?"
-              onConfirm={console.log("DELETE")}
-              onCancel={console.log("DONT")}
-              okText="Yes"
-              cancelText="No"
-            >
-              <a href="#">Delete</a>
-            </Popconfirm>,
+			<Skeleton loading={this.state.loading} avatar active>
+				<Meta
+					avatar={
+						<Avatar src="https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png" />
+					}
+					title={this.props.task.name} 
+					description={this.props.task.notes}
+				/>
+          	</Skeleton>
           </Card>
         </div>
       )
