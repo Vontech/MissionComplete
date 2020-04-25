@@ -69,7 +69,7 @@ export default class MissionCompleteApi {
 	}
 	
 	removeTask(task_id) {
-        return this.getBearerInstance().delete(Endpoints.TASK, { body: { task_id: task_id }})
+        return this.getBearerInstance().delete(Endpoints.TASK + '/' + task_id)
     }
 
     isLoggedIn() {

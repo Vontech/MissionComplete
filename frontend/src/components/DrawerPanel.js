@@ -50,7 +50,7 @@ class DrawerPanel extends Component {
 
         return (
             <Tree
-              showLine
+              showLine={true}
               switcherIcon={<DownOutlined />}
               onSelect={() => {}}
             >

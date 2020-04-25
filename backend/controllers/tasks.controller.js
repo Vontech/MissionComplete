@@ -81,12 +81,12 @@ controller.removeTask = async (req, res, next) => {
 
 	// Make sure the task is valid
 	let baseError = 'Error deleting task -';
-	if (!hasTaskId(req)) {
+	if (!req.params.hasOwnProperty('taskId') || req.params.taskId == null) {
 		res.status(400);
 		return res.json({ message: `${baseError} invalid task ID` });
 	}
 
-	let task_id = req.body.task_id;
+	let task_id = req.params.taskId;
 
 	// Remove the task from the upper tree
 	let removeFromTreeErr = await disassociateTaskFromParent(task_id);
@@ -108,7 +108,7 @@ controller.removeTask = async (req, res, next) => {
 			return res.json({ message: `${baseError} ${err}`});
 		} else {
 			res.status(200);
-			return res.json({ message: `Successfully deleted task with id '${req.body.task_id}'`});
+			return res.json({ message: `Successfully deleted task with id '${task_id}'`});
 		}
 	});
 }

@@ -83,7 +83,6 @@ class App extends Component {
   }
 
   removeTask(task_id) {
-	  console.log(task_id);
 	  this.api.removeTask(task_id)
 	  .then(() => { this.updateTasks(); })
   }
