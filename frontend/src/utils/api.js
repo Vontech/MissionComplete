@@ -66,6 +66,10 @@ export default class MissionCompleteApi {
 
     addTask(task) {
         return this.getBearerInstance().post(Endpoints.TASK, new URLSearchParams(task))
+	}
+	
+	removeTask(task_id) {
+        return this.getBearerInstance().delete(Endpoints.TASK, { body: { task_id: task_id }})
     }
 
     isLoggedIn() {

@@ -28,21 +28,21 @@ class Task extends Component {
       if (this.state.isHovered) {
         return [
 			<Tooltip placement="bottom" title="Delete Task">
-				<DeleteTwoTone twoToneColor="#eb2f96" key="delete"/>
+				<DeleteTwoTone twoToneColor="#eb2f96" onClick={this.deleteTask.bind(this)} />
           	</Tooltip>,
 			<Tooltip placement="bottom" title="Edit Task">
-				<EditTwoTone key="edit"/>
+				<EditTwoTone onClick={() => console.log("Edit task")} />
 			</Tooltip>,
 			<Tooltip placement="bottom" title="Mark as Done">
-				<CheckCircleTwoTone twoToneColor="#52c41a" key="complete"/>
+				<CheckCircleTwoTone twoToneColor="#52c41a" onClick={() => console.log("Complete task")} />
 			</Tooltip>
         ]
       }
       return []
     }
 
-	onTabChange(key) {
-		console.log("Key: " + key);
+	deleteTask() {
+		this.props.removeTaskHandler(this.props.task.id);
 	}
 
     setHover(isHovered) {

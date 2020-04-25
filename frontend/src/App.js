@@ -82,6 +82,12 @@ class App extends Component {
 	  })
   }
 
+  removeTask(task_id) {
+	  console.log(task_id);
+	  this.api.removeTask(task_id)
+	  .then(() => { this.updateTasks(); })
+  }
+
   updateTasks() {
     this.api.getTasks()
       .then((tasks) => {
@@ -108,7 +114,8 @@ class App extends Component {
 
   renderTaskGraph() {
     let listOfTaskComps = [];
-    let {taskTree, taskMap} = this.state;
+	let {taskTree, taskMap} = this.state;
+	let removeTaskFunc = this.removeTask.bind(this);
 
     function recurseOverComps(currentTree, level) {
       let task = taskMap.get(currentTree.id);
@@ -116,7 +123,8 @@ class App extends Component {
         key={task.id}
         x={100 + 100*level}
         y={50 + 200*listOfTaskComps.length}
-        task={task} />
+        task={task} 
+		removeTaskHandler={removeTaskFunc} />
       );
       for (let child of currentTree.children) {
         recurseOverComps(child, level + 1);
