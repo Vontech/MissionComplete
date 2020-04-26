@@ -53,20 +53,21 @@ class Task extends Component {
       let propStyles = {'top': this.props.y, 'left': this.props.x}
       return (
         <div 
+          id={this.props.task.id}
           style={{...styles.container, ...propStyles}}
           onMouseEnter={() => this.setHover(true)}
           onMouseLeave={() => this.setHover(false)}>
           <Card 
             actions={this.getActions()}
             style={{ width: 300 }}>
-			<Skeleton loading={this.state.loading} avatar active>
-				<Meta
-					avatar={
-						<Avatar src="https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png" />
-					}
-					title={this.props.task.name} 
-					description={this.props.task.notes}
-				/>
+            <Skeleton loading={this.state.loading} avatar active>
+              <Meta
+                avatar={
+                  <Avatar src="https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png" />
+                }
+                title={this.props.task.name} 
+                description={this.props.task.notes}
+              />
           	</Skeleton>
           </Card>
         </div>

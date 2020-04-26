@@ -915,6 +915,156 @@
   version "1.4.0"
   resolved "https://registry.yarnpkg.com/@csstools/convert-colors/-/convert-colors-1.4.0.tgz#ad495dc41b12e75d588c6db8b9834f08fa131eb7"
 
+"@interactjs/actions@1.9.10":
+  version "1.9.10"
+  resolved "https://registry.yarnpkg.com/@interactjs/actions/-/actions-1.9.10.tgz#6071cc16b0cbf426872149d23a2c4030f5365499"
+  optionalDependencies:
+    "@interactjs/interact" "1.9.10"
+
+"@interactjs/arrange@1.9.10":
+  version "1.9.10"
+  resolved "https://registry.yarnpkg.com/@interactjs/arrange/-/arrange-1.9.10.tgz#570ea70bc3af1272330a7c724cc2a36a8324b406"
+
+"@interactjs/auto-scroll@1.9.10":
+  version "1.9.10"
+  resolved "https://registry.yarnpkg.com/@interactjs/auto-scroll/-/auto-scroll-1.9.10.tgz#a647477b1e6c55b9ec8a92500d107f723e43a7da"
+  optionalDependencies:
+    "@interactjs/interact" "1.9.10"
+
+"@interactjs/auto-start@1.9.10":
+  version "1.9.10"
+  resolved "https://registry.yarnpkg.com/@interactjs/auto-start/-/auto-start-1.9.10.tgz#1abf5aa410a8e3813ffc5e3df69f60f9b8e0cdf7"
+  optionalDependencies:
+    "@interactjs/interact" "1.9.10"
+
+"@interactjs/clone@1.9.10":
+  version "1.9.10"
+  resolved "https://registry.yarnpkg.com/@interactjs/clone/-/clone-1.9.10.tgz#40623fa1911ab7b266ff3ad4b680ec7368f6c881"
+
+"@interactjs/components@1.9.10":
+  version "1.9.10"
+  resolved "https://registry.yarnpkg.com/@interactjs/components/-/components-1.9.10.tgz#1e7159e45205424ba3371ba5ebb06855101c0923"
+
+"@interactjs/core@1.9.10":
+  version "1.9.10"
+  resolved "https://registry.yarnpkg.com/@interactjs/core/-/core-1.9.10.tgz#e6e246dfde7188ec60f85f86b8e3cebf9961606a"
+
+"@interactjs/dev-tools@1.9.10":
+  version "1.9.10"
+  resolved "https://registry.yarnpkg.com/@interactjs/dev-tools/-/dev-tools-1.9.10.tgz#1675eb22f349e496145416fc7e2a9e51d69a2563"
+  dependencies:
+    "@interactjs/utils" "1.9.10"
+  optionalDependencies:
+    "@interactjs/interact" "1.9.10"
+
+"@interactjs/feedback@1.9.10":
+  version "1.9.10"
+  resolved "https://registry.yarnpkg.com/@interactjs/feedback/-/feedback-1.9.10.tgz#aa0fe2d2aeb3bc978db505fb1a10f8894ce535c8"
+
+"@interactjs/inertia@1.9.10":
+  version "1.9.10"
+  resolved "https://registry.yarnpkg.com/@interactjs/inertia/-/inertia-1.9.10.tgz#3608aa4ef46d73ddc3a25bbd4a448fe8a79e13dc"
+  dependencies:
+    "@interactjs/offset" "1.9.10"
+  optionalDependencies:
+    "@interactjs/interact" "1.9.10"
+
+"@interactjs/interact@1.9.10":
+  version "1.9.10"
+  resolved "https://registry.yarnpkg.com/@interactjs/interact/-/interact-1.9.10.tgz#2b810c7b86ea3b649f08473d5ad421a11130d03b"
+  dependencies:
+    "@interactjs/core" "1.9.10"
+    "@interactjs/types" "1.9.10"
+    "@interactjs/utils" "1.9.10"
+
+"@interactjs/interactjs@1.9.10":
+  version "1.9.10"
+  resolved "https://registry.yarnpkg.com/@interactjs/interactjs/-/interactjs-1.9.10.tgz#241acb2c5dae4e9a27980d0a1e369f163a80e79a"
+  dependencies:
+    "@interactjs/actions" "1.9.10"
+    "@interactjs/arrange" "1.9.10"
+    "@interactjs/auto-scroll" "1.9.10"
+    "@interactjs/auto-start" "1.9.10"
+    "@interactjs/clone" "1.9.10"
+    "@interactjs/components" "1.9.10"
+    "@interactjs/core" "1.9.10"
+    "@interactjs/dev-tools" "1.9.10"
+    "@interactjs/feedback" "1.9.10"
+    "@interactjs/inertia" "1.9.10"
+    "@interactjs/interact" "1.9.10"
+    "@interactjs/modifiers" "1.9.10"
+    "@interactjs/multi-target" "1.9.10"
+    "@interactjs/offset" "1.9.10"
+    "@interactjs/pointer-events" "1.9.10"
+    "@interactjs/reflow" "1.9.10"
+    "@interactjs/types" "1.9.10"
+    "@interactjs/utils" "1.9.10"
+    "@interactjs/vue" "1.9.10"
+
+"@interactjs/modifiers@1.9.10":
+  version "1.9.10"
+  resolved "https://registry.yarnpkg.com/@interactjs/modifiers/-/modifiers-1.9.10.tgz#b06f0d72b345cf36965bc67c4fe82aecf8276cf6"
+  dependencies:
+    "@interactjs/snappers" "1.9.10"
+  optionalDependencies:
+    "@interactjs/interact" "1.9.10"
+
+"@interactjs/multi-target@1.9.10":
+  version "1.9.10"
+  resolved "https://registry.yarnpkg.com/@interactjs/multi-target/-/multi-target-1.9.10.tgz#cee1478c5fd78e1cbd0c981cca47d2b81b5440a1"
+
+"@interactjs/offset@1.9.10":
+  version "1.9.10"
+  resolved "https://registry.yarnpkg.com/@interactjs/offset/-/offset-1.9.10.tgz#64811521ffb852d505f2ffd4f057665787d4024b"
+  optionalDependencies:
+    "@interactjs/interact" "1.9.10"
+
+"@interactjs/pointer-events@1.9.10":
+  version "1.9.10"
+  resolved "https://registry.yarnpkg.com/@interactjs/pointer-events/-/pointer-events-1.9.10.tgz#1935a4d90bbb3fb7aac818c8752b29a4e3ec4aed"
+  optionalDependencies:
+    "@interactjs/interact" "1.9.10"
+
+"@interactjs/reflow@1.9.10":
+  version "1.9.10"
+  resolved "https://registry.yarnpkg.com/@interactjs/reflow/-/reflow-1.9.10.tgz#c39e426d52f0949e8ba83e166e30d1de742ecad9"
+  optionalDependencies:
+    "@interactjs/interact" "1.9.10"
+
+"@interactjs/snappers@1.9.10":
+  version "1.9.10"
+  resolved "https://registry.yarnpkg.com/@interactjs/snappers/-/snappers-1.9.10.tgz#b9355f085e9ddbf0c24f43b5fa1be66db688281b"
+
+"@interactjs/symbol-tree@1.9.10":
+  version "1.9.10"
+  resolved "https://registry.yarnpkg.com/@interactjs/symbol-tree/-/symbol-tree-1.9.10.tgz#7b7f4d7d22d5ad81c23dcadede554e1a5114d3f0"
+
+"@interactjs/types@1.9.10":
+  version "1.9.10"
+  resolved "https://registry.yarnpkg.com/@interactjs/types/-/types-1.9.10.tgz#d64bd3cde6107b9162321816ab4cf1cb9f5f8d24"
+  dependencies:
+    "@interactjs/actions" "1.9.10"
+    "@interactjs/arrange" "1.9.10"
+    "@interactjs/auto-scroll" "1.9.10"
+    "@interactjs/auto-start" "1.9.10"
+    "@interactjs/core" "1.9.10"
+    "@interactjs/dev-tools" "1.9.10"
+    "@interactjs/inertia" "1.9.10"
+    "@interactjs/modifiers" "1.9.10"
+    "@interactjs/pointer-events" "1.9.10"
+    "@interactjs/reflow" "1.9.10"
+    "@interactjs/snappers" "1.9.10"
+    "@interactjs/symbol-tree" "1.9.10"
+    "@interactjs/utils" "1.9.10"
+
+"@interactjs/utils@1.9.10":
+  version "1.9.10"
+  resolved "https://registry.yarnpkg.com/@interactjs/utils/-/utils-1.9.10.tgz#c8676fee611a718e12aeabcee288735dcabd4704"
+
+"@interactjs/vue@1.9.10":
+  version "1.9.10"
+  resolved "https://registry.yarnpkg.com/@interactjs/vue/-/vue-1.9.10.tgz#88db28c41e0820a6ffece3aca9c7ee6134d1fafd"
+
 "@material-ui/core@^3.8.1":
   version "3.9.4"
   resolved "https://registry.yarnpkg.com/@material-ui/core/-/core-3.9.4.tgz#5297fd4ad9e739a87da4a6d34fc4af5396886e13"
@@ -2817,6 +2967,10 @@ d3-ease@^1.0.5:
   version "1.0.6"
   resolved "https://registry.yarnpkg.com/d3-ease/-/d3-ease-1.0.6.tgz#ebdb6da22dfac0a22222f2d4da06f66c416a0ec0"
 
+d3-hierarchy@^1.1.9:
+  version "1.1.9"
+  resolved "https://registry.yarnpkg.com/d3-hierarchy/-/d3-hierarchy-1.1.9.tgz#2f6bee24caaea43f8dc37545fa01628559647a83"
+
 d3-interpolate@^1.3.2:
   version "1.4.0"
   resolved "https://registry.yarnpkg.com/d3-interpolate/-/d3-interpolate-1.4.0.tgz#526e79e2d80daa383f9e0c1c1c7dcc0f0583e987"
@@ -4585,6 +4739,13 @@ inquirer@^6.1.0:
 insert-css@^2.0.0:
   version "2.0.0"
   resolved "https://registry.yarnpkg.com/insert-css/-/insert-css-2.0.0.tgz#eb5d1097b7542f4c79ea3060d3aee07d053880f4"
+
+interactjs@^1.9.10:
+  version "1.9.10"
+  resolved "https://registry.yarnpkg.com/interactjs/-/interactjs-1.9.10.tgz#33582b762c29ea8717417e59a130c4837e2d123a"
+  dependencies:
+    "@interactjs/interactjs" "1.9.10"
+    "@interactjs/types" "1.9.10"
 
 internal-ip@^3.0.1:
   version "3.0.1"
@@ -7305,7 +7466,7 @@ prompts@^0.1.9:
     kleur "^2.0.1"
     sisteransi "^0.1.1"
 
-prop-types@15.x, prop-types@^15.5.10, prop-types@^15.5.6, prop-types@^15.5.7, prop-types@^15.5.8, prop-types@^15.5.9, prop-types@^15.6.0, prop-types@^15.6.2, prop-types@^15.7.2:
+prop-types@15.x, prop-types@^15.5.10, prop-types@^15.5.6, prop-types@^15.5.7, prop-types@^15.5.8, prop-types@^15.5.9, prop-types@^15.6.0, prop-types@^15.6.1, prop-types@^15.6.2, prop-types@^15.7.2:
   version "15.7.2"
   resolved "https://registry.yarnpkg.com/prop-types/-/prop-types-15.7.2.tgz#52c41e75b8c87e72b9d9360e0206b99dcbffa6c5"
   dependencies:
@@ -7834,6 +7995,12 @@ react-grid-system@^4.4.1:
   dependencies:
     prop-types "^15.7.2"
 
+react-hotkeys@^2.0.0:
+  version "2.0.0"
+  resolved "https://registry.yarnpkg.com/react-hotkeys/-/react-hotkeys-2.0.0.tgz#a7719c7340cbba888b0e9184f806a9ec0ac2c53f"
+  dependencies:
+    prop-types "^15.6.1"
+
 react-is@^16.12.0:
   version "16.13.1"
   resolved "https://registry.yarnpkg.com/react-is/-/react-is-16.13.1.tgz#789729a4dc36de2999dc156dd6c1d9c18cea56a4"
@@ -7926,6 +8093,10 @@ react@^16.7.0:
     loose-envify "^1.1.0"
     object-assign "^4.1.1"
     prop-types "^15.6.2"
+
+reactablejs@^0.2.0:
+  version "0.2.0"
+  resolved "https://registry.yarnpkg.com/reactablejs/-/reactablejs-0.2.0.tgz#a8524e8c0fb90d023f37090fee651e6cf809622f"
 
 read-pkg-up@^1.0.1:
   version "1.0.1"

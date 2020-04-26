@@ -1,5 +1,6 @@
 import React, { Component } from "react";
 import { Container, Row, Col } from 'react-grid-system';
+import {GlobalHotKeys} from "react-hotkeys";
 
 import logo from "./logo.svg";
 import Colors from "./colors";
@@ -8,12 +9,25 @@ import Task from "./components/Task.js"
 import NewTaskButton from "./components/NewTaskButton.js"
 import LoginPanel from "./components/LoginPanel.js"
 import DrawerPanel from "./components/DrawerPanel.js"
+import SearchModal from "./components/SearchModal.js"
 import Taskk from "./Models.js"
 import {getIdTree} from "./utils/algos.js"
 
 import '../node_modules/antd/dist/antd.css';
 
 import MissionCompleteApi from './utils/api';
+
+import {Modal} from 'antd';
+
+import {configure} from 'react-hotkeys';
+
+configure({
+  /**
+   * The level of logging of its own behaviour React HotKeys should perform.
+   */
+  logLevel: 'none',
+
+});
 
 class App extends Component {
 
@@ -22,7 +36,8 @@ class App extends Component {
     this.state = {
       taskMap: new Map(),
       taskTree: [],
-      appState: 'unknown'
+      appState: 'unknown',
+      searchModalVisible: false
     }
     this.api = new MissionCompleteApi();
     if (this.api.isLoggedIn()) {
@@ -95,6 +110,8 @@ class App extends Component {
           newTasks.push(new Taskk(task));
         }
         let {tree, taskMap} = getIdTree(newTasks);
+        console.log("ASDASDASDADS")
+        console.log(taskMap);
         this.setState({taskMap: taskMap, taskTree: tree});
       })
       .catch((err) => {
@@ -106,32 +123,57 @@ class App extends Component {
   getDrawer() {
     return (
       <DrawerPanel 
+        scrollToTask={this.scrollToTask.bind(this)}
         handleLogout={this.handleLogout}
         tasks={{taskTree: this.state.taskTree, taskMap: this.state.taskMap}}/>
     )
   }
 
-  renderTaskGraph() {
-    let listOfTaskComps = [];
-	let {taskTree, taskMap} = this.state;
-	let removeTaskFunc = this.removeTask.bind(this);
+  scrollToTask(taskId) {
+    console.log(taskId);
+    let positionY = document.getElementById(taskId).offsetTop;
+    let positionX = document.getElementById(taskId).offsetLeft;
 
-    function recurseOverComps(currentTree, level) {
-      let task = taskMap.get(currentTree.id);
-      listOfTaskComps.push(<Task 
-        key={task.id}
-        x={100 + 100*level}
-        y={50 + 200*listOfTaskComps.length}
-        task={task} 
-		removeTaskHandler={removeTaskFunc} />
+    document.getElementById(taskId).scrollIntoView({
+      behavior: 'smooth',
+      block: 'center',
+      inline: 'center'
+    });
+
+    console.log(positionX, positionY);
+
+  }
+
+  keyMap = { TOGGLE_SEARCH: "Meta+k" };
+
+  toggleSearchModal() {
+    this.setState({searchModalVisible: !this.state.searchModalVisible})
+  }
+
+  renderTaskGraph() {
+    let x_scale = 1;
+    let y_scale = 1;
+    let listOfTaskComps = [];
+	  let {taskTree, taskMap} = this.state;
+	  let removeTaskFunc = this.removeTask.bind(this);
+    function recurseOverComps(currentTree) {
+      console.log("NEW TREE", currentTree)
+      let task = taskMap.get(currentTree.data.id);
+      listOfTaskComps.push(
+        <Task 
+          key={task.id}
+          x={1000 + x_scale*currentTree.x}
+          y={50 + y_scale*currentTree.y}
+          task={task} 
+          removeTaskHandler={removeTaskFunc} />
       );
-      for (let child of currentTree.children) {
-        recurseOverComps(child, level + 1);
+      for (let child of (currentTree.children || [])) {
+        recurseOverComps(child);
       }
     }
 
-    for (let child of taskTree) {
-      recurseOverComps(child, 0);
+    for (let root of taskTree) {
+      recurseOverComps(root);
     }
 
     return listOfTaskComps;
@@ -141,11 +183,25 @@ class App extends Component {
   getTasksPane() {
     return (
       <div>
+        <GlobalHotKeys keyMap={this.keyMap} handlers={{ TOGGLE_SEARCH: this.toggleSearchModal.bind(this) }} />
         <Board>
           <NewTaskButton createNewTask={this.addTask.bind(this)}/>
           {this.renderTaskGraph()}
         </Board>
         {this.getDrawer()}
+        {this.state.searchModalVisible && 
+          <SearchModal 
+            isVisible={this.state.searchModalVisible} 
+            tasks={this.state.taskMap} 
+            onClickOutside={() => this.setState({searchModalVisible: false})}
+            selectTask={(task) => {
+              
+              this.setState({searchModalVisible: false}, () => {
+                this.scrollToTask(task);
+              })
+            }} />
+        }
+        
       </div>
     )
   }

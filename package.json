@@ -15,6 +15,7 @@
     "bcrypt": "4.0.1",
     "body-parser": "^1.18.3",
     "chai-as-promised": "^7.1.1",
+    "d3": "^5.16.0",
     "express": "^4.16.4",
     "express-oauth-server": "^2.0.0",
     "moment": "^2.23.0",

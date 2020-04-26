@@ -28,14 +28,16 @@ class DrawerPanel extends Component {
         let {taskTree, taskMap} = this.props.tasks;
 
         function recurseOverComps(currentTree) {
-            let task = taskMap.get(currentTree.id);
-            if (!currentTree.children) {
+            let task = taskMap.get(currentTree.data.id);
+            if (!currentTree.data.children || currentTree.data.children.length === 0) {
                 return (<TreeNode 
+                    taskRef={currentTree}
                     key={task.id}
                     title={task.name} />);
             }
             return (
                 <TreeNode 
+                    taskRef={currentTree}
                     key={task.id}
                     title={task.name}>
                         {currentTree.children.map((childTree) => {return recurseOverComps(childTree)})}
@@ -44,15 +46,15 @@ class DrawerPanel extends Component {
         }
 
         let components = [];
-        for (let child of taskTree) {
-            components.push(recurseOverComps(child));
+        for (let root of taskTree) {
+            components.push(recurseOverComps(root));
         }
 
         return (
             <Tree
               showLine={true}
               switcherIcon={<DownOutlined />}
-              onSelect={() => {}}
+              onSelect={(ids) => {this.props.scrollToTask(ids[0])}}
             >
               {components}
             </Tree>
