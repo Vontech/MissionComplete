@@ -12,6 +12,7 @@ import DrawerPanel from "./components/DrawerPanel.js"
 import SearchModal from "./components/SearchModal.js"
 import Taskk from "./Models.js"
 import {getIdTree} from "./utils/algos.js"
+import { message } from 'antd';
 
 import '../node_modules/antd/dist/antd.css';
 
@@ -94,11 +95,17 @@ class App extends Component {
 	  this.api.addTask(taskValues)
 	  .then((task) => {
 		  this.updateTasks();
+		  message.info(`Added task '${taskValues.name}'`);
 	  })
   }
 
   removeTask(task_id) {
 	  this.api.removeTask(task_id)
+	  .then(() => { this.updateTasks(); })
+  }
+
+  toggleComplete(updateValues) {
+	  this.api.updateTask(updateValues)
 	  .then(() => { this.updateTasks(); })
   }
 
@@ -155,7 +162,8 @@ class App extends Component {
     let y_scale = 1;
     let listOfTaskComps = [];
 	  let {taskTree, taskMap} = this.state;
-	  let removeTaskFunc = this.removeTask.bind(this);
+    let removeTaskFunc = this.removeTask.bind(this);
+    let completeTaskFunc = this.toggleComplete.bind(this);
     function recurseOverComps(currentTree) {
       console.log("NEW TREE", currentTree)
       let task = taskMap.get(currentTree.data.id);
@@ -165,7 +173,8 @@ class App extends Component {
           x={1000 + x_scale*currentTree.x}
           y={50 + y_scale*currentTree.y}
           task={task} 
-          removeTaskHandler={removeTaskFunc} />
+          removeTaskHandler={removeTaskFunc}
+          completeTaskHandler={completeTaskFunc} />
       );
       for (let child of (currentTree.children || [])) {
         recurseOverComps(child);

@@ -70,7 +70,11 @@ export default class MissionCompleteApi {
 	
 	removeTask(task_id) {
         return this.getBearerInstance().delete(Endpoints.TASK + '/' + task_id)
-    }
+	}
+	
+	updateTask(updateValues) {
+		return this.getBearerInstance().patch(Endpoints.TASK, new URLSearchParams(updateValues))
+	}
 
     isLoggedIn() {
         return localStorage.accessToken != null;
