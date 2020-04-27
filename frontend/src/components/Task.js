@@ -1,18 +1,18 @@
 
 import React, { Component } from "react";
 
-import { Card, Popconfirm, Skeleton, Tooltip, message } from 'antd';
+import { Card, Popconfirm, Skeleton, Tooltip, message, Popover } from 'antd';
 import { EditTwoTone, CheckCircleTwoTone, DeleteTwoTone, ApartmentOutlined, setTwoToneColor, CheckOutlined } from '@ant-design/icons';
 import defaultStyles from '../styles.js';
+import EditTaskForm from "./EditTaskForm";
 
 const { Meta } = Card;
 
 class Task extends Component {
 
 	state = {
-		loading: false,
 		show: false,
-		checkStyle: {},
+		isVisible: Boolean,
 	}
 
     constructor(props) {
@@ -23,26 +23,30 @@ class Task extends Component {
     }
 
     componentDidMount() {
-		// this.setState({ loading: !this.state.loading });
-		this.updateCheckboxStyle();
 	}
 	
 	handleVisibleChange = (show) => {
 		this.setState({show})
-	  }
+	}
 	
-	  mouseOver = () => {
+	mouseOver = () => {
 		this.setState({
-		  show: true,
+			show: true,
 		})
-	  }
+	}
 	
-	  mouseOut = () => {
+	mouseOut = () => {
 		console.log("called");
 		this.setState({
-		  show: false,
+			show: false,
 		})
-	  }
+	}
+
+	getForm() { return (<EditTaskForm onSubmitHelper={() => console.log("FILL THIS IN")} />); }
+
+	togglePanelVisibility() {
+		this.setState({isVisible: !this.state.isVisible})
+	}
 
     getActions() {
       if (this.state.isHovered) {
@@ -62,8 +66,10 @@ class Task extends Component {
 			<Tooltip placement="bottom" title="Edit Task">
 				<EditTwoTone />
 			</Tooltip>,
-			<Tooltip placement="bottom" title="Create Child">
-				<ApartmentOutlined key="createBranch"/>
+			<Tooltip placement="bottom" title="Create Child" >
+				<ApartmentOutlined key="createBranch" onClick={this.togglePanelVisibility.bind(this)} />
+				<Popover placement="rightBottom" title={'Create Task'} content={this.getForm()} visible={this.state.isVisible} >
+				</Popover>
 			</Tooltip>
         ]
       }
@@ -77,19 +83,6 @@ class Task extends Component {
 
 	toggleComplete() {
 		this.props.completeTaskHandler({ task_id: this.props.task.id, completed: !this.props.task.completed });
-		this.updateCheckboxStyle(!this.props.task.completed);
-	}
-
-	updateCheckboxStyle(useCompletedStyle) {
-		if (useCompletedStyle) {
-			this.setState({
-				checkStyle: { fontSize: '12px', backgroundColor: '#52c41a', color: '#ffffff', padding: '5px', border: '1px solid #52c41a', borderRadius: '20px' }
-			});
-		} else {
-			this.setState({
-				checkStyle: { fontSize: '12px', backgroundColor: '#ffffff', color: '#52c41a', padding: '5px', border: '1px solid #52c41a', borderRadius: '20px' }
-			});
-		}
 	}
 
     setHover(isHovered) {
@@ -110,12 +103,12 @@ class Task extends Component {
 			style={{ width: 300 }}
 			extra={
 				<Tooltip placement="top" title="Mark as Done">
-					<CheckOutlined style={this.state.checkStyle} onClick={this.toggleComplete.bind(this)} />
+					<CheckOutlined 
+						style={this.props.task.completed ? styles.completedCheckStyle : styles.uncompletedCheckStyle} 
+						onClick={this.toggleComplete.bind(this)} />
 				</Tooltip>
 			}>
-			<Skeleton loading={this.state.loading} avatar active>
-				<Meta description={this.props.task.notes} />
-          	</Skeleton>
+			<Meta description={this.props.task.notes} />
           </Card>
         </div>
       )
@@ -126,6 +119,22 @@ class Task extends Component {
 const styles = {
   container: {
     position: 'absolute'
+  },
+  completedCheckStyle: {
+	fontSize: '12px', 
+	backgroundColor: '#52c41a', 
+	color: '#ffffff', 
+	padding: '5px', 
+	border: '1px solid #52c41a', 
+	borderRadius: '20px'
+  },
+  uncompletedCheckStyle: {
+	fontSize: '12px', 
+	backgroundColor: '#ffffff', 
+	color: '#52c41a', 
+	padding: '5px', 
+	border: '1px solid #52c41a', 
+	borderRadius: '20px'
   }
 }
 
