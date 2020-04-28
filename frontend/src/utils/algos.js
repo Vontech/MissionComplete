@@ -6,7 +6,7 @@ export function getIdTree(tasks) {
     let trees = [];
     for (let root of roots) {
         let tree = getTraversedTree(root, taskMap);
-        trees.push(d3.tree().nodeSize([350, 150])(d3.hierarchy(tree)));
+        trees.push(d3.tree().nodeSize([350, 200])(d3.hierarchy(tree)));
     }
     return {tree: trees, taskMap: taskMap};
 }

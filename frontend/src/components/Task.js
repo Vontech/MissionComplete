@@ -38,7 +38,6 @@ class Task extends Component {
 	  }
 	
 	  mouseOut = () => {
-		console.log("called");
 		this.setState({
 		  show: false,
 		})

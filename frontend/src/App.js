@@ -30,6 +30,34 @@ configure({
 
 });
 
+const BezierCurve = (
+  viewBoxWidth,
+  viewBoxHeight,
+  startPoint,
+  firstControlPoint,
+  secondControlPoint,
+  endPoint,
+  stroke
+) => {
+  return (
+    <svg 
+      style={{width: viewBoxWidth, height: viewBoxHeight, zIndex: -10}}
+      viewBox={`0 0 ${viewBoxWidth} ${viewBoxHeight}`}>
+      <path
+        d={`
+          M ${startPoint}
+          C ${firstControlPoint}
+            ${secondControlPoint}
+            ${endPoint}
+        `}
+        stroke={stroke}
+        strokeWidth={2}
+        fill={"#00000000"}
+      />
+    </svg>
+  );
+}
+
 class App extends Component {
 
   constructor(props) {
@@ -157,35 +185,68 @@ class App extends Component {
     this.setState({searchModalVisible: !this.state.searchModalVisible})
   }
 
+  getDrawnArrowBetween(x1, y1, x2, y2) {
+
+    let swapped = false;
+    if (x1 > x2) {
+      let temp = x1;
+      x1 = x2;
+      x2 = temp;
+      swapped = true;
+    }
+
+    let height = y2 - y1;
+    let width = x2 - x1;
+
+    return <div style={{
+      position: 'absolute',
+      left: x1,
+      top: y1,
+      width: width,
+      height: height,
+    }}>
+      {!swapped ? 
+        BezierCurve(x2 - x1, y2 - y1, [0, 0], [0, height], [width, 0], [width, height], Colors.ARROW_GREY )
+      : BezierCurve(x2 - x1, y2 - y1, [0, height], [0, 0], [width, height], [width, 0], Colors.ARROW_GREY )}
+    </div>
+  }
+
   renderTaskGraph() {
     let x_scale = 1;
     let y_scale = 1;
     let listOfTaskComps = [];
+    let listOfArrows = [];
 	  let {taskTree, taskMap} = this.state;
     let removeTaskFunc = this.removeTask.bind(this);
     let completeTaskFunc = this.toggleComplete.bind(this);
+    const that = this;
     function recurseOverComps(currentTree) {
       console.log("NEW TREE", currentTree)
       let task = taskMap.get(currentTree.data.id);
+      let x_pos = 1000 + x_scale*currentTree.x;
+      let y_pos = 50 + y_scale*currentTree.y;
       listOfTaskComps.push(
         <Task 
           key={task.id}
-          x={1000 + x_scale*currentTree.x}
-          y={50 + y_scale*currentTree.y}
+          x={x_pos}
+          y={y_pos}
           task={task} 
           removeTaskHandler={removeTaskFunc}
           completeTaskHandler={completeTaskFunc} />
       );
       for (let child of (currentTree.children || [])) {
-        recurseOverComps(child);
+        let child_x_y = recurseOverComps(child);
+        listOfArrows.push(that.getDrawnArrowBetween(x_pos + 150, y_pos + 107, child_x_y[0] + 150, child_x_y[1]))
       }
+
+      return [x_pos, y_pos];
     }
 
     for (let root of taskTree) {
       recurseOverComps(root);
     }
 
-    return listOfTaskComps;
+    return listOfArrows.concat(listOfTaskComps);
 
   }
 
@@ -234,6 +295,7 @@ class App extends Component {
   render() {
     return (
       <div id="primary-panel">
+        {/*BezierCurve(200, 200, "0 0", "20 50", "20 150", "200 200", "red" )*/}
         {this.state.appState === 'unknown' && <div />}
         {this.state.appState === 'logged-out' && this.getLoginPane()}
         {this.state.appState === 'registering' && this.getRegistrationPane()}
