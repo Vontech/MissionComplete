@@ -66,7 +66,8 @@ class App extends Component {
       taskMap: new Map(),
       taskTree: [],
       appState: 'unknown',
-      searchModalVisible: false
+      searchModalVisible: false,
+      trackedTask: null
     }
     this.api = new MissionCompleteApi();
     if (this.api.isLoggedIn()) {
@@ -82,6 +83,7 @@ class App extends Component {
 
   componentDidMount() {
     this.updateTasks()
+    this.trackNewTask(null)
   }
 
   showDrawer = () => {
@@ -117,14 +119,28 @@ class App extends Component {
       .catch((err) => {console.log(err)})
   }
 
+  trackNewTask(id) {
+    if (id == null) {
+      window.scrollTo(5000-150, 5000-100);
+      this.setState({trackedTask: null})
+    } else {
+      this.scrollToTask(id);
+      this.setState({trackedTask: id})
+    }
+  }
+
 
   addTask(taskValues) {
+    const that = this;
 	  console.log(taskValues);
 	  this.api.addTask(taskValues)
 	  .then((task) => {
-		  this.updateTasks();
+      this.updateTasks()
+      .then(() => {
+        that.trackNewTask(task.data._id);
+      })
 		  message.info(`Added task '${taskValues.name}'`);
-	  })
+    })
   }
 
   removeTask(task_id) {
@@ -138,7 +154,7 @@ class App extends Component {
   }
 
   updateTasks() {
-    this.api.getTasks()
+    return this.api.getTasks()
       .then((tasks) => {
         let newTasks = [];
         for (let task of tasks.data) {
@@ -146,6 +162,11 @@ class App extends Component {
         }
         let {tree, taskMap} = getIdTree(newTasks);
         this.setState({taskMap: taskMap, taskTree: tree});
+
+        if (this.state.trackedTask == null && tree.length > 0) {
+          this.trackNewTask(tree[0].data.id);
+        }
+
       })
       .catch((err) => {
         console.log(err);
@@ -164,6 +185,9 @@ class App extends Component {
 
   scrollToTask(taskId) {
     console.log(taskId);
+    if (!document.getElementById(taskId)) {
+      return;
+    }
     let positionY = document.getElementById(taskId).offsetTop;
     let positionX = document.getElementById(taskId).offsetLeft;
 
@@ -222,8 +246,8 @@ class App extends Component {
     function recurseOverComps(currentTree) {
       console.log("NEW TREE", currentTree)
       let task = taskMap.get(currentTree.data.id);
-      let x_pos = 1000 + x_scale*currentTree.x;
-      let y_pos = 50 + y_scale*currentTree.y;
+      let x_pos = 5000 + x_scale*currentTree.x;
+      let y_pos = 5000 + y_scale*currentTree.y;
       listOfTaskComps.push(
         <Task 
           key={task.id}
