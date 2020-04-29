@@ -100,7 +100,7 @@ class Task extends Component {
     return (
       <div
         id={this.props.task.id}
-        style={{ ...styles.container, ...propStyles }}
+        style={{ ...styles.container, ...propStyles, opacity: this.props.task.completed ? 0.5 : 1.0 }}
         onMouseEnter={() => this.setHover(true)}
         onMouseLeave={() => this.setHover(false)}>
         <Card
