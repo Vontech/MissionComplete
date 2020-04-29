@@ -41,7 +41,16 @@ class Task extends Component {
     })
   }
 
-  getForm() { return (<EditTaskForm onSubmitHelper={() => console.log("FILL THIS IN")} />); }
+  getForm() { 
+    return (
+      <EditTaskForm onSubmitHelper={(taskDetails) => {
+          taskDetails['parent'] = this.props.task.id;
+          console.log(taskDetails);
+          this.props.createChildTask(taskDetails);
+          this.togglePanelVisibility();
+        }} />
+    );
+  }
 
   togglePanelVisibility() {
     this.setState({ isVisible: !this.state.isVisible })
@@ -67,8 +76,6 @@ class Task extends Component {
         </Tooltip>,
         <Tooltip placement="bottom" title="Create Child" >
           <ApartmentOutlined key="createBranch" onClick={this.togglePanelVisibility.bind(this)} />
-          <Popover placement="rightBottom" title={'Create Task'} content={this.getForm()} visible={this.state.isVisible} >
-          </Popover>
         </Tooltip>
       ]
     }
@@ -109,6 +116,10 @@ class Task extends Component {
           }>
           <Meta description={this.props.task.notes} />
         </Card>
+        <div style={{position: 'absolute', right: 0, bottom: 30}}>
+          <Popover placement="rightBottom" title={'Create Task'} content={this.getForm()} visible={this.state.isVisible} >
+          </Popover>
+        </div>
       </div>
     )
   }

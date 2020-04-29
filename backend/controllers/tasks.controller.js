@@ -62,7 +62,7 @@ controller.createTask = async (req, res, next) => {
 		name: req.body.name || "Untitled",
 		notes: req.body.notes || null,
 		completed: false,
-		parent: req.body.parent || null,
+		parent: null,
 		children: req.body.children,
 		user: req.session.userId
 	};
@@ -71,8 +71,22 @@ controller.createTask = async (req, res, next) => {
 			logger.error(err);
 			return next(err);
 		}
-		res.status(200);
-		return res.json(createdTask);
+
+		// If no parent, just return the task, otherwise attach parent
+		if (!req.body.parent) {
+			res.status(200);
+			return res.json(createdTask);
+		}
+
+		let proxy_request = {
+			body: {
+				task_id: createdTask._id,
+				parent: req.body.parent
+			}
+		}
+		
+		controller.updateTask(proxy_request, res, next);
+		
 	});
 };
 

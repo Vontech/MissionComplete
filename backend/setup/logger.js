@@ -10,7 +10,7 @@ if (!fs.existsSync(dir)) {
 }
 
 const logger = winston.createLogger({
-  level: process.env.NODE_ENV === 'test' ? [] : 'info',
+  level: 'info',//process.env.NODE_ENV === 'test' ? [] : 'info',
   transports: [
     new winston.transports.Console({
         name: 'defaultLogger',

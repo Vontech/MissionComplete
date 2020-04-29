@@ -217,6 +217,7 @@ class App extends Component {
 	  let {taskTree, taskMap} = this.state;
     let removeTaskFunc = this.removeTask.bind(this);
     let completeTaskFunc = this.toggleComplete.bind(this);
+    let createChildTaskFunc = this.addTask.bind(this)
     const that = this;
     function recurseOverComps(currentTree) {
       console.log("NEW TREE", currentTree)
@@ -230,7 +231,8 @@ class App extends Component {
           y={y_pos}
           task={task} 
           removeTaskHandler={removeTaskFunc}
-          completeTaskHandler={completeTaskFunc} />
+          completeTaskHandler={completeTaskFunc}
+          createChildTask={createChildTaskFunc} />
       );
       for (let child of (currentTree.children || [])) {
         let child_x_y = recurseOverComps(child);
