@@ -145,8 +145,6 @@ class App extends Component {
           newTasks.push(new Taskk(task));
         }
         let {tree, taskMap} = getIdTree(newTasks);
-        console.log("ASDASDASDADS")
-        console.log(taskMap);
         this.setState({taskMap: taskMap, taskTree: tree});
       })
       .catch((err) => {
