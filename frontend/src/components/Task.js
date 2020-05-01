@@ -115,6 +115,7 @@ class Task extends Component {
             </Tooltip>
           }>
           <Meta description={this.props.task.notes} />
+		  <Meta description={`Due Date: ${this.props.task.dueDate}`} />
         </Card>
         <div style={{position: 'absolute', right: 0, bottom: 30}}>
           <Popover placement="rightBottom" title={'Create Task'} content={this.getForm()} visible={this.state.isVisible} >

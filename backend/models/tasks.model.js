@@ -13,6 +13,7 @@ const TaskSchema = new mongoose.Schema({
   completed: { type: Boolean },
   parent: { type: String },
   children: { type: [String] },
+  dueDate: { type: Date },
   user: { type: String },
 });
 

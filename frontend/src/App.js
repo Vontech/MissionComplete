@@ -245,7 +245,8 @@ class App extends Component {
     const that = this;
     function recurseOverComps(currentTree) {
       console.log("NEW TREE", currentTree)
-      let task = taskMap.get(currentTree.data.id);
+	  let task = taskMap.get(currentTree.data.id);
+	  console.log("TREE", task);
       let x_pos = 5000 + x_scale*currentTree.x;
       let y_pos = 5000 + y_scale*currentTree.y;
       listOfTaskComps.push(

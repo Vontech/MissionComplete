@@ -4,6 +4,7 @@ import { Button, Tooltip, Form, Input, DatePicker, Radio } from 'antd';
 import { FlagTwoTone } from '@ant-design/icons';
 
 const { TextArea } = Input;
+var moment = require('moment');
 
 class EditTaskForm extends Component {
 
@@ -20,7 +21,11 @@ class EditTaskForm extends Component {
 
     componentDidMount() {}
 
-	onFinish = values => {
+	onFinish = fieldValues => {
+		const values = {
+			...fieldValues,
+			'dueDate': fieldValues['dueDate'].format('YYYY-MM-DD'),
+		};
 		this.props.onSubmitHelper(values);
 		this.toggleFormVisibility();
 	};
@@ -31,6 +36,19 @@ class EditTaskForm extends Component {
 
 	toggleFormVisibility() {
 		this.setState({isVisible: !this.state.isVisible})
+	}
+
+	onChange(date, dateString) {
+		console.log(date, dateString);
+	}
+
+	// Disable past days (cannot have due date in the past)
+	getDisabledDates(date) {
+		if (date <= moment().subtract(1, 'days')) {
+			return true;
+		} else {
+			return false;
+		}
 	}
 
     render() {
@@ -54,9 +72,10 @@ class EditTaskForm extends Component {
               <TextArea rows={3} />
             </Form.Item>
 			<Form.Item label="Due Date" name="dueDate">
-				<Tooltip placement="top">
-					<DatePicker />
-				</Tooltip>
+				<DatePicker 
+					onChange={this.onChange.bind(this)} 
+					format='MM/DD/YYYY' 
+					disabledDate={this.getDisabledDates.bind(this)} />
 			</Form.Item>
 			<Form.Item label="Priority" name="priority">
 				<Radio.Group onChange={() => console.log('changed')} defaultValue="a">
