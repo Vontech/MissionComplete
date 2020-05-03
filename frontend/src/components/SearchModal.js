@@ -22,19 +22,11 @@ class SearchModal extends Component {
     constructor(props) {
       super(props);
       this.state = {}
-    //   this.searchBarRef = React.createRef();
     }
 
     componentDidMount() {
-        console.log("INSIDE SEARCH")
-        console.log(this.props)
+        
     }
-
-    // componentDidUpdate(prevProps) {
-    //     if (this.props.isVisible && this.searchBarRef.current) {
-    //         this.searchBarRef.current.focus()
-    //     }
-    // }
 
     toggle() {
         this.setState({isOpen: !this.state.isOpen})
@@ -44,7 +36,8 @@ class SearchModal extends Component {
         let options = Array.from(this.props.tasks, ([id, value]) => {
             return {
                 value: value.name,
-                id: id
+                id: id,
+                task: value
             }
         });
         return options;
@@ -54,9 +47,16 @@ class SearchModal extends Component {
         this.props.selectTask(option.id);
     }
 
+    filterOption(inputValue, option) {
+        let nameMatchesTitle = option.value.toUpperCase().indexOf(inputValue.toUpperCase()) !== -1
+        let nameMatchesNotes = option.task.notes.toUpperCase().indexOf(inputValue.toUpperCase()) !== -1
+        return nameMatchesTitle || nameMatchesNotes
+    }
+
     render() {
         return (
             <Modal
+                className="searchModal"
                 centered
                 footer={null}
                 title={null}
@@ -67,12 +67,11 @@ class SearchModal extends Component {
                     style={{
                         width: '100%',
                     }}
+                    size="large"
                     autoFocus={true}
                     options={this.getOptions()}
                     placeholder="Search for a task..."
-                    filterOption={(inputValue, option) => {
-                        return option.value.toUpperCase().indexOf(inputValue.toUpperCase()) !== -1
-                    }}
+                    filterOption={this.filterOption}
                     onSelect={this.selectOption.bind(this)}
                     defaultActiveFirstOption={true}
                 />
