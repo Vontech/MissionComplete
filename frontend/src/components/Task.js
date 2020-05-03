@@ -58,7 +58,7 @@ class Task extends Component {
 
   getForm() { 
     return (
-      <EditTaskForm onSubmitHelper={(taskDetails) => {
+      <EditTaskForm onSubmit={(taskDetails) => {
           taskDetails['parent'] = this.props.task.id;
           console.log(taskDetails);
           this.props.createChildTask(taskDetails);

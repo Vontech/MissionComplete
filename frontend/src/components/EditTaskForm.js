@@ -32,7 +32,7 @@ class EditTaskForm extends Component {
 				'dueDate': fieldValues.dueDate,
 			};
 		}
-		this.props.onSubmitHelper(values);
+		this.props.onSubmit(values);
 		this.toggleFormVisibility();
 	};
 	
