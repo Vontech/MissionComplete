@@ -130,7 +130,8 @@ class Task extends Component {
             </Tooltip>
           }>
           <p>{this.props.task.notes}</p>
-		  <p style={{ ...styles.dueDate, backgroundColor: this.state.dueDateBackgroundColor }}>
+		  <p style={{ ...styles.dueDate, backgroundColor: this.state.dueDateBackgroundColor, 
+			display: (this.props.task.dueDate) ? 'inline-block' : 'none' }} >
 			  {moment(this.props.task.dueDate).format('ddd, MMM D')}
 		  </p>
         </Card>
@@ -167,8 +168,7 @@ const styles = {
   dueDate: {
 	  borderRadius: '5px',
 	  padding: '4px 10px',
-	  display: 'inline-block',
-	  marginBottom: '0px'
+	  marginBottom: '0px',
   }
 }
 

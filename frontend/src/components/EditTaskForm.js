@@ -22,10 +22,16 @@ class EditTaskForm extends Component {
     componentDidMount() {}
 
 	onFinish = fieldValues => {
-		const values = {
-			...fieldValues,
-			'dueDate': fieldValues['dueDate'],
-		};
+		var values;
+		if (fieldValues.dueDate === undefined) {
+			delete fieldValues.dueDate;
+			values = fieldValues;
+		} else {
+			values = {
+				...fieldValues,
+				'dueDate': fieldValues.dueDate,
+			};
+		}
 		this.props.onSubmitHelper(values);
 		this.toggleFormVisibility();
 	};
