@@ -24,7 +24,7 @@ class EditTaskForm extends Component {
 	onFinish = fieldValues => {
 		const values = {
 			...fieldValues,
-			'dueDate': fieldValues['dueDate'].format('YYYY-MM-DD'),
+			'dueDate': fieldValues['dueDate'],
 		};
 		this.props.onSubmitHelper(values);
 		this.toggleFormVisibility();

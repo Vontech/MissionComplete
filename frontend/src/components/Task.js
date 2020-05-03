@@ -1,28 +1,43 @@
 
 import React, { Component } from "react";
 
-import { Card, Popconfirm, Skeleton, Tooltip, message, Popover } from 'antd';
-import { EditTwoTone, CheckCircleTwoTone, DeleteTwoTone, ApartmentOutlined, setTwoToneColor, CheckOutlined } from '@ant-design/icons';
+import { Card, Popconfirm, Tooltip, message, Popover } from 'antd';
+import { EditTwoTone, DeleteTwoTone, ApartmentOutlined, CheckOutlined } from '@ant-design/icons';
 import defaultStyles from '../styles.js';
 import EditTaskForm from "./EditTaskForm";
 
 const { Meta } = Card;
+var moment = require('moment');
 
 class Task extends Component {
 
   state = {
     show: false,
-    isVisible: Boolean,
+	isVisible: Boolean,
+	dueDateBackgroundColor: '',
   }
 
   constructor(props) {
     super(props);
     this.state = {
-      isHovered: false
-    }
+	  isHovered: false,
+	}
   }
 
   componentDidMount() {
+	this.setDueDateBackgroundColor();
+  }
+
+  setDueDateBackgroundColor() {
+	if (moment(this.props.task.dueDate).isAfter(moment(), 'day')) {
+		this.setState({ dueDateBackgroundColor: '#d9f7be' }); // Not overdue or due today, green
+	} else if (moment(this.props.task.dueDate).isSame(moment(), 'day')) {
+		this.setState({ dueDateBackgroundColor: "#ffe7ba" }); // Due today, orange
+	} else {
+		this.setState({ dueDateBackgroundColor: '#ffccc7' }); // Overdue, red
+	}
+	console.log(this.props.task.dueDate);
+	console.log(moment(this.props.task.dueDate).diff(moment(), 'days'));
   }
 
   handleVisibleChange = (show) => {
@@ -114,8 +129,10 @@ class Task extends Component {
                 onClick={this.toggleComplete.bind(this)} />
             </Tooltip>
           }>
-          <Meta description={this.props.task.notes} />
-		  <Meta description={`Due Date: ${this.props.task.dueDate}`} />
+          <p>{this.props.task.notes}</p>
+		  <p style={{ ...styles.dueDate, backgroundColor: this.state.dueDateBackgroundColor }}>
+			  {moment(this.props.task.dueDate).format('ddd, MMM D')}
+		  </p>
         </Card>
         <div style={{position: 'absolute', right: 0, bottom: 30}}>
           <Popover placement="rightBottom" title={'Create Task'} content={this.getForm()} visible={this.state.isVisible} >
@@ -146,6 +163,12 @@ const styles = {
     padding: '5px',
     border: '1px solid #52c41a',
     borderRadius: '20px'
+  },
+  dueDate: {
+	  borderRadius: '5px',
+	  padding: '4px 10px',
+	  display: 'inline-block',
+	  marginBottom: '0px'
   }
 }
 

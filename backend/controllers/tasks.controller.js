@@ -2,6 +2,7 @@ import Tasks from '../models/tasks.model';
 import logger from '../setup/logger';
 
 const controller = {};
+var moment = require('moment');
 
 function hasTaskId(req) {
 	return req.body.hasOwnProperty('task_id') && req.body.task_id;
@@ -64,7 +65,7 @@ controller.createTask = async (req, res, next) => {
 		completed: false,
 		parent: null,
 		children: req.body.children,
-		dueDate: req.body.dueDate,
+		dueDate: req.body.dueDate || undefined,
 		user: req.session.userId
 	};
 	Tasks.create(taskData, (err, createdTask) => {
