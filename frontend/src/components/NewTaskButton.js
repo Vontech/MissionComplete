@@ -1,20 +1,11 @@
 
 import React, { Component } from "react";
 
-import { Button, Icon, Tooltip, Popover, Form, Input, DatePicker, Radio } from 'antd';
-import { PlusOutlined, FlagTwoTone } from '@ant-design/icons';
+import { Button, Popover } from 'antd';
+import { PlusOutlined } from '@ant-design/icons';
 import EditTaskForm from "./EditTaskForm";
 
-
-type Props = {
-
-}
-
-type State = {
-  isVisible: Boolean,
-}
-
-class NewTaskButton extends Component<Props, State> {
+class NewTaskButton extends Component {
 
   constructor(props) {
     super(props);
@@ -27,7 +18,9 @@ class NewTaskButton extends Component<Props, State> {
 
   }
 
-  getForm() { return (<EditTaskForm onSubmit={this.props.createNewTask} />); }
+  getForm() {
+    return (<EditTaskForm onSubmit={this.props.createNewTask} />);
+  }
 
   togglePanelVisibility() {
     this.setState({ isVisible: !this.state.isVisible })

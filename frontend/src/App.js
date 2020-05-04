@@ -1,8 +1,6 @@
 import React, { Component } from "react";
-import { Container, Row, Col } from 'react-grid-system';
-import {GlobalHotKeys} from "react-hotkeys";
+import { GlobalHotKeys } from "react-hotkeys";
 
-import logo from "./logo.svg";
 import Colors from "./colors";
 import Board from "./components/Board.js"
 import Task from "./components/Task.js"
@@ -11,16 +9,14 @@ import LoginPanel from "./components/LoginPanel.js"
 import DrawerPanel from "./components/DrawerPanel.js"
 import SearchModal from "./components/SearchModal.js"
 import Taskk from "./Models.js"
-import {getIdTree} from "./utils/algos.js"
+import { getIdTree } from "./utils/algos.js"
 import { message } from 'antd';
 
 import '../node_modules/antd/dist/antd.css';
 
 import MissionCompleteApi from './utils/api';
 
-import {Modal} from 'antd';
-
-import {configure} from 'react-hotkeys';
+import { configure } from 'react-hotkeys';
 
 configure({
   /**
@@ -40,8 +36,8 @@ const BezierCurve = (
   stroke
 ) => {
   return (
-    <svg 
-      style={{width: viewBoxWidth, height: viewBoxHeight, zIndex: -10}}
+    <svg
+      style={{ width: viewBoxWidth, height: viewBoxHeight, zIndex: -10 }}
       viewBox={`0 0 ${viewBoxWidth} ${viewBoxHeight}`}>
       <path
         d={`
@@ -104,53 +100,53 @@ class App extends Component {
   }
 
   showLogin = () => {
-    this.setState({appState: 'logged-out'});
+    this.setState({ appState: 'logged-out' });
   }
 
   showTaskPanel = () => {
-    this.setState({appState: 'logged-in'})
+    this.setState({ appState: 'logged-in' })
     this.updateTasks();
   }
 
   attemptLogin = (loginValues) => {
     console.log(loginValues);
     this.api.login(loginValues.username, loginValues.password)
-      .then(() => {this.showTaskPanel()})
-      .catch((err) => {console.log(err)})
+      .then(() => { this.showTaskPanel() })
+      .catch((err) => { console.log(err) })
   }
 
   trackNewTask(id) {
     if (id == null) {
-      window.scrollTo(5000-150, 5000-100);
-      this.setState({trackedTask: null})
+      window.scrollTo(5000 - 150, 5000 - 100);
+      this.setState({ trackedTask: null })
     } else {
       this.scrollToTask(id);
-      this.setState({trackedTask: id})
+      this.setState({ trackedTask: id })
     }
   }
 
 
   addTask(taskValues) {
     const that = this;
-	  console.log(taskValues);
-	  this.api.addTask(taskValues)
-	  .then((task) => {
-      this.updateTasks()
-      .then(() => {
-        that.trackNewTask(task.data._id);
+    console.log(taskValues);
+    this.api.addTask(taskValues)
+      .then((task) => {
+        this.updateTasks()
+          .then(() => {
+            that.trackNewTask(task.data._id);
+          })
+        message.info(`Added task '${taskValues.name}'`);
       })
-		  message.info(`Added task '${taskValues.name}'`);
-    })
   }
 
   removeTask(task_id) {
-	  this.api.removeTask(task_id)
-	  .then(() => { this.updateTasks(); })
+    this.api.removeTask(task_id)
+      .then(() => { this.updateTasks(); })
   }
 
   toggleComplete(updateValues) {
-	  this.api.updateTask(updateValues)
-	  .then(() => { this.updateTasks(); })
+    this.api.updateTask(updateValues)
+      .then(() => { this.updateTasks(); })
   }
 
   updateTasks() {
@@ -160,8 +156,8 @@ class App extends Component {
         for (let task of tasks.data) {
           newTasks.push(new Taskk(task));
         }
-        let {tree, taskMap} = getIdTree(newTasks);
-        this.setState({taskMap: taskMap, taskTree: tree});
+        let { tree, taskMap } = getIdTree(newTasks);
+        this.setState({ taskMap: taskMap, taskTree: tree });
 
         if (this.state.trackedTask == null && tree.length > 0) {
           this.trackNewTask(tree[0].data.id);
@@ -176,20 +172,17 @@ class App extends Component {
 
   getDrawer() {
     return (
-      <DrawerPanel 
+      <DrawerPanel
         scrollToTask={this.scrollToTask.bind(this)}
         handleLogout={this.handleLogout}
-        tasks={{taskTree: this.state.taskTree, taskMap: this.state.taskMap}}/>
+        tasks={{ taskTree: this.state.taskTree, taskMap: this.state.taskMap }} />
     )
   }
 
   scrollToTask(taskId) {
-    console.log(taskId);
     if (!document.getElementById(taskId)) {
       return;
     }
-    let positionY = document.getElementById(taskId).offsetTop;
-    let positionX = document.getElementById(taskId).offsetLeft;
 
     document.getElementById(taskId).scrollIntoView({
       behavior: 'smooth',
@@ -197,14 +190,12 @@ class App extends Component {
       inline: 'center'
     });
 
-    console.log(positionX, positionY);
-
   }
 
   keyMap = { TOGGLE_SEARCH: "Meta+k" };
 
   toggleSearchModal() {
-    this.setState({searchModalVisible: !this.state.searchModalVisible})
+    this.setState({ searchModalVisible: !this.state.searchModalVisible })
   }
 
   getDrawnArrowBetween(x1, y1, x2, y2) {
@@ -220,17 +211,21 @@ class App extends Component {
     let height = y2 - y1;
     let width = x2 - x1;
 
-    return <div style={{
-      position: 'absolute',
-      left: x1,
-      top: y1,
-      width: width,
-      height: height,
-    }}>
-      {!swapped ? 
-        BezierCurve(x2 - x1, y2 - y1, [0, 0], [0, height], [width, 0], [width, height], Colors.ARROW_GREY )
-      : BezierCurve(x2 - x1, y2 - y1, [0, height], [0, 0], [width, height], [width, 0], Colors.ARROW_GREY )}
-    </div>
+    return (
+      <div
+        key={`${x1}-${y1}-${x2}-${y2}`}
+        style={{
+          position: 'absolute',
+          left: x1,
+          top: y1,
+          width: width,
+          height: height,
+        }}>
+        {!swapped ?
+          BezierCurve(x2 - x1, y2 - y1, [0, 0], [0, height], [width, 0], [width, height], Colors.ARROW_GREY)
+          : BezierCurve(x2 - x1, y2 - y1, [0, height], [0, 0], [width, height], [width, 0], Colors.ARROW_GREY)}
+      </div>
+    );
   }
 
   renderTaskGraph() {
@@ -238,23 +233,21 @@ class App extends Component {
     let y_scale = 1;
     let listOfTaskComps = [];
     let listOfArrows = [];
-	  let {taskTree, taskMap} = this.state;
+    let { taskTree, taskMap } = this.state;
     let removeTaskFunc = this.removeTask.bind(this);
     let completeTaskFunc = this.toggleComplete.bind(this);
     let createChildTaskFunc = this.addTask.bind(this)
     const that = this;
     function recurseOverComps(currentTree) {
-      console.log("NEW TREE", currentTree)
-	  let task = taskMap.get(currentTree.data.id);
-	  console.log("TREE", task);
-      let x_pos = 5000 + x_scale*currentTree.x;
-      let y_pos = 5000 + y_scale*currentTree.y;
+      let task = taskMap.get(currentTree.data.id);
+      let x_pos = 5000 + x_scale * currentTree.x;
+      let y_pos = 5000 + y_scale * currentTree.y;
       listOfTaskComps.push(
-        <Task 
+        <Task
           key={task.id}
           x={x_pos}
           y={y_pos}
-          task={task} 
+          task={task}
           removeTaskHandler={removeTaskFunc}
           completeTaskHandler={completeTaskFunc}
           createChildTask={createChildTaskFunc} />
@@ -280,31 +273,31 @@ class App extends Component {
       <div>
         <GlobalHotKeys keyMap={this.keyMap} handlers={{ TOGGLE_SEARCH: this.toggleSearchModal.bind(this) }} />
         <Board>
-          <NewTaskButton createNewTask={this.addTask.bind(this)}/>
+          <NewTaskButton createNewTask={this.addTask.bind(this)} />
           {this.renderTaskGraph()}
         </Board>
         {this.getDrawer()}
-        {this.state.searchModalVisible && 
-          <SearchModal 
-            isVisible={this.state.searchModalVisible} 
-            tasks={this.state.taskMap} 
-            onClickOutside={() => this.setState({searchModalVisible: false})}
+        {this.state.searchModalVisible &&
+          <SearchModal
+            isVisible={this.state.searchModalVisible}
+            tasks={this.state.taskMap}
+            onClickOutside={() => this.setState({ searchModalVisible: false })}
             selectTask={(task) => {
-              
-              this.setState({searchModalVisible: false}, () => {
+
+              this.setState({ searchModalVisible: false }, () => {
                 this.scrollToTask(task);
               })
             }} />
         }
-        
+
       </div>
     )
   }
 
   getLoginPane() {
     return (
-      <div style={{height: "100%"}}>
-        <LoginPanel context={this.getAppContext()} finish={this.showTaskPanel.bind(this)}/>
+      <div style={{ height: "100%" }}>
+        <LoginPanel context={this.getAppContext()} finish={this.showTaskPanel.bind(this)} />
       </div>
     )
   }
@@ -328,10 +321,6 @@ class App extends Component {
       </div>
     );
   }
-}
-
-const styles = {
-
 }
 
 export default App;

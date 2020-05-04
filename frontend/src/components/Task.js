@@ -3,41 +3,37 @@ import React, { Component } from "react";
 
 import { Card, Popconfirm, Tooltip, message, Popover } from 'antd';
 import { EditTwoTone, DeleteTwoTone, ApartmentOutlined, CheckOutlined } from '@ant-design/icons';
-import defaultStyles from '../styles.js';
 import EditTaskForm from "./EditTaskForm";
 
-const { Meta } = Card;
 var moment = require('moment');
 
 class Task extends Component {
 
   state = {
     show: false,
-	isVisible: Boolean,
-	dueDateBackgroundColor: '',
+    isVisible: Boolean,
+    dueDateBackgroundColor: '',
   }
 
   constructor(props) {
     super(props);
     this.state = {
-	  isHovered: false,
-	}
+      isHovered: false,
+    }
   }
 
   componentDidMount() {
-	this.setDueDateBackgroundColor();
+    this.setDueDateBackgroundColor();
   }
 
   setDueDateBackgroundColor() {
-	if (moment(this.props.task.dueDate).isAfter(moment(), 'day')) {
-		this.setState({ dueDateBackgroundColor: '#d9f7be' }); // Not overdue or due today, green
-	} else if (moment(this.props.task.dueDate).isSame(moment(), 'day')) {
-		this.setState({ dueDateBackgroundColor: "#ffe7ba" }); // Due today, orange
-	} else {
-		this.setState({ dueDateBackgroundColor: '#ffccc7' }); // Overdue, red
-	}
-	console.log(this.props.task.dueDate);
-	console.log(moment(this.props.task.dueDate).diff(moment(), 'days'));
+    if (moment(this.props.task.dueDate).isAfter(moment(), 'day')) {
+      this.setState({ dueDateBackgroundColor: '#d9f7be' }); // Not overdue or due today, green
+    } else if (moment(this.props.task.dueDate).isSame(moment(), 'day')) {
+      this.setState({ dueDateBackgroundColor: "#ffe7ba" }); // Due today, orange
+    } else {
+      this.setState({ dueDateBackgroundColor: '#ffccc7' }); // Overdue, red
+    }
   }
 
   handleVisibleChange = (show) => {
@@ -56,14 +52,14 @@ class Task extends Component {
     })
   }
 
-  getForm() { 
+  getForm() {
     return (
       <EditTaskForm onSubmit={(taskDetails) => {
-          taskDetails['parent'] = this.props.task.id;
-          console.log(taskDetails);
-          this.props.createChildTask(taskDetails);
-          this.togglePanelVisibility();
-        }} />
+        taskDetails['parent'] = this.props.task.id;
+        console.log(taskDetails);
+        this.props.createChildTask(taskDetails);
+        this.togglePanelVisibility();
+      }} />
     );
   }
 
@@ -130,12 +126,14 @@ class Task extends Component {
             </Tooltip>
           }>
           <p>{this.props.task.notes}</p>
-		  <p style={{ ...styles.dueDate, backgroundColor: this.state.dueDateBackgroundColor, 
-			display: (this.props.task.dueDate) ? 'inline-block' : 'none' }} >
-			  {moment(this.props.task.dueDate).format('ddd, MMM D')}
-		  </p>
+          <p style={{
+            ...styles.dueDate, backgroundColor: this.state.dueDateBackgroundColor,
+            display: (this.props.task.dueDate) ? 'inline-block' : 'none'
+          }} >
+            {moment(this.props.task.dueDate).format('ddd, MMM D')}
+          </p>
         </Card>
-        <div style={{position: 'absolute', right: 0, bottom: 30}}>
+        <div style={{ position: 'absolute', right: 0, bottom: 30 }}>
           <Popover placement="rightBottom" title={'Create Task'} content={this.getForm()} visible={this.state.isVisible} >
           </Popover>
         </div>
@@ -166,9 +164,9 @@ const styles = {
     borderRadius: '20px'
   },
   dueDate: {
-	  borderRadius: '5px',
-	  padding: '4px 10px',
-	  marginBottom: '0px',
+    borderRadius: '5px',
+    padding: '4px 10px',
+    marginBottom: '0px',
   }
 }
 

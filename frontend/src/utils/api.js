@@ -11,10 +11,6 @@ const Endpoints = {
 
 export default class MissionCompleteApi {
 
-    constructor() {
-        console.log("Instantiated API!")
-    }
-
     getBasicInstance() {
         return axios.create({
             headers: {
@@ -58,6 +54,7 @@ export default class MissionCompleteApi {
 
     logout() {
         return this.getBearerInstance().post(Endpoints.LOGOUT)
+            .then(() => deleteAccessToken())
     }
 
     getTasks() {
@@ -81,7 +78,6 @@ export default class MissionCompleteApi {
     }
 
 }
-
 
 function storeAccessToken(token) {
     localStorage.accessToken = token;
