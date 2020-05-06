@@ -66,6 +66,7 @@ controller.createTask = async (req, res, next) => {
 		parent: null,
 		children: req.body.children,
 		dueDate: req.body.dueDate || undefined,
+		priority: req.body.priority || null,
 		user: req.session.userId
 	};
 	Tasks.create(taskData, (err, createdTask) => {
@@ -163,6 +164,7 @@ controller.updateTask = async (req, res, next) => {
 	let new_notes = (req.body.notes) ? req.body.notes : currentTask.notes;
 	let new_completed = (req.body.completed) ? req.body.completed : currentTask.completed;
 	let new_due_date = (req.body.dueDate) ? req.body.dueDate : currentTask.dueDate;
+	let new_priority = (req.body.priority) ? req.body.priority : currentTask.priority;
 	let new_parent;
 	// If a new parent task ID is given, verify that it is valid
 	if (req.body.parent) {
@@ -195,7 +197,8 @@ controller.updateTask = async (req, res, next) => {
 		'notes': new_notes,
 		'completed': new_completed,
 		'parent': new_parent,
-		'dueDate': new_due_date
+		'dueDate': new_due_date,
+		'priority': new_priority
 	}
 	Tasks.findByIdAndUpdate(req.body.task_id, {'$set': to_update}, { new: true }, (err, updatedTask) => {
 		if (err) {

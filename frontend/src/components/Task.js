@@ -1,18 +1,23 @@
 
 import React, { Component } from "react";
 
-import { Card, Popconfirm, Tooltip, message, Popover } from 'antd';
-import { EditTwoTone, DeleteTwoTone, ApartmentOutlined, CheckOutlined } from '@ant-design/icons';
+import { Card, Popconfirm, Tooltip, message, Popover, Typography, Tag } from 'antd';
+import { EditTwoTone, DeleteTwoTone, ApartmentOutlined, CheckOutlined, FlagOutlined, ClockCircleOutlined } from '@ant-design/icons';
+import defaultStyles from '../styles.js';
 import EditTaskForm from "./EditTaskForm";
 
+const { Meta } = Card;
+const { Text } = Typography;
 var moment = require('moment');
 
 class Task extends Component {
 
   state = {
     show: false,
-    isVisible: Boolean,
-    dueDateBackgroundColor: '',
+	isVisible: Boolean,
+	dueDateColor: '',
+	priorityColor: '',
+	priorityText: '',
   }
 
   constructor(props) {
@@ -23,17 +28,32 @@ class Task extends Component {
   }
 
   componentDidMount() {
-    this.setDueDateBackgroundColor();
+	this.setDueDateColor();
+	this.setPriorityTag();
   }
 
-  setDueDateBackgroundColor() {
-    if (moment(this.props.task.dueDate).isAfter(moment(), 'day')) {
-      this.setState({ dueDateBackgroundColor: '#d9f7be' }); // Not overdue or due today, green
-    } else if (moment(this.props.task.dueDate).isSame(moment(), 'day')) {
-      this.setState({ dueDateBackgroundColor: "#ffe7ba" }); // Due today, orange
-    } else {
-      this.setState({ dueDateBackgroundColor: '#ffccc7' }); // Overdue, red
-    }
+  setDueDateColor() {
+	if (moment(this.props.task.dueDate).isAfter(moment(), 'day')) {
+		this.setState({ dueDateColor: '#85a5ff' }); // Not overdue or due today, green
+	} else if (moment(this.props.task.dueDate).isSame(moment(), 'day')) {
+		this.setState({ dueDateColor: '#ffc069' }); // Due today, orange
+	} else {
+		this.setState({ dueDateColor: '#ff7875' }); // Overdue, red
+	}
+  }
+
+  setPriorityTag() {
+	  switch (this.props.task.priority) {
+		  case 1:
+			  this.setState({ priorityColor: 'red', priorityText: 'High' });
+			  break;
+		  case 2:
+			  this.setState({ priorityColor: 'orange', priorityText: 'Medium' });
+			  break;
+		  case 3:
+			  this.setState({ priorityColor: 'blue', priorityText: 'Low' });
+			  break;
+	  }
   }
 
   handleVisibleChange = (show) => {
@@ -123,15 +143,20 @@ class Task extends Component {
               <CheckOutlined
                 style={this.props.task.completed ? styles.completedCheckStyle : styles.uncompletedCheckStyle}
                 onClick={this.toggleComplete.bind(this)} />
-            </Tooltip>
-          }>
-          <p>{this.props.task.notes}</p>
-          <p style={{
-            ...styles.dueDate, backgroundColor: this.state.dueDateBackgroundColor,
-            display: (this.props.task.dueDate) ? 'inline-block' : 'none'
-          }} >
-            {moment(this.props.task.dueDate).format('ddd, MMM D')}
-          </p>
+			</Tooltip>
+		}>
+        	<p>{this.props.task.notes}</p>
+			<Tag icon={<ClockCircleOutlined />} color={this.state.dueDateColor} 
+				style={{display: (this.props.task.dueDate) ? 'inline-block' : 'none'}}>
+					{moment(this.props.task.dueDate).format('ddd, MMM D')}
+			</Tag>
+
+			<Tag icon={<FlagOutlined />} color={this.state.priorityColor} 
+				style={{ display: (this.props.task.priority && (this.props.task.priority != 4)) ? 'inline-block' : 'none' }}>
+					{this.state.priorityText}
+			</Tag>
+		  
+
         </Card>
         <div style={{ position: 'absolute', right: 0, bottom: 30 }}>
           <Popover placement="rightBottom" title={'Create Task'} content={this.getForm()} visible={this.state.isVisible} >
@@ -164,10 +189,11 @@ const styles = {
     borderRadius: '20px'
   },
   dueDate: {
-    borderRadius: '5px',
-    padding: '4px 10px',
-    marginBottom: '0px',
-  }
+	  borderRadius: '4px',
+	  padding: '4px 10px',
+	  marginBottom: '0px',
+	  marginRight: '10px'
+  },
 }
 
 export default Task;
