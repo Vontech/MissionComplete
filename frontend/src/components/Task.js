@@ -45,10 +45,10 @@ class Task extends Component {
   setPriorityTag() {
 	  switch (this.props.task.priority) {
 		  case 1:
-			  this.setState({ priorityColor: 'red', priorityText: 'High' });
+			  this.setState({ priorityColor: 'magenta', priorityText: 'High' });
 			  break;
 		  case 2:
-			  this.setState({ priorityColor: 'orange', priorityText: 'Medium' });
+			  this.setState({ priorityColor: 'purple', priorityText: 'Medium' });
 			  break;
 		  case 3:
 			  this.setState({ priorityColor: 'blue', priorityText: 'Low' });

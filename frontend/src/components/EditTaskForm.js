@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 
 import { Button, Form, Input, DatePicker, Radio } from 'antd';
-import { FlagTwoTone } from '@ant-design/icons';
+import { FlagTwoTone, FlagOutlined } from '@ant-design/icons';
 
 const { TextArea } = Input;
 var moment = require('moment');
@@ -56,7 +56,7 @@ class EditTaskForm extends Component {
 			return false;
 		}
 	}
-	
+
     render() {
       return (
         <Form
@@ -85,10 +85,10 @@ class EditTaskForm extends Component {
 			</Form.Item>
 			<Form.Item label="Priority" name="priority">
 				<Radio.Group onChange={() => console.log('changed')} defaultValue={4}>
-					<Radio.Button value={1}><FlagTwoTone twoToneColor="#f5222d"/></Radio.Button>
-					<Radio.Button value={2}><FlagTwoTone twoToneColor="#fa541c"/></Radio.Button>
-					<Radio.Button value={3}><FlagTwoTone twoToneColor="#fa8c16"/></Radio.Button>
-					<Radio.Button value={4}><FlagTwoTone twoToneColor="#8c8c8c"/></Radio.Button>
+					<Radio.Button value={1}><FlagTwoTone twoToneColor="#eb2f96"/></Radio.Button>
+					<Radio.Button value={2}><FlagTwoTone twoToneColor="#722ed1"/></Radio.Button>
+					<Radio.Button value={3}><FlagTwoTone twoToneColor="#2f54eb"/></Radio.Button>
+					<Radio.Button value={4}><FlagOutlined style={{ color: "#595959" }}/></Radio.Button>
 				</Radio.Group>
 			</Form.Item>
 			
