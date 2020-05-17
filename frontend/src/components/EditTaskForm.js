@@ -22,17 +22,21 @@ class EditTaskForm extends Component {
   componentDidMount() { }
 
   onFinish = fieldValues => {
-    var values;
+	var values;
+	
+	// priority value cannot be undefined, prevents Cast to Number error
+	fieldValues.priority = fieldValues.priority || 4;
+
     if (fieldValues.dueDate === undefined) {
       delete fieldValues.dueDate;
       values = fieldValues;
     } else {
       values = {
-        ...fieldValues,
+		...fieldValues,
         'dueDate': fieldValues.dueDate,
       };
-    }
-    this.props.onSubmit(values);
+	}
+	this.props.onSubmit(values);
     this.toggleFormVisibility();
   };
 

@@ -66,7 +66,7 @@ controller.createTask = async (req, res, next) => {
 		parent: null,
 		children: req.body.children,
 		dueDate: req.body.dueDate || undefined,
-		priority: req.body.priority || null,
+		priority: req.body.priority || 4,
 		user: req.session.userId
 	};
 	Tasks.create(taskData, (err, createdTask) => {
