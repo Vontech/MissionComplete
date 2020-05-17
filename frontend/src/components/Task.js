@@ -1,7 +1,7 @@
 
 import React, { Component } from "react";
 
-import { Card, Popconfirm, Tooltip, message, Popover, Typography, Tag } from 'antd';
+import { Card, Popconfirm, Tooltip, message, Popover, Typography, Tag, Input, DatePicker } from 'antd';
 import { EditTwoTone, DeleteTwoTone, ApartmentOutlined, CheckOutlined, FlagOutlined, ClockCircleOutlined } from '@ant-design/icons';
 import defaultStyles from '../styles.js';
 import EditTaskForm from "./EditTaskForm";
@@ -14,10 +14,10 @@ class Task extends Component {
 
   state = {
     show: false,
-	isVisible: Boolean,
-	dueDateColor: '',
-	priorityColor: '',
-	priorityText: '',
+    isVisible: Boolean,
+    priorityText: '',
+    titleIsEditing: false,
+    hoveringOverDate: false
   }
 
   constructor(props) {
@@ -28,32 +28,33 @@ class Task extends Component {
   }
 
   componentDidMount() {
-	this.setDueDateColor();
-	this.setPriorityTag();
+    
   }
 
-  setDueDateColor() {
-	if (moment(this.props.task.dueDate).isAfter(moment(), 'day')) {
-		this.setState({ dueDateColor: '#85a5ff' }); // Not overdue or due today, green
-	} else if (moment(this.props.task.dueDate).isSame(moment(), 'day')) {
-		this.setState({ dueDateColor: '#ffc069' }); // Due today, orange
-	} else {
-		this.setState({ dueDateColor: '#ff7875' }); // Overdue, red
-	}
+  getDueDateColor() {
+    console.log(this.props.task.dueDate)
+    if (!this.props.task.dueDate) {
+      return '#cdcdcd';
+    } else if (moment(this.props.task.dueDate).isAfter(moment(), 'day')) {
+      return '#85a5ff';
+    } else if (moment(this.props.task.dueDate).isSame(moment(), 'day')) {
+      return '#ffc069';
+    } else {
+      return '#ff7875';
+    }
   }
 
-  setPriorityTag() {
-	  switch (this.props.task.priority) {
-		  case 1:
-			  this.setState({ priorityColor: 'magenta', priorityText: 'High' });
-			  break;
-		  case 2:
-			  this.setState({ priorityColor: 'purple', priorityText: 'Medium' });
-			  break;
-		  case 3:
-			  this.setState({ priorityColor: 'blue', priorityText: 'Low' });
-			  break;
-	  }
+  getPriorityTag() {
+    // eslint-disable-next-line default-case
+    switch (this.props.task.priority) {
+      case 1:
+        return { priorityColor: 'magenta', priorityText: 'High' };
+      case 2:
+        return { priorityColor: 'purple', priorityText: 'Medium' };
+      case 3:
+        return { priorityColor: 'blue', priorityText: 'Low' };
+    }
+    return null;
   }
 
   handleVisibleChange = (show) => {
@@ -126,8 +127,30 @@ class Task extends Component {
     this.setState({ isHovered: isHovered })
   }
 
+  getTitle() {
+    if (!this.state.titleIsEditing) {
+      return (
+        <Meta
+          onClick={() => this.setState({titleIsEditing: true})}
+          title={this.props.task.name}
+        />
+      )
+    } else {
+      return  (
+        <Input 
+          size="large" 
+          onPressEnter={(ev) => {
+            this.props.editTask({'name': ev.target.value})
+            this.setState({titleIsEditing: false})
+          }}
+          defaultValue={this.props.task.name} />
+      )
+    }
+  }
+
   render() {
     let propStyles = { 'top': this.props.y, 'left': this.props.x }
+    let priorityStyle = this.getPriorityTag();
     return (
       <div
         id={this.props.task.id}
@@ -136,26 +159,29 @@ class Task extends Component {
         onMouseLeave={() => this.setHover(false)}>
         <Card
           actions={this.getActions()}
-          title={this.props.task.name}
+          title={this.getTitle()}
           style={{ width: 300 }}
           extra={
             <Tooltip placement="top" title="Mark as Done">
               <CheckOutlined
                 style={this.props.task.completed ? styles.completedCheckStyle : styles.uncompletedCheckStyle}
                 onClick={this.toggleComplete.bind(this)} />
-			</Tooltip>
-		}>
-        	<p>{this.props.task.notes}</p>
-			<Tag icon={<ClockCircleOutlined />} color={this.state.dueDateColor} 
-				style={{display: (this.props.task.dueDate) ? 'inline-block' : 'none'}}>
-					{moment(this.props.task.dueDate).format('ddd, MMM D')}
-			</Tag>
+            </Tooltip>
+          }>
+          <p>{this.props.task.notes}</p>
 
-			<Tag icon={<FlagOutlined />} color={this.state.priorityColor} 
-				style={{ display: (this.props.task.priority && (this.props.task.priority != 4)) ? 'inline-block' : 'none' }}>
-					{this.state.priorityText}
-			</Tag>
-		  
+          
+
+          <Tag icon={<ClockCircleOutlined />} color={this.getDueDateColor()}
+            style={{display: 'inline-block'}}>
+            {this.props.task.dueDate ? moment(this.props.task.dueDate).format('ddd, MMM D') : 'No due date'}
+          </Tag>
+          
+          {priorityStyle && <Tag icon={<FlagOutlined />} color={priorityStyle.priorityColor}
+            style={{ display: 'inline-block'}}>
+            {priorityStyle.priorityText}
+          </Tag>}
+
 
         </Card>
         <div style={{ position: 'absolute', right: 0, bottom: 30 }}>
@@ -178,7 +204,8 @@ const styles = {
     color: '#ffffff',
     padding: '5px',
     border: '1px solid #52c41a',
-    borderRadius: '20px'
+    borderRadius: '20px',
+    marginLeft: '16px'
   },
   uncompletedCheckStyle: {
     fontSize: '12px',
@@ -186,13 +213,14 @@ const styles = {
     color: '#52c41a',
     padding: '5px',
     border: '1px solid #52c41a',
-    borderRadius: '20px'
+    borderRadius: '20px',
+    marginLeft: '16px'
   },
   dueDate: {
-	  borderRadius: '4px',
-	  padding: '4px 10px',
-	  marginBottom: '0px',
-	  marginRight: '10px'
+    borderRadius: '4px',
+    padding: '4px 10px',
+    marginBottom: '0px',
+    marginRight: '10px'
   },
 }
 

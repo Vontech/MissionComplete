@@ -62,6 +62,8 @@ export default class MissionCompleteApi {
     }
 
     addTask(task) {
+        // Remove undefined props:
+        Object.keys(task).forEach(key => task[key] === undefined ? delete task[key] : {});
         return this.getBearerInstance().post(Endpoints.TASK, new URLSearchParams(task))
 	}
 	

@@ -144,6 +144,14 @@ class App extends Component {
       .then(() => { this.updateTasks(); })
   }
 
+  editTask(task_id, properties) {
+    console.log("EDITING TASK ", task_id)
+    console.log(properties)
+    properties['task_id'] = task_id
+    this.api.updateTask(properties)
+      .then(() => { this.updateTasks(); })
+  }
+
   toggleComplete(updateValues) {
     this.api.updateTask(updateValues)
       .then(() => { this.updateTasks(); })
@@ -237,6 +245,7 @@ class App extends Component {
     let removeTaskFunc = this.removeTask.bind(this);
     let completeTaskFunc = this.toggleComplete.bind(this);
     let createChildTaskFunc = this.addTask.bind(this)
+    let editTaskFunc = this.editTask.bind(this)
     const that = this;
     function recurseOverComps(currentTree) {
       let task = taskMap.get(currentTree.data.id);
@@ -248,6 +257,8 @@ class App extends Component {
           x={x_pos}
           y={y_pos}
           task={task}
+          // TODO: These should all be combined into some task manager
+          editTask={(properties) => editTaskFunc(task.id, properties)}
           removeTaskHandler={removeTaskFunc}
           completeTaskHandler={completeTaskFunc}
           createChildTask={createChildTaskFunc} />
