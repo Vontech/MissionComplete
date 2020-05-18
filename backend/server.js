@@ -4,14 +4,14 @@ const bodyParser = require("body-parser");
 import morgan from 'morgan';
 import OAuthServer from 'express-oauth-server';
 
-import config from "./backend/setup/config";
-import {setupDB} from "./backend/setup/db"
-import logger from "./backend/setup/logger";
-import auth from "./backend/controllers/auth.controller";
+import config from "./setup/config";
+import {setupDB} from "./setup/db"
+import logger from "./setup/logger";
+import auth from "./controllers/auth.controller";
 
-import authedRoutes from "./backend/routes/authed.routes";
-import openRoutes from "./backend/routes/open.routes";
-import Users from "./backend/models/users.model";
+import authedRoutes from "./routes/authed.routes";
+import openRoutes from "./routes/open.routes";
+import Users from "./models/users.model";
 
 const app = express();
 app.use(bodyParser.json());
