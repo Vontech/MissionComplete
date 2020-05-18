@@ -14,3 +14,25 @@ code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New",
     monospace;
 }
+
+
+.ant-col-rtl .login-form-forgot {
+  float: left;
+}
+
+.center {
+  margin: auto auto;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  -ms-transform: translate(-50%, -50%);
+  transform: translate(-50%, -50%);
+}
+
+#primary-panel {
+  height: 100%;
+}
+
+.searchModal .ant-modal-body {
+  padding: 8px
+}

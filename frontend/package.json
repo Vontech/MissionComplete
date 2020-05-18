@@ -11,12 +11,16 @@
     "antd": "^4.1.4",
     "axios": "^0.19.2",
     "d3-ease": "^1.0.5",
+    "d3-hierarchy": "^1.1.9",
+    "interactjs": "^1.9.10",
     "moment": "^2.23.0",
     "react": "^16.7.0",
     "react-dom": "^16.7.0",
     "react-grid-system": "^4.4.1",
+    "react-hotkeys": "^2.0.0",
     "react-move": "^2.8.0",
-    "react-scripts": "2.1.2"
+    "react-scripts": "2.1.2",
+    "reactablejs": "^0.2.0"
   },
   "scripts": {
     "start": "react-scripts start",

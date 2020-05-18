@@ -7,16 +7,7 @@ const POWER_RAMP = 7.5;
 const POWER_SCALE = .07;
 const POWER_BUMP = 0.1;
 
-type Props = {
-
-}
-
-type State = {
-  // posX: int,
-  // poxY: int
-}
-
-class Board extends Component<Props, State> {
+class Board extends Component {
 
     constructor(props) {
       super(props);
@@ -84,10 +75,6 @@ class Board extends Component<Props, State> {
       let norm = Math.sqrt(Math.pow(vectorX, 2.0) + Math.pow(vectorY, 2.0))
       vectorX /= norm
       vectorY /= norm
-
-      console.log(vectorX, vectorY)
-
-      // console.log(strength, vectorX, vectorY);
 
       let scrollAmount = POWER_SCALE * Math.exp(POWER_RAMP + strength/HOT_EDGE_WIDTH) + POWER_BUMP;
 

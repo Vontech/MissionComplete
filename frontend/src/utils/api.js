@@ -11,10 +11,6 @@ const Endpoints = {
 
 export default class MissionCompleteApi {
 
-    constructor() {
-        console.log("Instantiated API!")
-    }
-
     getBasicInstance() {
         return axios.create({
             headers: {
@@ -33,73 +29,64 @@ export default class MissionCompleteApi {
         });
     }
     
-    createUser(username, email, password, callback) {
-        axios.post(Endpoints.USERS, {
+    createUser(username, email, password) {
+        return axios.post(Endpoints.USERS, {
             username: username,
             email: email,
             password: password,
             passwordConf: password
         })
-        .then(function (response) {
-            callback(response);
-        })
-        .catch(function (error) {
-            callback(error);
-        });
     }
 
-    login(username, password, callback) {
+    login(username, password) {
 
         const params = new URLSearchParams();
         params.append('username', username);
         params.append('password', password);
         params.append('grant_type', 'password');
 
-        this.getBasicInstance().post(Endpoints.LOGIN, params)
-        .then(function (response) {
-            storeAccessToken(response.data['access_token']);
-            callback(response);
-        })
-        .catch(function (error) {
-            callback(error);
-        });
+        return this.getBasicInstance().post(Endpoints.LOGIN, params)
+            .then(function (response) {
+                storeAccessToken(response.data['access_token']);
+                return;
+            })
     }
 
-    logout(callback) {
-        this.getBearerInstance().post(Endpoints.LOGOUT)
-        .then(function (response) {
-            callback(response);
-        })
-        .catch(function (error) {
-            callback(error);
-        });
+    logout() {
+        return this.getBearerInstance().post(Endpoints.LOGOUT)
+            .then(() => deleteAccessToken())
     }
 
-    getTasks(callback) {
-        this.getBearerInstance().get(Endpoints.ALL_TASKS)
-        .then(function(response) {
-            callback(response);
-        })
-        .catch(function (error) {
-            callback(error);
-        });
+    getTasks() {
+        return this.getBearerInstance().get(Endpoints.ALL_TASKS)
     }
 
-    addTask(task, callback) {
-        this.getBearerInstance().post(Endpoints.TASK, new URLSearchParams(task))
-        .then(function(response) {
-            callback(response);
-        })
-        .catch(function (error) {
-            callback(error);
-        });
+    addTask(task) {
+        // Remove undefined props:
+        Object.keys(task).forEach(key => task[key] === undefined ? delete task[key] : {});
+        return this.getBearerInstance().post(Endpoints.TASK, new URLSearchParams(task))
+	}
+	
+	removeTask(task_id) {
+        return this.getBearerInstance().delete(Endpoints.TASK + '/' + task_id)
+	}
+	
+	updateTask(updateValues) {
+		return this.getBearerInstance().patch(Endpoints.TASK, new URLSearchParams(updateValues))
+	}
+
+    isLoggedIn() {
+        return localStorage.accessToken != null;
     }
 
 }
 
-
 function storeAccessToken(token) {
     localStorage.accessToken = token;
+}
+
+function deleteAccessToken(token) {
+    localStorage.removeItem('accessToken');
 }
 
 function getAccessToken() {

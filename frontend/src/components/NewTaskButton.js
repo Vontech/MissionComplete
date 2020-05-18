@@ -1,83 +1,43 @@
 
 import React, { Component } from "react";
 
-import { Card, Button, Icon, Tooltip, Popover, Form, Input } from 'antd';
+import { Button, Popover } from 'antd';
 import { PlusOutlined } from '@ant-design/icons';
+import EditTaskForm from "./EditTaskForm";
 
-const { TextArea } = Input;
+class NewTaskButton extends Component {
 
-
-type Props = {
-    
-}
-
-type State = {
-    
-}
-
-class NewTaskButton extends Component<Props, State> {
-
-    constructor(props) {
-      super(props);
-      this.state = {}
+  constructor(props) {
+    super(props);
+    this.state = {
+      isVisible: false,
     }
+  }
 
-    componentDidMount() {
+  componentDidMount() {
 
-    }
+  }
 
-    onFinish = values => {
-      console.log('Success:', values);
-    };
-  
-    onFinishFailed = errorInfo => {
-      console.log('Failed:', errorInfo);
-    };
+  getForm() {
+    return (<EditTaskForm onSubmit={this.props.createNewTask} />);
+  }
 
-    getForm() {
-      return (
-        <div>
-          <Form
-            labelCol={{ span: 24 }}
-            wrapperCol={{ span: 24 }}
-            layout="vertical"
-            onFinish={this.onFinish}
-            onFinishFailed={this.onFinishFailed}
-            initialValues={{}}
-            onValuesChange={() => {}}
-            size={"medium"}
-          >
-            <Form.Item label="Task Name" name="name">
-              <Input />
-            </Form.Item>
-            <Form.Item label="Notes" name="notes">
-              <TextArea rows={2} />
-            </Form.Item>
-            <Form.Item wrapperCol={{ offset: 13, span: 12 }} style={{marginBottom: 0}}>
-              <Button htmlType="submit" type="primary">Create</Button>
-            </Form.Item>
-          </Form>
+  togglePanelVisibility() {
+    this.setState({ isVisible: !this.state.isVisible })
+  }
+
+  render() {
+    return (
+      <div>
+        <div style={styles.fixedBottomRight}>
+          <Popover placement="rightBottom" title={'Create Task'} content={this.getForm()} visible={this.state.isVisible}>
+            <Button size="large" icon={<PlusOutlined />} type="primary" shape="circle" onClick={this.togglePanelVisibility.bind(this)}>
+            </Button>
+          </Popover>
         </div>
-      );
-    }
-
-    render() {
-      return (
-        <div>
-          <div style={styles.fixedBottomRight}>
-            <Popover placement="rightBottom" title={'Create Task'} content={this.getForm()} trigger="click">
-              <Button size="large" icon={<PlusOutlined />} type="primary" shape="circle" onClick={() => {
-                    this.props.createNewTask({
-                        'name': Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15),
-                        'notes': "These are some notes"
-                    })
-                }}>
-              </Button>
-            </Popover>
-          </div>
-        </div>
-      )
-    }
+      </div>
+    )
+  }
 
 }
 

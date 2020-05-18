@@ -2,6 +2,7 @@ import Tasks from '../models/tasks.model';
 import logger from '../setup/logger';
 
 const controller = {};
+var moment = require('moment');
 
 function hasTaskId(req) {
 	return req.body.hasOwnProperty('task_id') && req.body.task_id;
@@ -62,8 +63,10 @@ controller.createTask = async (req, res, next) => {
 		name: req.body.name || "Untitled",
 		notes: req.body.notes || null,
 		completed: false,
-		parent: req.body.parent || null,
+		parent: null,
 		children: req.body.children,
+		dueDate: req.body.dueDate || undefined,
+		priority: req.body.priority || 4,
 		user: req.session.userId
 	};
 	Tasks.create(taskData, (err, createdTask) => {
@@ -71,8 +74,22 @@ controller.createTask = async (req, res, next) => {
 			logger.error(err);
 			return next(err);
 		}
-		res.status(200);
-		return res.json(createdTask);
+
+		// If no parent, just return the task, otherwise attach parent
+		if (!req.body.parent) {
+			res.status(200);
+			return res.json(createdTask);
+		}
+
+		let proxy_request = {
+			body: {
+				task_id: createdTask._id,
+				parent: req.body.parent
+			}
+		}
+		
+		controller.updateTask(proxy_request, res, next);
+		
 	});
 };
 
@@ -81,12 +98,12 @@ controller.removeTask = async (req, res, next) => {
 
 	// Make sure the task is valid
 	let baseError = 'Error deleting task -';
-	if (!hasTaskId(req)) {
+	if (!req.params.hasOwnProperty('taskId') || req.params.taskId == null) {
 		res.status(400);
 		return res.json({ message: `${baseError} invalid task ID` });
 	}
 
-	let task_id = req.body.task_id;
+	let task_id = req.params.taskId;
 
 	// Remove the task from the upper tree
 	let removeFromTreeErr = await disassociateTaskFromParent(task_id);
@@ -108,7 +125,7 @@ controller.removeTask = async (req, res, next) => {
 			return res.json({ message: `${baseError} ${err}`});
 		} else {
 			res.status(200);
-			return res.json({ message: `Successfully deleted task with id '${req.body.task_id}'`});
+			return res.json({ message: `Successfully deleted task with id '${task_id}'`});
 		}
 	});
 }
@@ -146,6 +163,8 @@ controller.updateTask = async (req, res, next) => {
 	let new_name = (req.body.name) ? req.body.name : currentTask.name;
 	let new_notes = (req.body.notes) ? req.body.notes : currentTask.notes;
 	let new_completed = (req.body.completed) ? req.body.completed : currentTask.completed;
+	let new_due_date = (req.body.dueDate) ? req.body.dueDate : currentTask.dueDate;
+	let new_priority = (req.body.priority) ? req.body.priority : currentTask.priority;
 	let new_parent;
 	// If a new parent task ID is given, verify that it is valid
 	if (req.body.parent) {
@@ -177,7 +196,9 @@ controller.updateTask = async (req, res, next) => {
 		'name': new_name, 
 		'notes': new_notes,
 		'completed': new_completed,
-		'parent': new_parent 
+		'parent': new_parent,
+		'dueDate': new_due_date,
+		'priority': new_priority
 	}
 	Tasks.findByIdAndUpdate(req.body.task_id, {'$set': to_update}, { new: true }, (err, updatedTask) => {
 		if (err) {

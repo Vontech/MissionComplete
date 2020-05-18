@@ -69,6 +69,35 @@ describe('Tasks', () => {
 				});
 			});
 		});
+
+		it('POST /api/s/task (given task with a parent)', (done) => {
+			createTestTask((test_task_id) => {
+				let newTask = Object.assign({}, testTask);
+				newTask['parent'] = test_task_id;
+				newTask['name'] = 'Task2';
+				withLogin(chai.request(app).post('/api/s/task').send(newTask), req => {
+					req.end((err, res) => {
+						if (err) return done(err);
+						res.should.have.status(200);
+						res.body.should.be.a('object');
+						expect (res.body.name).to.equal('Task2');
+						expect (res.body.notes).to.equal('Notes');
+						expect (res.body.completed).to.equal(false);
+						expect (res.body.parent).to.equal(test_task_id);
+						expect (JSON.stringify(res.body.children)).to.equal(JSON.stringify([]));
+
+						// Expect parent to have children
+						Tasks.findById(test_task_id)
+							.then((task) => {
+								expect(task.children.length).to.equal(1);
+								expect(task.children[0]).to.equal(res.body._id);
+							})
+							.then(done)
+							.catch(done)
+					});
+				}); 
+			});
+		});
 	});
 
 	describe('getting tasks', () => {
@@ -304,41 +333,8 @@ describe('Tasks', () => {
 
 		afterEach((done) => { deleteAllTasks(done); })
 
-		it('DELETE /api/s/task (no task ID)', (done) => {
-			withLogin(chai.request(app).delete('/api/s/task'), req => {
-				req.end((err, res) => {
-					if (err) return done(err);
-					res.should.have.status(400);
-					res.body.should.have.property('message').eql('Error deleting task - invalid task ID');
-					done();
-				});
-			});
-		});
-
-		it('DELETE /api/s/task (null task ID)', (done) => {
-			withLogin(chai.request(app).delete('/api/s/task').send({ task_id: null }), req => {
-				req.end((err, res) => {
-					if (err) return done(err);
-					res.should.have.status(400);
-					res.body.should.have.property('message').eql('Error deleting task - invalid task ID');
-					done();
-				});
-			});
-		});
-
-		it('DELETE /api/s/task (empty task ID)', (done) => {
-			withLogin(chai.request(app).delete('/api/s/task').send({ task_id: '' }), req => {
-				req.end((err, res) => {
-					if (err) return done(err);
-					res.should.have.status(400);
-					res.body.should.have.property('message').eql('Error deleting task - invalid task ID');
-					done();
-				});
-			});
-		});
-
 		it('DELETE /api/s/task (nonexistent task ID)', (done) => {
-			withLogin(chai.request(app).delete('/api/s/task').send({ task_id: '123' }), req => {
+			withLogin(chai.request(app).delete('/api/s/task/123'), req => {
 				req.end((err, res) => {
 					if (err) return done(err);
 					res.should.have.status(400);
@@ -350,7 +346,8 @@ describe('Tasks', () => {
 
 		it('DELETE /api/s/task (valid task ID)', (done) => {
 			createTestTask((test_task_id) => {
-				withLogin(chai.request(app).delete('/api/s/task').send({ task_id: test_task_id }), req => {
+				console.log(test_task_id);
+				withLogin(chai.request(app).delete('/api/s/task/' + test_task_id), req => {
 					req.end((err, res) => {
 						if (err) return done(err);
 						res.should.have.status(200);
