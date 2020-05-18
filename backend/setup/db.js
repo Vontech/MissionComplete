@@ -11,8 +11,13 @@ import config from './config';
 export async function setupDB() {
     const { dbHost, dbPort, dbName } = config;
     try {
-        await Mongoose.connect(`mongodb://${dbHost}:${dbPort}/${dbName}`);
-        logger.info(`Connected to mongo server at mongodb://${dbHost}:${dbPort}/${dbName}`);
+        if (process.env.MONGODB_URI) {
+            await Mongoose.connect(process.env.MONGODB_URI);
+            logger.info(`Connected to mongo server at ${process.env.MONGODB_URI}`);
+        } else {
+            await Mongoose.connect(`mongodb://${dbHost}:${dbPort}/${dbName}`);
+            logger.info(`Connected to mongo server at mongodb://${dbHost}:${dbPort}/${dbName}`);
+        }
 
         await createBaseClient();
 
