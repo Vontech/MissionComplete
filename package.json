@@ -1,6 +1,10 @@
 {
   "name": "taskk",
   "version": "1.0.0",
+  "engines": {
+    "npm": "6.9.0",
+    "node": "12.6.0"
+  },
   "scripts": {
     "client": "cd frontend && yarn start",
     "server": "nodemon server.js --exec babel-node",
@@ -9,7 +13,7 @@
     "test-server-windows": "set \"NODE_ENV=test\" && node node_modules/nyc/bin/nyc.js node_modules/mocha/bin/_mocha backend/test/ --recursive --timeout 80000 --require babel-core/register",
     "server-coverage": "NODE_ENV=test node_modules/nyc/bin/nyc.js report --reporter=text-lcov > coverage.lcov && node_modules/codecov/bin/codecov",
     "test-frontend": "",
-    "test": ""
+    "start": "babel-node server.js & cd frontend && npm start"
   },
   "dependencies": {
     "bcrypt": "4.0.1",
