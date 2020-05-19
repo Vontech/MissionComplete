@@ -1,7 +1,7 @@
 
 import React, { Component } from "react";
 
-import { Card, Popconfirm, Tooltip, message, Popover, Typography, Tag, Input, DatePicker, Radio } from 'antd';
+import { Card, Popconfirm, Tooltip, message, Popover, Typography, Tag, Input, DatePicker, Radio, Modal } from 'antd';
 import { EditTwoTone, DeleteTwoTone, ApartmentOutlined, CheckOutlined, FlagOutlined, ClockCircleOutlined, FlagTwoTone } from '@ant-design/icons';
 import defaultStyles from '../styles.js';
 import EditTaskForm from "./EditTaskForm";
@@ -19,7 +19,9 @@ class Task extends Component {
     titleIsEditing: false,
     notesIsEditing: false,
     dateIsEditing: false,
-    isPriorityEditing: false
+    isPriorityEditing: false,
+	hoveringOverDate: false,
+	isEditModalVisible: false
   }
 
   constructor(props) {
@@ -89,6 +91,16 @@ class Task extends Component {
     this.setState({ isVisible: !this.state.isVisible })
   }
 
+  toggleEditModalVisibility() {
+	  this.setState({ isEditModalVisible: !this.state.isEditModalVisible })
+  }
+
+  handleCancel = (e) => {
+    this.setState({
+		isEditModalVisible: false,
+    });
+  };
+
   getActions() {
     if (this.state.isHovered) {
       return [
@@ -105,7 +117,7 @@ class Task extends Component {
           </Popconfirm>
         </Tooltip>,
         <Tooltip placement="bottom" title="Edit Task">
-          <EditTwoTone />
+          <EditTwoTone onClick={this.toggleEditModalVisibility.bind(this)} />
         </Tooltip>,
         <Tooltip placement="bottom" title="Create Child" >
           <ApartmentOutlined key="createBranch" onClick={this.togglePanelVisibility.bind(this)} />
@@ -256,6 +268,28 @@ class Task extends Component {
         <div style={{ position: 'absolute', right: 0, bottom: 30 }}>
           <Popover placement="rightBottom" title={'Create Task'} content={this.getForm()} visible={this.state.isVisible} >
           </Popover>
+        </div>
+
+		<div style={{ position: 'absolute', right: 0, bottom: 30 }}>
+		  <Modal 
+		  	title={'Edit Task'} 
+			visible={this.state.isEditModalVisible}
+			onCancel={this.handleCancel}
+			footer={null}
+		  >
+			<EditTaskForm 
+				initialValues={{
+					name: this.props.task.name,
+					notes: this.props.task.notes,
+					priority: this.props.task.priority,
+				}}
+				context='EDIT'
+				onSubmit={(updatedValues) => {
+					this.props.editTask(updatedValues);
+					this.setState({ isEditModalVisible: false });
+				}} 
+			/>
+          </Modal>
         </div>
       </div>
     )
