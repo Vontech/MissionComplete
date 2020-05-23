@@ -133,7 +133,7 @@ class Task extends Component {
   }
 
   updateDate(dateMoment, dateStr) {
-    this.props.editTask({'dueDate': dateMoment.format()});
+    this.props.editTask({'dueDate': dateMoment ? dateMoment.format() : null});
     this.setState({dateIsEditing: false})
     message.info(`Updated task due date`);
   }
@@ -150,6 +150,10 @@ class Task extends Component {
 
   setHover(isHovered) {
     this.setState({ isHovered: isHovered })
+  }
+
+  getDateEditFooter() {
+    return "Clear Due Date";
   }
 
   getTitle() {
@@ -222,6 +226,7 @@ class Task extends Component {
               showToday={true}
               open={true}
               onChange={this.updateDate.bind(this)}
+              allowClear={true}
               defaultValue={this.props.task.dueDate ? moment(this.props.task.dueDate) : null}
             />
           }

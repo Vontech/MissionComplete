@@ -6,7 +6,8 @@ const Endpoints = {
     LOGIN: '/oauth/token',
     LOGOUT: '/api/s/logout',
     ALL_TASKS: '/api/s/allTasks',
-    TASK: '/api/s/task'
+    TASK: '/api/s/task',
+    UPDATE_TASK: '/api/s/updateTask'
 }
 
 export default class MissionCompleteApi {
@@ -72,7 +73,7 @@ export default class MissionCompleteApi {
 	}
 	
 	updateTask(updateValues) {
-		return this.getBearerInstance().patch(Endpoints.TASK, new URLSearchParams(updateValues))
+		return this.getBearerInstance().post(Endpoints.UPDATE_TASK, updateValues, {headers: {'Content-Type': 'application/json'}})
 	}
 
     isLoggedIn() {
