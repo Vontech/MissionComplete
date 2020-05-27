@@ -61,6 +61,39 @@ class EditTaskForm extends Component {
     }
   }
 
+  renderSubmitButton() {
+	  let buttonText;
+	  let buttonStyle = {};
+	  if (this.props.context === 'EDIT') {
+		buttonText = 'Update Task';
+		buttonStyle = {
+			float: 'right'
+		}
+	  } else {
+		buttonText = 'Create Task';
+	  }
+	  return (
+		<Form.Item style={{ marginBottom: 0 }}>
+			<Button 
+				htmlType="submit" 
+				type="primary" 
+				onClick={this.toggleFormVisibility.bind(this)}
+				style={buttonStyle}
+			>
+				{buttonText}
+			</Button>
+	  	</Form.Item>
+	  )
+  }
+
+  getFormStyle() {
+	  if (this.props.context === 'EDIT') {
+		  return {}
+	  } else {
+		  return { width: 300 }
+	  }
+  }
+
   render() {
     return (
       <Form
@@ -69,10 +102,10 @@ class EditTaskForm extends Component {
         layout="vertical"
         onFinish={this.onFinish}
         onFinishFailed={this.onFinishFailed}
-        initialValues={{}}
+        initialValues={this.props.initialValues}
         onValuesChange={() => { }}
-        size={"medium"}
-        style={{ width: 300 }}
+		size={"medium"}
+		style={this.getFormStyle()}
         visible={this.state.isVisible}
       >
         <Form.Item label="Task Name" name="name">
@@ -96,9 +129,7 @@ class EditTaskForm extends Component {
           </Radio.Group>
         </Form.Item>
 
-        <Form.Item style={{ marginBottom: 0 }}>
-          <Button htmlType="submit" type="primary" onClick={this.toggleFormVisibility.bind(this)}>Create Task</Button>
-        </Form.Item>
+		{this.renderSubmitButton()}
       </Form>
     )
   }
