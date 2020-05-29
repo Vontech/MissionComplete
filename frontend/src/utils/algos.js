@@ -3,12 +3,14 @@ import * as d3 from 'd3';
 
 export function getIdTree(tasks) {
   let { roots, taskMap } = getTaskMapAndRoots(tasks);
-  let trees = [];
+  let tree = {id: null, children: []}
   for (let root of roots) {
-    let tree = getTraversedTree(root, taskMap);
-    trees.push(d3.tree().nodeSize([350, 250])(d3.hierarchy(tree)));
+    tree.children.push(getTraversedTree(root, taskMap))
   }
-  return { tree: trees, taskMap: taskMap };
+  let d3Tree = d3.tree().nodeSize([350, 250])(d3.hierarchy(tree));
+  let result = { tree: d3Tree, taskMap: taskMap }
+  console.log(result)
+  return result;
 }
 
 // Consolidate root loop and mapping loop into one
@@ -25,7 +27,7 @@ export function getTaskMapAndRoots(tasks) {
 }
 
 export function getTraversedTree(id, taskMap) {
-  let currentTree = { id: id, children: [] }
+  let currentTree = { id: id, children: [], numCompleted: 0, numTotal: 0 }
 
   let task = taskMap.get(id);
   if (task.children == null) {
@@ -33,7 +35,10 @@ export function getTraversedTree(id, taskMap) {
   }
 
   for (let child of task.children) {
-    currentTree.children.push(getTraversedTree(child, taskMap))
+    let childResult = getTraversedTree(child, taskMap)
+    currentTree.children.push(childResult)
+    currentTree.numTotal += 1 + childResult.numTotal;
+    currentTree.numCompleted += (taskMap.get(child).completed ? 1 : 0) + childResult.numCompleted;
   }
 
   return currentTree;

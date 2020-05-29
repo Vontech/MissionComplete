@@ -60,10 +60,11 @@ class App extends Component {
     super(props);
     this.state = {
       taskMap: new Map(),
-      taskTree: [],
+      taskTree: null,
       appState: 'unknown',
       searchModalVisible: false,
-      trackedTask: null
+      trackedTask: null,
+      preferences: {}
     }
     this.api = new MissionCompleteApi();
     if (this.api.isLoggedIn()) {
@@ -73,13 +74,29 @@ class App extends Component {
 
   getAppContext() {
     return {
-      api: this.api
+      api: this.api,
+      updatePrefs: this.udpdatePreferences.bind(this),
+      preferences: this.state.preferences
     }
   }
 
   componentDidMount() {
     this.updateTasks()
     this.trackNewTask(null)
+
+    this.api.getPreferences()
+      .then((result) => console.log(result))
+      .catch((result) => console.log(result))
+
+    this.api.getPreferences()
+      .then((res) => {
+        this.udpdatePreferences(res.data)
+      })
+
+  }
+
+  udpdatePreferences(newPreferences) {
+    this.setState({preferences: newPreferences});
   }
 
   showDrawer = () => {
@@ -167,8 +184,8 @@ class App extends Component {
         let { tree, taskMap } = getIdTree(newTasks);
         this.setState({ taskMap: taskMap, taskTree: tree });
 
-        if (this.state.trackedTask == null && tree.length > 0) {
-          this.trackNewTask(tree[0].data.id);
+        if (this.state.trackedTask == null && tree && tree.children.length > 0) {
+          this.trackNewTask(tree.children[0].data.id);
         }
 
       })
@@ -181,6 +198,7 @@ class App extends Component {
   getDrawer() {
     return (
       <DrawerPanel
+        context={this.getAppContext()}
         scrollToTask={this.scrollToTask.bind(this)}
         handleLogout={this.handleLogout}
         tasks={{ taskTree: this.state.taskTree, taskMap: this.state.taskMap }} />
@@ -242,38 +260,48 @@ class App extends Component {
     let listOfTaskComps = [];
     let listOfArrows = [];
     let { taskTree, taskMap } = this.state;
+    if (!taskTree) {
+      return null
+    }
     let removeTaskFunc = this.removeTask.bind(this);
     let completeTaskFunc = this.toggleComplete.bind(this);
     let createChildTaskFunc = this.addTask.bind(this)
     let editTaskFunc = this.editTask.bind(this)
+    let getContext = this.getAppContext.bind(this);
     const that = this;
     function recurseOverComps(currentTree) {
-      let task = taskMap.get(currentTree.data.id);
-      let x_pos = 5000 + x_scale * currentTree.x;
-      let y_pos = 5000 + y_scale * currentTree.y;
-      listOfTaskComps.push(
-        <Task
-          key={task.id}
-          x={x_pos}
-          y={y_pos}
-          task={task}
-          // TODO: These should all be combined into some task manager
-          editTask={(properties) => editTaskFunc(task.id, properties)}
-          removeTaskHandler={removeTaskFunc}
-          completeTaskHandler={completeTaskFunc}
-          createChildTask={createChildTaskFunc} />
-      );
-      for (let child of (currentTree.children || [])) {
-        let child_x_y = recurseOverComps(child);
-        listOfArrows.push(that.getDrawnArrowBetween(x_pos + 150, y_pos + 107, child_x_y[0] + 150, child_x_y[1]))
+      if (currentTree.data.id != null) { // Only create node if not special root
+        let task = taskMap.get(currentTree.data.id);
+        let x_pos = 5000 + x_scale * currentTree.x;
+        let y_pos = 5000 + y_scale * currentTree.y;
+        listOfTaskComps.push(
+          <Task
+            context={getContext()}
+            key={task.id}
+            x={x_pos}
+            y={y_pos}
+            task={task}
+            treeTaskData={currentTree.data}
+            // TODO: These should all be combined into some task manager
+            editTask={(properties) => editTaskFunc(task.id, properties)}
+            removeTaskHandler={removeTaskFunc}
+            completeTaskHandler={completeTaskFunc}
+            createChildTask={createChildTaskFunc} />
+        );
+        for (let child of (currentTree.children || [])) {
+          let child_x_y = recurseOverComps(child);
+          listOfArrows.push(that.getDrawnArrowBetween(x_pos + 150, y_pos + 107, child_x_y[0] + 150, child_x_y[1]))
+        }
+        return [x_pos, y_pos];
+      } else {
+        for (let child of (currentTree.children || [])) {
+          recurseOverComps(child);
+        }
       }
-
-      return [x_pos, y_pos];
     }
 
-    for (let root of taskTree) {
-      recurseOverComps(root);
-    }
+    console.log(taskTree)
+    recurseOverComps(taskTree);
 
     return listOfArrows.concat(listOfTaskComps);
 

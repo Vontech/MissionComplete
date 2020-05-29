@@ -6,6 +6,8 @@ const router = express.Router();
 
 // User routes
 router.post('/logout', userController.logoutUser);
+router.get('/preferences', userController.getUserPreferences);
+router.post('/preferences', userController.saveUserPreferences, userController.getUserPreferences);
 
 // Task Routes
 router.post('/task', taskController.createTask);
