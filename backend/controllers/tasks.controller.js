@@ -160,11 +160,11 @@ controller.updateTask = async (req, res, next) => {
 		return res.json({ message: `${baseError} could not find task with id '${req.body.task_id}'`});
 	}
 	// Set variables with updated values from the request, keep defaults if no value given
-	let new_name = (req.body.name) ? req.body.name : currentTask.name;
-	let new_notes = (req.body.notes) ? req.body.notes : currentTask.notes;
-	let new_completed = (req.body.completed) ? req.body.completed : currentTask.completed;
-	let new_due_date = (req.body.dueDate) ? req.body.dueDate : currentTask.dueDate;
-	let new_priority = (req.body.priority) ? req.body.priority : currentTask.priority;
+	let new_name = (req.body.hasOwnProperty('name')) ? req.body.name : currentTask.name;
+	let new_notes = (req.body.hasOwnProperty('notes')) ? req.body.notes : currentTask.notes;
+	let new_completed = (req.body.hasOwnProperty('completed')) ? req.body.completed : currentTask.completed;
+	let new_due_date = (req.body.hasOwnProperty('dueDate')) ? req.body.dueDate : currentTask.dueDate;
+	let new_priority = (req.body.hasOwnProperty('priority')) ? req.body.priority : currentTask.priority;
 	let new_parent;
 	// If a new parent task ID is given, verify that it is valid
 	if (req.body.parent) {

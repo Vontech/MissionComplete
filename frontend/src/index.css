@@ -36,3 +36,9 @@ code {
 .searchModal .ant-modal-body {
   padding: 8px
 }
+
+.taskCard .ant-card-body {
+  padding-left: 0px;
+  padding-right: 0px;
+  padding-bottom: 0px;
+}

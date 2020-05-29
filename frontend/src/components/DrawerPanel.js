@@ -2,7 +2,9 @@
 import React, { Component } from "react";
 
 import { Button, Drawer, Tree } from 'antd';
-import { MenuOutlined, ImportOutlined, DownOutlined } from '@ant-design/icons';
+import { MenuOutlined, ImportOutlined, DownOutlined, CodeOutlined } from '@ant-design/icons';
+
+import DevPreferences from './DevPreferences';
 
 const { TreeNode } = Tree;
 
@@ -12,6 +14,7 @@ class DrawerPanel extends Component {
     super(props);
     this.state = {
       isOpen: false,
+      isDevPrefsOpen: false
     }
   }
 
@@ -23,9 +26,23 @@ class DrawerPanel extends Component {
     this.setState({ isOpen: !this.state.isOpen })
   }
 
+  renderDevModal() {
+    return (
+      <DevPreferences
+        context={this.props.context}
+        visible={this.state.isDevPrefsOpen}
+        handleClose={() => this.setState({isDevPrefsOpen: false})}
+        />
+    )
+  }
+
   renderTaskTree() {
 
     let { taskTree, taskMap } = this.props.tasks;
+
+    if (!taskTree) {
+      return null;
+    }
 
     function recurseOverComps(currentTree) {
       let task = taskMap.get(currentTree.data.id);
@@ -46,7 +63,7 @@ class DrawerPanel extends Component {
     }
 
     let components = [];
-    for (let root of taskTree) {
+    for (let root of taskTree.children) {
       components.push(recurseOverComps(root));
     }
 
@@ -73,9 +90,13 @@ class DrawerPanel extends Component {
           visible={this.state.isOpen}
         >
           {this.renderTaskTree()}
+          {this.renderDevModal()}
+          <Button type="link" icon={<CodeOutlined />} style={styles.devprefs} onClick={() => this.setState({isDevPrefsOpen: true})}>
+            Show Dev Preferences
+          </Button>
           <Button type="link" icon={<ImportOutlined />} style={styles.logout} onClick={this.props.handleLogout}>
             Logout
-                    </Button>
+          </Button>
         </Drawer>
       </div>
     );
@@ -92,6 +113,11 @@ const styles = {
   logout: {
     position: 'absolute',
     bottom: 16,
+    left: 8
+  },
+  devprefs: {
+    position: 'absolute',
+    bottom: 32,
     left: 8
   }
 }

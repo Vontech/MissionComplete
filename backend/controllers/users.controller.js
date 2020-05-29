@@ -51,6 +51,27 @@ controller.logoutUser = async (req, res, next) => {
   });
 }
 
+controller.getUserPreferences = async (req, res, next) => {
+  Users.findById(req.session.userId, (err, user) => {
+		if (err) {
+			res.status(400);
+			return res.json({ message: `Error getting preferences: ${err}` });
+		}
+    res.status(200);
+		res.json(user.devPreferences ? JSON.parse(user.devPreferences) : {});
+	});
+}
+
+controller.saveUserPreferences = async (req, res, next) => {
+  Users.findByIdAndUpdate(req.session.userId, {devPreferences: JSON.stringify(req.body.prefs)}, (err, user) => {
+		if (err) {
+			res.status(400);
+			return res.json({ message: `Error saving preferences: ${err}` });
+		}
+    next();
+	});
+}
+
 /**
  * Validate the user creation routine in the following ways:
  *  - Makes sure all fields are present

@@ -17,6 +17,11 @@ const UserSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
+  devPreferences: {
+    type: String,
+    required: false,
+    default: null
+  }
 });
 
 const Users = mongoose.model('Users', UserSchema);

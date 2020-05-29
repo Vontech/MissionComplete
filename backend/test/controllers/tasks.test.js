@@ -150,8 +150,8 @@ describe('Tasks', () => {
 
 		afterEach((done) => { deleteAllTasks(done); })
 
-		it('PATCH /api/s/task (no task ID #1)', (done) => {
-			withLogin(chai.request(app).patch('/api/s/task'), req => {
+		it('POST /api/s/updateTask (no task ID #1)', (done) => {
+			withLogin(chai.request(app).post('/api/s/updateTask'), req => {
 				req.end((err, res) => {
 					if (err) return done(err);
 					res.should.have.status(400);
@@ -161,8 +161,8 @@ describe('Tasks', () => {
 			});
 		});
 
-		it('PATCH /api/s/task (no task ID #2)', (done) => {
-			withLogin(chai.request(app).patch('/api/s/task').send({ }), req => {
+		it('POST /api/s/updateTask (no task ID #2)', (done) => {
+			withLogin(chai.request(app).post('/api/s/updateTask').send({ }), req => {
 				req.end((err, res) => {
 					if (err) return done(err);
 					res.should.have.status(400);
@@ -172,8 +172,8 @@ describe('Tasks', () => {
 			});
 		});
 
-		it('PATCH /api/s/task (null task ID)', (done) => {
-			withLogin(chai.request(app).patch('/api/s/task').send({ task_id: null }), req => {
+		it('POST /api/s/updateTask (null task ID)', (done) => {
+			withLogin(chai.request(app).post('/api/s/updateTask').send({ task_id: null }), req => {
 				req.end((err, res) => {
 					if (err) return done(err);
 					res.should.have.status(400);
@@ -183,8 +183,8 @@ describe('Tasks', () => {
 			});
 		});
 
-		it('PATCH /api/s/task (empty task ID)', (done) => {
-			withLogin(chai.request(app).patch('/api/s/task').send({ task_id: '' }), req => {
+		it('POST /api/s/updateTask (empty task ID)', (done) => {
+			withLogin(chai.request(app).post('/api/s/updateTask').send({ task_id: '' }), req => {
 				req.end((err, res) => {
 					if (err) return done(err);
 					res.should.have.status(400);
@@ -194,9 +194,9 @@ describe('Tasks', () => {
 			});
 		});
 
-		it('PATCH /api/s/task (invalid parent task ID)', (done) => {
+		it('POST /api/s/updateTask (invalid parent task ID)', (done) => {
 			createTestTask((test_task_id) => { 
-				withLogin(chai.request(app).patch('/api/s/task').send({ task_id: test_task_id,
+				withLogin(chai.request(app).post('/api/s/updateTask').send({ task_id: test_task_id,
 					parent: 'invalid_parent_id'}), req => {
 						req.end((err, res) => {
 							if (err) return done(err);
@@ -208,7 +208,7 @@ describe('Tasks', () => {
 			});
 		});
 
-		it('PATCH /api/s/task (valid task ID)', (done) => {
+		it('POST /api/s/updateTask (valid task ID)', (done) => {
 			// Create a new task to be the parent of testTask
 			createTestTask((test_task_id) => {
 				Tasks.create({
@@ -226,7 +226,7 @@ describe('Tasks', () => {
 						parent: new_task.id,
 						task_id: test_task_id
 					}
-					withLogin(chai.request(app).patch('/api/s/task').send(updates), req => {
+					withLogin(chai.request(app).post('/api/s/updateTask').send(updates), req => {
 						req.end((err, res) => {
 							if (err) {
 								return done(err);
@@ -287,7 +287,7 @@ describe('Tasks', () => {
 						parent: test_task_id_1,
 						task_id: test_task_id_2
 					}
-					withLogin(chai.request(app).patch('/api/s/task').send(updates), req => {
+					withLogin(chai.request(app).post('/api/s/updateTask').send(updates), req => {
 						req.end((err, res) => {
 							if (err) {
 								return done(err);

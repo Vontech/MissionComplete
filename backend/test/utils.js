@@ -9,7 +9,7 @@ import {createBaseClient} from '../setup/db';
 var mongoose = require('mongoose');
 
 // This is the app reference that all tests will use
-import app from '../../server';
+import app from '../server';
 console.log("STARTING TEST SERVER...");
 app.finished = async () => {
     await dropDB();
