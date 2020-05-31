@@ -35,7 +35,7 @@ class SearchModal extends Component {
 
   filterOption(inputValue, option) {
     let nameMatchesTitle = option.value.toUpperCase().indexOf(inputValue.toUpperCase()) !== -1
-    let nameMatchesNotes = option.task.notes.toUpperCase().indexOf(inputValue.toUpperCase()) !== -1
+    let nameMatchesNotes = option.task.notes ? option.task.notes.toUpperCase().indexOf(inputValue.toUpperCase()) !== -1 : false
     return nameMatchesTitle || nameMatchesNotes
   }
 

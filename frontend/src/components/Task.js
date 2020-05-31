@@ -194,7 +194,6 @@ class Task extends Component {
           <ArcherElement
             id={this.props.task.id}
             relations={this.props.task.children.map((element) => {
-              console.log("CREATING RELATION TO ", element)
               return {
                 targetId: element,
                 targetAnchor: 'top',

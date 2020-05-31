@@ -9,7 +9,6 @@ export function getIdTree(tasks) {
   }
   let d3Tree = d3.tree().nodeSize([350, 250])(d3.hierarchy(tree));
   let result = { tree: d3Tree, taskMap: taskMap }
-  console.log(result)
   return result;
 }
 

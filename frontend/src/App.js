@@ -302,7 +302,6 @@ class App extends Component {
       }
     }
 
-    console.log(taskTree)
     recurseOverComps(taskTree);
 
     return listOfTaskComps;
