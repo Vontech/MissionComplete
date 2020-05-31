@@ -62,6 +62,10 @@ class DrawerPanel extends Component {
       );
     }
 
+    if (!taskTree.children) {
+      return (<div>No tasks!</div>)
+    }
+
     let components = [];
     for (let root of taskTree.children) {
       components.push(recurseOverComps(root));

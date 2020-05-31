@@ -186,7 +186,7 @@ class App extends Component {
         let { tree, taskMap } = getIdTree(newTasks);
         this.setState({ taskMap: taskMap, taskTree: tree });
 
-        if (this.state.trackedTask == null && tree && tree.children.length > 0) {
+        if (this.state.trackedTask == null && tree && tree.children && tree.children.length > 0) {
           this.trackNewTask(tree.children[0].data.id);
         }
 
