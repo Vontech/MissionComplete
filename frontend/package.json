@@ -15,6 +15,7 @@
     "interactjs": "^1.9.10",
     "moment": "^2.23.0",
     "react": "^16.7.0",
+    "react-archer": "^2.0.1",
     "react-dom": "^16.7.0",
     "react-grid-system": "^4.4.1",
     "react-hotkeys": "^2.0.0",

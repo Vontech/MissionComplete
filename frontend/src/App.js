@@ -12,6 +12,8 @@ import Taskk from "./Models.js"
 import { getIdTree } from "./utils/algos.js"
 import { message } from 'antd';
 
+import { ArcherContainer } from 'react-archer';
+
 import '../node_modules/antd/dist/antd.css';
 
 import MissionCompleteApi from './utils/api';
@@ -303,17 +305,22 @@ class App extends Component {
     console.log(taskTree)
     recurseOverComps(taskTree);
 
-    return listOfArrows.concat(listOfTaskComps);
+    return listOfTaskComps;
 
   }
 
   getTasksPane() {
     return (
-      <div>
+      <ArcherContainer 
+        svgContainerStyle={{width: 10000}}
+        strokeColor="#b8b8b8"
+        strokeWidth={1.2}
+        noCurves={true}
+        >
         <GlobalHotKeys keyMap={this.keyMap} handlers={{ TOGGLE_SEARCH: this.toggleSearchModal.bind(this) }} />
         <Board>
           <NewTaskButton createNewTask={this.addTask.bind(this)} />
-          {this.renderTaskGraph()}
+            {this.renderTaskGraph()}
         </Board>
         {this.getDrawer()}
         {this.state.searchModalVisible &&
@@ -329,7 +336,7 @@ class App extends Component {
             }} />
         }
 
-      </div>
+      </ArcherContainer>
     )
   }
 

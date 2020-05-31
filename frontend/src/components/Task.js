@@ -7,6 +7,8 @@ import defaultStyles from '../styles.js';
 import EditTaskForm from "./EditTaskForm";
 import ProgressBar from "./ProgressBar";
 
+import { ArcherElement } from 'react-archer';
+
 const { Meta } = Card;
 var moment = require('moment');
 
@@ -22,8 +24,8 @@ class Task extends Component {
     notesIsEditing: false,
     dateIsEditing: false,
     isPriorityEditing: false,
-	hoveringOverDate: false,
-	isEditModalVisible: false
+    hoveringOverDate: false,
+    isEditModalVisible: false
   }
 
   constructor(props) {
@@ -189,6 +191,18 @@ class Task extends Component {
         style={{ ...styles.container, ...propStyles, opacity: this.props.task.completed ? 0.5 : 1.0 }}
         onMouseEnter={() => this.setHover(true)}
         onMouseLeave={() => this.setHover(false)}>
+          <ArcherElement
+            id={this.props.task.id}
+            relations={this.props.task.children.map((element) => {
+              console.log("CREATING RELATION TO ", element)
+              return {
+                targetId: element,
+                targetAnchor: 'top',
+                sourceAnchor: 'bottom',
+              }
+            })}
+            >
+          <div>
         <Card
           className="taskCard"
           actions={this.getActions()}
@@ -312,6 +326,8 @@ class Task extends Component {
 			/>
           </Modal>
         </div>
+      </div>
+      </ArcherElement>
       </div>
     )
   }
