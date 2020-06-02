@@ -164,8 +164,6 @@ class App extends Component {
   }
 
   editTask(task_id, properties) {
-    console.log("EDITING TASK ", task_id)
-    console.log(properties)
     properties['task_id'] = task_id
     this.api.updateTask(properties)
       .then(() => { this.updateTasks(); })
