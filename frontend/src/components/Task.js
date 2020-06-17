@@ -183,7 +183,7 @@ class Task extends Component {
   }
 
   render() {
-    let propStyles = { 'top': this.props.y, 'left': this.props.x }
+    let propStyles = { 'top': this.props.y, 'left': this.props.x - 150 }
     let priorityStyle = this.getPriorityTag();
     return (
       <div

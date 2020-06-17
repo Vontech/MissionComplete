@@ -99,8 +99,8 @@ class Board extends Component {
 const styles = {
   infiniteContainer: {
     background: '#efefef',
-    width: '10000px',
-    height: '10000px',
+    // width: '10000px',
+    // height: '10000px',
     scrollBehavior: 'smooth'
   }
 }

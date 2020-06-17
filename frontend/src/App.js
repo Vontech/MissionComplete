@@ -136,7 +136,7 @@ class App extends Component {
 
   trackNewTask(id) {
     if (id == null) {
-      window.scrollTo(5000 - 150, 5000 - 100);
+      //window.scrollTo(5000 - 150, 5000 - 100);
       this.setState({ trackedTask: null })
     } else {
       this.scrollToTask(id);
@@ -224,41 +224,12 @@ class App extends Component {
     this.setState({ searchModalVisible: !this.state.searchModalVisible })
   }
 
-  getDrawnArrowBetween(x1, y1, x2, y2) {
-
-    let swapped = false;
-    if (x1 > x2) {
-      let temp = x1;
-      x1 = x2;
-      x2 = temp;
-      swapped = true;
-    }
-
-    let height = y2 - y1;
-    let width = x2 - x1;
-
-    return (
-      <div
-        key={`${x1}-${y1}-${x2}-${y2}`}
-        style={{
-          position: 'absolute',
-          left: x1,
-          top: y1,
-          width: width,
-          height: height,
-        }}>
-        {!swapped ?
-          BezierCurve(x2 - x1, y2 - y1, [0, 0], [0, height], [width, 0], [width, height], Colors.ARROW_GREY)
-          : BezierCurve(x2 - x1, y2 - y1, [0, height], [0, 0], [width, height], [width, 0], Colors.ARROW_GREY)}
-      </div>
-    );
-  }
-
   renderTaskGraph() {
     let x_scale = 1;
     let y_scale = 1;
+    let horizontal_padding = 500;
+    let vertical_padding = 500;
     let listOfTaskComps = [];
-    let listOfArrows = [];
     let { taskTree, taskMap } = this.state;
     if (!taskTree) {
       return null
@@ -268,29 +239,36 @@ class App extends Component {
     let createChildTaskFunc = this.addTask.bind(this)
     let editTaskFunc = this.editTask.bind(this)
     let getContext = this.getAppContext.bind(this);
-    const that = this;
+
+    // Keep track of the tree size
+    let minX = Infinity;
+    let minY = Infinity;
+    let maxX = -Infinity;
+    let maxY = -Infinity;
+
     function recurseOverComps(currentTree) {
       if (currentTree.data.id != null) { // Only create node if not special root
         let task = taskMap.get(currentTree.data.id);
-        let x_pos = 5000 + x_scale * currentTree.x;
-        let y_pos = 5000 + y_scale * currentTree.y;
-        listOfTaskComps.push(
-          <Task
-            context={getContext()}
-            key={task.id}
-            x={x_pos}
-            y={y_pos}
-            task={task}
-            treeTaskData={currentTree.data}
-            // TODO: These should all be combined into some task manager
-            editTask={(properties) => editTaskFunc(task.id, properties)}
-            removeTaskHandler={removeTaskFunc}
-            completeTaskHandler={completeTaskFunc}
-            createChildTask={createChildTaskFunc} />
-        );
+        // let x_pos = 5000 + x_scale * currentTree.x;
+        // let y_pos = 5000 + y_scale * currentTree.y;
+        let x_pos = x_scale * currentTree.x;
+        let y_pos = y_scale * currentTree.y;
+
+        minX = Math.min(minX, x_pos); 
+        minY = Math.min(minY, y_pos);
+        maxX = Math.max(maxX, x_pos);
+        maxY = Math.max(maxY, y_pos);
+
+        listOfTaskComps.push([
+          task.id,
+          x_pos,
+          y_pos,
+          task,
+          currentTree.data,
+        ]);
+
         for (let child of (currentTree.children || [])) {
-          let child_x_y = recurseOverComps(child);
-          listOfArrows.push(that.getDrawnArrowBetween(x_pos + 150, y_pos + 107, child_x_y[0] + 150, child_x_y[1]))
+          recurseOverComps(child);
         }
         return [x_pos, y_pos];
       } else {
@@ -302,23 +280,60 @@ class App extends Component {
 
     recurseOverComps(taskTree);
 
-    return listOfTaskComps;
+    const vw = Math.max(document.documentElement.clientWidth || 0, window.innerWidth || 0);
+    const vh = Math.max(document.documentElement.clientHeight || 0, window.innerHeight || 0);
+
+    let width = Math.max(maxX - minX + horizontal_padding, vw);
+    let height = Math.max(maxY - minY + vertical_padding, vh);
+
+    let horizontalOffset = (-1 * minX) + horizontal_padding/2;
+    if ((-1*minX) < (vw/2 - horizontal_padding/2)) {
+      horizontalOffset = (vw/2)// + minX + horizontal_padding/2 - 150;
+    }
+    
+
+    let taskViews = listOfTaskComps.map((propArr) => {
+      return (<Task
+        context={getContext()}
+        key={propArr[0]}
+        x={propArr[1] + horizontalOffset}
+        y={propArr[2]}
+        task={propArr[3]}
+        treeTaskData={propArr[4]}
+        // TODO: These should all be combined into some task manager
+        editTask={(properties) => editTaskFunc(propArr[0], properties)}
+        removeTaskHandler={removeTaskFunc}
+        completeTaskHandler={completeTaskFunc}
+        createChildTask={createChildTaskFunc} 
+      />)
+    })
+
+    return (
+      <div style={{width: width, height: height}}>
+        <div>
+          {taskViews}
+        </div>
+      </div>
+    );
 
   }
 
   getTasksPane() {
+    let renderedTaskGraph = this.renderTaskGraph()
+    let paneWidth = renderedTaskGraph ? renderedTaskGraph.props.style.width : 0
     return (
       <ArcherContainer 
-        svgContainerStyle={{width: 10000}}
+        svgContainerStyle={{}/*{width: 10000}*/}
         strokeColor="#b8b8b8"
         strokeWidth={1.2}
         noCurves={true}
+        style={{width: paneWidth}}
         >
         <GlobalHotKeys keyMap={this.keyMap} handlers={{ TOGGLE_SEARCH: this.toggleSearchModal.bind(this) }} />
-        <Board>
+        <div style={{background: '#efefef', width: paneWidth}}>
           <NewTaskButton createNewTask={this.addTask.bind(this)} />
-            {this.renderTaskGraph()}
-        </Board>
+          {renderedTaskGraph}
+        </div>
         {this.getDrawer()}
         {this.state.searchModalVisible &&
           <SearchModal
