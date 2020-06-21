@@ -188,6 +188,9 @@ class App extends Component {
           this.trackNewTask(tree.children[0].data.id);
         }
 
+        console.log("TASKS UPDATED")
+        console.log(this.state)
+
       })
       .catch((err) => {
         console.log(err);
@@ -199,7 +202,7 @@ class App extends Component {
     return (
       <DrawerPanel
         context={this.getAppContext()}
-        scrollToTask={this.scrollToTask.bind(this)}
+        onTaskSelected={this.scrollToTask.bind(this)}
         handleLogout={this.handleLogout}
         tasks={{ taskTree: this.state.taskTree, taskMap: this.state.taskMap }} />
     )
@@ -291,7 +294,7 @@ class App extends Component {
       horizontalOffset = (vw/2)// + minX + horizontal_padding/2 - 150;
     }
     
-
+    const that = this;
     let taskViews = listOfTaskComps.map((propArr) => {
       return (<Task
         context={getContext()}
@@ -300,6 +303,8 @@ class App extends Component {
         y={propArr[2]}
         task={propArr[3]}
         treeTaskData={propArr[4]}
+        onTaskSelected={that.scrollToTask.bind(that)}
+			  tasks={{ taskTree: that.state.taskTree, taskMap: that.state.taskMap }}
         // TODO: These should all be combined into some task manager
         editTask={(properties) => editTaskFunc(propArr[0], properties)}
         removeTaskHandler={removeTaskFunc}
@@ -331,18 +336,17 @@ class App extends Component {
         >
         <GlobalHotKeys keyMap={this.keyMap} handlers={{ TOGGLE_SEARCH: this.toggleSearchModal.bind(this) }} />
         <div style={{background: '#efefef', width: paneWidth}}>
-          <NewTaskButton createNewTask={this.addTask.bind(this)} />
+          <NewTaskButton createNewTask={this.addTask.bind(this)} tasks={{ taskTree: this.state.taskTree, taskMap: this.state.taskMap }}/>
           {renderedTaskGraph}
         </div>
         {this.getDrawer()}
         {this.state.searchModalVisible &&
           <SearchModal
             isVisible={this.state.searchModalVisible}
-            tasks={this.state.taskMap}
+			      tasks={{ taskTree: this.state.taskTree, taskMap: this.state.taskMap }}
             onClickOutside={() => this.setState({ searchModalVisible: false })}
             selectTask={(task) => {
-
-              this.setState({ searchModalVisible: false }, () => {
+                this.setState({ searchModalVisible: false }, () => {
                 this.scrollToTask(task);
               })
             }} />
