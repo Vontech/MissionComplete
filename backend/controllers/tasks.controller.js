@@ -186,6 +186,9 @@ controller.updateTask = async (req, res, next) => {
 			return res.json({ message: `${baseError} could not find desired parent task with id '${req.body.parent}'`});
 		}
 
+		// TODO(vontell): Do not all making a a child task it's parent
+		// task, as it can be ambiguous.
+
 		new_parent = req.body.parent;
 	} else {
 		new_parent = currentTask.parent;

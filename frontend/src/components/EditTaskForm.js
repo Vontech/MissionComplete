@@ -3,6 +3,7 @@ import React, { Component } from "react";
 import { Button, Form, Input, DatePicker, Radio } from 'antd';
 import { FlagTwoTone, FlagOutlined } from '@ant-design/icons';
 import TaskTree from "./TaskTree";
+import { getChildren } from '../utils/algos';
 
 const { TextArea } = Input;
 var moment = require('moment');
@@ -95,6 +96,17 @@ class EditTaskForm extends Component {
     }
   }
 
+  getIgnoredChildren() {
+    if (this.props.thisTaskId) {
+      let children = [this.props.thisTaskId];
+      if (this.props.tasks.hasOwnProperty('taskMap')) {
+        getChildren(this.props.thisTaskId, this.props.tasks.taskMap, children);
+      }
+      return children;
+    }
+    return [];
+  }
+
   render() {
     return (
       <Form
@@ -130,7 +142,7 @@ class EditTaskForm extends Component {
           </Radio.Group>
         </Form.Item>
         <Form.Item label="Parent" name="parent">
-          <TaskTree tasks={this.props.tasks} disabledNodes={[this.props.thisTaskId]} />
+          <TaskTree tasks={this.props.tasks} disabledNodes={this.getIgnoredChildren()} />
         </Form.Item>
 
         {this.renderSubmitButton()}

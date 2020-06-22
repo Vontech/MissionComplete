@@ -43,3 +43,16 @@ export function getTraversedTree(id, taskMap) {
   return currentTree;
 }
 
+export function getChildren(id, taskMap, children) {
+  let task = taskMap.get(id);
+  if (task.children == null) {
+    return;
+  }
+
+  for (let child of task.children) {
+    children.push(child);
+    getChildren(child, taskMap, children)
+  }
+
+}
+
