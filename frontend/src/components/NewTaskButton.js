@@ -19,7 +19,7 @@ class NewTaskButton extends Component {
   }
 
   getForm() {
-    return (<EditTaskForm onSubmit={this.props.createNewTask} context='ADD' />);
+    return (<EditTaskForm tasks={this.props.tasks} onSubmit={this.props.createNewTask} context='ADD' />);
   }
 
   togglePanelVisibility() {

@@ -1,12 +1,10 @@
-
 import React, { Component } from "react";
 
-import { Button, Drawer, Tree } from 'antd';
-import { MenuOutlined, ImportOutlined, DownOutlined, CodeOutlined } from '@ant-design/icons';
-
+import { Button, Drawer } from 'antd';
+import { MenuOutlined, ImportOutlined, CodeOutlined } from '@ant-design/icons';
 import DevPreferences from './DevPreferences';
+import TaskTree from './TaskTree';
 
-const { TreeNode } = Tree;
 
 class DrawerPanel extends Component {
 
@@ -36,52 +34,6 @@ class DrawerPanel extends Component {
     )
   }
 
-  renderTaskTree() {
-
-    let { taskTree, taskMap } = this.props.tasks;
-
-    if (!taskTree) {
-      return null;
-    }
-
-    function recurseOverComps(currentTree) {
-      let task = taskMap.get(currentTree.data.id);
-      if (!currentTree.data.children || currentTree.data.children.length === 0) {
-        return (<TreeNode
-          taskRef={currentTree}
-          key={task.id}
-          title={task.name} />);
-      }
-      return (
-        <TreeNode
-          taskRef={currentTree}
-          key={task.id}
-          title={task.name}>
-          {currentTree.children.map((childTree) => { return recurseOverComps(childTree) })}
-        </TreeNode>
-      );
-    }
-
-    if (!taskTree.children) {
-      return (<div>No tasks!</div>)
-    }
-
-    let components = [];
-    for (let root of taskTree.children) {
-      components.push(recurseOverComps(root));
-    }
-
-    return (
-      <Tree
-        showLine={true}
-        switcherIcon={<DownOutlined />}
-        onSelect={(ids) => { this.props.scrollToTask(ids[0]) }}
-      >
-        {components}
-      </Tree>
-    );
-  }
-
   render() {
     return (
       <div>
@@ -93,7 +45,7 @@ class DrawerPanel extends Component {
           onClose={this.toggle.bind(this)}
           visible={this.state.isOpen}
         >
-          {this.renderTaskTree()}
+		  <TaskTree tasks={this.props.tasks} onTaskSelected={this.props.onTaskSelected} />
           {this.renderDevModal()}
           <Button type="link" icon={<CodeOutlined />} style={styles.devprefs} onClick={() => this.setState({isDevPrefsOpen: true})}>
             Show Dev Preferences

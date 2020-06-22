@@ -36,7 +36,7 @@ class Task extends Component {
   }
 
   componentDidMount() {
-    
+
   }
 
   getDueDateColor() {
@@ -82,12 +82,18 @@ class Task extends Component {
 
   getForm() {
     return (
-      <EditTaskForm onSubmit={(taskDetails) => {
-        taskDetails['parent'] = this.props.task.id;
+      <EditTaskForm 
+      tasks={this.props.tasks}
+      context={'ADD'}
+      initialValues={{
+        parent: this.props.task.id
+      }}
+      onSubmit={(taskDetails) => {
+        //taskDetails['parent'] = this.props.task.id;
         console.log(taskDetails);
         this.props.createChildTask(taskDetails);
         this.togglePanelVisibility();
-      }} />
+	  }} />
     );
   }
 
@@ -307,23 +313,28 @@ class Task extends Component {
 		<div style={{ position: 'absolute', right: 0, bottom: 30 }}>
 		  <Modal 
 		  	title={'Edit Task'} 
-			visible={this.state.isEditModalVisible}
-			onCancel={this.handleCancel}
-			footer={null}
-		  >
-			<EditTaskForm 
-				initialValues={{
-					name: this.props.task.name,
-					notes: this.props.task.notes,
-					priority: this.props.task.priority,
-				}}
-				context='EDIT'
-				onSubmit={(updatedValues) => {
-					this.props.editTask(updatedValues);
-					this.setState({ isEditModalVisible: false });
-				}} 
-			/>
-          </Modal>
+        visible={this.state.isEditModalVisible}
+        onCancel={this.handleCancel}
+        footer={null}
+        destroyOnClose={true}
+        maskClosable={true}
+        >
+        <EditTaskForm
+          initialValues={{
+            name: this.props.task.name,
+            notes: this.props.task.notes,
+            priority: this.props.task.priority,
+            parent: this.props.task.parent
+          }}
+          context='EDIT'
+          onSubmit={(updatedValues) => {
+            this.props.editTask(updatedValues);
+            this.setState({ isEditModalVisible: false });
+          }} 
+          thisTaskId={this.props.task.id}
+          onTaskSelected={this.props.onTaskSelected.bind(this)}
+          tasks={this.props.tasks} />
+      </Modal>
         </div>
       </div>
       </ArcherElement>

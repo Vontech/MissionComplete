@@ -185,10 +185,17 @@ controller.updateTask = async (req, res, next) => {
 			res.status(400);
 			return res.json({ message: `${baseError} could not find desired parent task with id '${req.body.parent}'`});
 		}
+
+		// TODO(vontell): Do not all making a a child task it's parent
+		// task, as it can be ambiguous.
+
 		new_parent = req.body.parent;
 	} else {
 		new_parent = currentTask.parent;
 	}
+
+	// Temporaraily remove from parent in case it is moving
+	await disassociateTaskFromParent(currentTask.id);
 
 	// Update the task itself
 	// TODO: We need to make this operation atomic
@@ -200,7 +207,7 @@ controller.updateTask = async (req, res, next) => {
 		'dueDate': new_due_date,
 		'priority': new_priority
 	}
-	Tasks.findByIdAndUpdate(req.body.task_id, {'$set': to_update}, { new: true }, (err, updatedTask) => {
+	Tasks.findByIdAndUpdate(req.body.task_id, {'$set': to_update}, { new: true }, async (err, updatedTask) => {
 		if (err) {
 			res.status(400);
 			return res.json({ message: 'Error updating task' });
@@ -208,6 +215,7 @@ controller.updateTask = async (req, res, next) => {
 
 			// Also update new parent if there is a new parent
 			if (new_parent != currentTask.parent) {
+				// Remove from current parent
 				Tasks.findByIdAndUpdate(new_parent, { $addToSet: { children: updatedTask.id }}, 
 					{ new: true }, (err, updatedParent) => {
 						if (err) {

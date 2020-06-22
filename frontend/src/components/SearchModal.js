@@ -2,6 +2,7 @@
 import React, { Component } from "react";
 
 import { Modal, AutoComplete } from 'antd';
+import TaskTree from './TaskTree'
 
 class SearchModal extends Component {
 
@@ -40,6 +41,7 @@ class SearchModal extends Component {
   }
 
   render() {
+    console.log(this.props)
     return (
       <Modal
         className="searchModal"
@@ -49,18 +51,7 @@ class SearchModal extends Component {
         closable={false}
         onCancel={this.props.onClickOutside}
         visible={this.props.isVisible}>
-        <AutoComplete
-          style={{
-            width: '100%',
-          }}
-          size="large"
-          autoFocus={true}
-          options={this.getOptions()}
-          placeholder="Search for a task..."
-          filterOption={this.filterOption}
-          onSelect={this.selectOption.bind(this)}
-          defaultActiveFirstOption={true}
-        />
+		    <TaskTree tasks={this.props.tasks} onTaskSelected={this.props.selectTask} />
       </Modal>
     );
   }

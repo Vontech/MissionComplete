@@ -2,6 +2,8 @@ import React, { Component } from "react";
 
 import { Button, Form, Input, DatePicker, Radio } from 'antd';
 import { FlagTwoTone, FlagOutlined } from '@ant-design/icons';
+import TaskTree from "./TaskTree";
+import { getChildren } from '../utils/algos';
 
 const { TextArea } = Input;
 var moment = require('moment');
@@ -22,21 +24,21 @@ class EditTaskForm extends Component {
   componentDidMount() { }
 
   onFinish = fieldValues => {
-	var values;
-	
-	// priority value cannot be undefined, prevents Cast to Number error
-	fieldValues.priority = fieldValues.priority || 4;
+    var values;
+
+    // priority value cannot be undefined, prevents Cast to Number error
+    fieldValues.priority = fieldValues.priority || 4;
 
     if (fieldValues.dueDate === undefined) {
       delete fieldValues.dueDate;
       values = fieldValues;
     } else {
       values = {
-		...fieldValues,
+        ...fieldValues,
         'dueDate': fieldValues.dueDate,
       };
-	}
-	this.props.onSubmit(values);
+    }
+    this.props.onSubmit(values);
     this.toggleFormVisibility();
   };
 
@@ -62,36 +64,47 @@ class EditTaskForm extends Component {
   }
 
   renderSubmitButton() {
-	  let buttonText;
-	  let buttonStyle = {};
-	  if (this.props.context === 'EDIT') {
-		buttonText = 'Update Task';
-		buttonStyle = {
-			float: 'right'
-		}
-	  } else {
-		buttonText = 'Create Task';
-	  }
-	  return (
-		<Form.Item style={{ marginBottom: 0 }}>
-			<Button 
-				htmlType="submit" 
-				type="primary" 
-				onClick={this.toggleFormVisibility.bind(this)}
-				style={buttonStyle}
-			>
-				{buttonText}
-			</Button>
-	  	</Form.Item>
-	  )
+    let buttonText;
+    let buttonStyle = {};
+    if (this.props.context === 'EDIT') {
+      buttonText = 'Update Task';
+      buttonStyle = {
+        float: 'right'
+      }
+    } else {
+      buttonText = 'Create Task';
+    }
+    return (
+      <Form.Item style={{ marginBottom: 0 }}>
+        <Button
+          htmlType="submit"
+          type="primary"
+          onClick={this.toggleFormVisibility.bind(this)}
+          style={buttonStyle}
+        >
+          {buttonText}
+        </Button>
+      </Form.Item>
+    )
   }
 
   getFormStyle() {
-	  if (this.props.context === 'EDIT') {
-		  return {}
-	  } else {
-		  return { width: 300 }
-	  }
+    if (this.props.context === 'EDIT') {
+      return {}
+    } else {
+      return { width: 300 }
+    }
+  }
+
+  getIgnoredChildren() {
+    if (this.props.thisTaskId) {
+      let children = [this.props.thisTaskId];
+      if (this.props.tasks.hasOwnProperty('taskMap')) {
+        getChildren(this.props.thisTaskId, this.props.tasks.taskMap, children);
+      }
+      return children;
+    }
+    return [];
   }
 
   render() {
@@ -104,8 +117,8 @@ class EditTaskForm extends Component {
         onFinishFailed={this.onFinishFailed}
         initialValues={this.props.initialValues}
         onValuesChange={() => { }}
-		size={"medium"}
-		style={this.getFormStyle()}
+        size={"medium"}
+        style={this.getFormStyle()}
         visible={this.state.isVisible}
       >
         <Form.Item label="Task Name" name="name">
@@ -128,8 +141,11 @@ class EditTaskForm extends Component {
             <Radio.Button value={4}><FlagOutlined style={{ color: "#595959" }} /></Radio.Button>
           </Radio.Group>
         </Form.Item>
+        <Form.Item label="Parent" name="parent">
+          <TaskTree tasks={this.props.tasks} disabledNodes={this.getIgnoredChildren()} />
+        </Form.Item>
 
-		{this.renderSubmitButton()}
+        {this.renderSubmitButton()}
       </Form>
     )
   }
