@@ -214,8 +214,8 @@ controller.updateTask = async (req, res, next) => {
 		} else {
 
 			// Also update new parent if there is a new parent
-			if (new_parent != currentTask.parent) {
-				// Remove from current parent
+			// if (new_parent != currentTask.parent) {
+			// 	// Remove from current parent
 				Tasks.findByIdAndUpdate(new_parent, { $addToSet: { children: updatedTask.id }}, 
 					{ new: true }, (err, updatedParent) => {
 						if (err) {
@@ -225,10 +225,10 @@ controller.updateTask = async (req, res, next) => {
 						res.status(200);
 						return res.json(updatedTask);
 					});
-			} else {
-				res.status(200);
-				return res.json(updatedTask);
-			}
+			// } else {
+			// 	res.status(200);
+			// 	return res.json(updatedTask);
+			// }
 			
 		}
 	});
