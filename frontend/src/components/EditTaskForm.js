@@ -11,7 +11,7 @@ var moment = require('moment');
 class EditTaskForm extends Component {
 
   state = {
-    isVisible: false,
+    
   }
 
   constructor(props) {
@@ -19,6 +19,7 @@ class EditTaskForm extends Component {
     this.state = {
 
     }
+    this.formRef = React.createRef()
   }
 
   componentDidMount() { }
@@ -39,16 +40,19 @@ class EditTaskForm extends Component {
       };
     }
     this.props.onSubmit(values);
-    this.toggleFormVisibility();
+    this.clearAndCloseForm();
   };
+
+  clearAndCloseForm() {
+    this.formRef.current.resetFields();
+    if (this.props.onClose) {
+      this.props.onClose();
+    }
+  }
 
   onFinishFailed = errorInfo => {
     console.log('Failed:', errorInfo);
   };
-
-  toggleFormVisibility() {
-    this.setState({ isVisible: !this.state.isVisible })
-  }
 
   onChange(date, dateString) {
     console.log(date, dateString);
@@ -79,7 +83,6 @@ class EditTaskForm extends Component {
         <Button
           htmlType="submit"
           type="primary"
-          onClick={this.toggleFormVisibility.bind(this)}
           style={buttonStyle}
         >
           {buttonText}
@@ -110,6 +113,7 @@ class EditTaskForm extends Component {
   render() {
     return (
       <Form
+        ref={this.formRef}
         labelCol={{ span: 24 }}
         wrapperCol={{ span: 24 }}
         layout="vertical"
@@ -119,7 +123,6 @@ class EditTaskForm extends Component {
         onValuesChange={() => { }}
         size={"medium"}
         style={this.getFormStyle()}
-        visible={this.state.isVisible}
       >
         <Form.Item label="Task Name" name="name">
           <Input />

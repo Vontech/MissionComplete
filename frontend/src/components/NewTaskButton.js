@@ -19,30 +19,42 @@ class NewTaskButton extends Component {
   }
 
   getForm() {
-    return (<EditTaskForm tasks={this.props.tasks} onSubmit={this.props.createNewTask} context='ADD' />);
+    return (
+      <EditTaskForm 
+        tasks={this.props.tasks} 
+        onSubmit={this.props.createNewTask} 
+        onClose={() => this.setPanelVisibility(false)}
+        context='ADD' />
+    );
   }
 
   togglePanelVisibility() {
     this.setState({ isVisible: !this.state.isVisible })
   }
 
+  setPanelVisibility(visibility) {
+    this.setState({ isVisible: visibility })
+  }
+
   render() {
     return (
       <div>
         <div style={styles.fixedBottomRight}>
-		  <Popover 
-			  placement="rightBottom" 
-			  title={'Create Task'} 
-			  content={this.getForm()} 
-			  visible={this.state.isVisible} 
-		  >
-			<Button 
-				size="large" 
-				icon={<PlusOutlined />} 
-				type="primary" 
-				shape="circle" 
-				onClick={this.togglePanelVisibility.bind(this)} 
-			/>
+          <Popover
+            placement="rightBottom"
+            title={'Create Task'}
+            content={this.getForm()}
+            trigger="click"
+            visible={this.state.isVisible}
+            onVisibleChange={this.setPanelVisibility.bind(this)}
+          >
+            <Button
+              size="large"
+              icon={<PlusOutlined />}
+              type="primary"
+              shape="circle"
+              onClick={this.togglePanelVisibility.bind(this)}
+            />
           </Popover>
         </div>
       </div>
