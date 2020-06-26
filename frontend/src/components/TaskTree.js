@@ -49,8 +49,6 @@ class TaskTree extends Component {
 	renderTaskTree() {
 
     const that = this;
-
-    console.log(this.props)
   
     let { taskTree, taskMap } = this.props.tasks;
     let searchValue = this.state.searchValue;
@@ -122,7 +120,6 @@ class TaskTree extends Component {
         expandedKeys.push(key);
       }
     });
-    // console.log("expandedKeys", expandedKeys);
       
 		this.setState({
 		  expandedKeys,

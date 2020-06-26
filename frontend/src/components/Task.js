@@ -99,6 +99,12 @@ class Task extends Component {
 
   togglePanelVisibility() {
     this.setState({ isVisible: !this.state.isVisible })
+    this.setHover(this.state.isVisible);
+  }
+
+  setPanelVisibility(visible) {
+    this.setState({ isVisible: visible })
+    this.setHover(visible);
   }
 
   toggleEditModalVisibility() {
@@ -112,7 +118,7 @@ class Task extends Component {
   };
 
   getActions() {
-    if (this.state.isHovered) {
+    if (this.state.isHovered || this.state.isVisible) {
       return [
         <Tooltip placement="bottom" title="Delete Task" visible={this.state.show}>
           <Popconfirm
@@ -129,9 +135,15 @@ class Task extends Component {
         <Tooltip placement="bottom" title="Edit Task">
           <EditTwoTone onClick={this.toggleEditModalVisibility.bind(this)} />
         </Tooltip>,
-        <Tooltip placement="bottom" title="Create Child" >
-          <ApartmentOutlined key="createBranch" onClick={this.togglePanelVisibility.bind(this)} />
-        </Tooltip>
+        <Popover 
+          placement="rightBottom" 
+          title={'Create Task'} 
+          content={this.getForm()} 
+          visible={this.state.isVisible} 
+          trigger="click"
+          onVisibleChange={this.setPanelVisibility.bind(this)} >
+            <ApartmentOutlined key="createBranch" onClick={this.togglePanelVisibility.bind(this)} />
+        </Popover>
       ]
     }
     return []
@@ -305,10 +317,6 @@ class Task extends Component {
 
 
         </Card>
-        <div style={{ position: 'absolute', right: 0, bottom: 30 }}>
-          <Popover placement="rightBottom" title={'Create Task'} content={this.getForm()} visible={this.state.isVisible} >
-          </Popover>
-        </div>
 
 		<div style={{ position: 'absolute', right: 0, bottom: 30 }}>
 		  <Modal 
