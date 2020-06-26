@@ -42,9 +42,6 @@ class TaskTree extends Component {
   }
 
   updateSearchQuery = (parentId) => {
-    console.log(parentId);
-    console.log(this.props.tasks.taskMap);
-    console.log(this.props.tasks.taskMap.get(parentId));
     let name = this.props.tasks.taskMap.get(parentId).name;
     this.setState({searchValue: name})
   }
@@ -58,8 +55,6 @@ class TaskTree extends Component {
     let { taskTree, taskMap } = this.props.tasks;
     let searchValue = this.state.searchValue;
 
-
-  
 	  if (!taskTree || !taskMap || taskMap.size === 0) {
 		  return null;
     }
@@ -139,7 +134,7 @@ class TaskTree extends Component {
 	render() {
 	  return (
 		<div>
-			<Search style={{ marginBottom: 8 }} placeholder="Search" onChange={this.onChange.bind(this)} value={this.state.searchValue} />
+			<Search style={{ marginBottom: 8 }} placeholder="Search" onChange={this.onChange.bind(this)} value={this.state.searchValue} autoFocus={this.props.shouldFocus}/>
 			{this.renderTaskTree()}
 		</div>
 	  )

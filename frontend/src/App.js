@@ -336,8 +336,8 @@ class App extends Component {
         >
         <GlobalHotKeys keyMap={this.keyMap} handlers={{ TOGGLE_SEARCH: this.toggleSearchModal.bind(this) }} />
         <div style={{background: '#efefef', width: paneWidth}}>
-          <NewTaskButton createNewTask={this.addTask.bind(this)} tasks={{ taskTree: this.state.taskTree, taskMap: this.state.taskMap }}/>
           {renderedTaskGraph}
+          <NewTaskButton createNewTask={this.addTask.bind(this)} tasks={{ taskTree: this.state.taskTree, taskMap: this.state.taskMap }}/>
         </div>
         {this.getDrawer()}
         {this.state.searchModalVisible &&

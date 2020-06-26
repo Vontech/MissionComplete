@@ -22,7 +22,9 @@ class EditTaskForm extends Component {
     this.formRef = React.createRef()
   }
 
-  componentDidMount() { }
+  componentDidMount() {
+    console.log("FORM NOW STARTED")
+  }
 
   onFinish = fieldValues => {
     var values;
@@ -48,6 +50,10 @@ class EditTaskForm extends Component {
     if (this.props.onClose) {
       this.props.onClose();
     }
+  }
+
+  clear() {
+    this.formRef.current.resetFields();
   }
 
   onFinishFailed = errorInfo => {
@@ -91,6 +97,23 @@ class EditTaskForm extends Component {
     )
   }
 
+  renderClearButton() {
+    if (this.props.context === 'EDIT') {
+      return null;
+    }
+    return (
+      <Form.Item style={{ marginBottom: 0 }}>
+        <Button
+          onClick={this.clear.bind(this)}
+          style={{float: 'right'}}
+          danger
+        >
+          Clear Input
+        </Button>
+      </Form.Item>
+    )
+  }
+
   getFormStyle() {
     if (this.props.context === 'EDIT') {
       return {}
@@ -125,7 +148,7 @@ class EditTaskForm extends Component {
         style={this.getFormStyle()}
       >
         <Form.Item label="Task Name" name="name">
-          <Input />
+          <Input autoFocus/>
         </Form.Item>
         <Form.Item label="Notes" name="notes">
           <TextArea rows={3} />
@@ -145,10 +168,11 @@ class EditTaskForm extends Component {
           </Radio.Group>
         </Form.Item>
         <Form.Item label="Parent" name="parent">
-          <TaskTree tasks={this.props.tasks} disabledNodes={this.getIgnoredChildren()} />
+          <TaskTree tasks={this.props.tasks} disabledNodes={this.getIgnoredChildren()} shouldFocus={false} />
         </Form.Item>
 
         {this.renderSubmitButton()}
+        {this.renderClearButton()}
       </Form>
     )
   }

@@ -45,7 +45,7 @@ class DrawerPanel extends Component {
           onClose={this.toggle.bind(this)}
           visible={this.state.isOpen}
         >
-		  <TaskTree tasks={this.props.tasks} onTaskSelected={this.props.onTaskSelected} />
+		  <TaskTree tasks={this.props.tasks} onTaskSelected={this.props.onTaskSelected} shouldFocus={true} />
           {this.renderDevModal()}
           <Button type="link" icon={<CodeOutlined />} style={styles.devprefs} onClick={() => this.setState({isDevPrefsOpen: true})}>
             Show Dev Preferences
