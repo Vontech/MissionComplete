@@ -4,7 +4,7 @@ import * as d3 from 'd3';
 export function getIdTree(tasks) {
   let { roots, taskMap } = getTaskMapAndRoots(tasks);
   let tree = {id: null, children: []}
-  for (let root of roots) {
+  for (let root of roots.sort()) {
     tree.children.push(getTraversedTree(root, taskMap))
   }
   let d3Tree = d3.tree().nodeSize([350, 250])(d3.hierarchy(tree));
@@ -33,7 +33,7 @@ export function getTraversedTree(id, taskMap) {
     return currentTree
   }
 
-  for (let child of task.children) {
+  for (let child of task.children.sort()) {
     let childResult = getTraversedTree(child, taskMap)
     currentTree.children.push(childResult)
     currentTree.numTotal += 1 + childResult.numTotal;
@@ -49,7 +49,7 @@ export function getChildren(id, taskMap, children) {
     return;
   }
 
-  for (let child of task.children) {
+  for (let child of task.children.sort()) {
     children.push(child);
     getChildren(child, taskMap, children)
   }

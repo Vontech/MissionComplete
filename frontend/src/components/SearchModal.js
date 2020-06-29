@@ -51,7 +51,7 @@ class SearchModal extends Component {
         closable={false}
         onCancel={this.props.onClickOutside}
         visible={this.props.isVisible}>
-		    <TaskTree tasks={this.props.tasks} onTaskSelected={this.props.selectTask} />
+		    <TaskTree tasks={this.props.tasks} onTaskSelected={this.props.selectTask} shouldFocus={true} />
       </Modal>
     );
   }

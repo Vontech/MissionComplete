@@ -11,7 +11,7 @@ var moment = require('moment');
 class EditTaskForm extends Component {
 
   state = {
-    isVisible: false,
+    
   }
 
   constructor(props) {
@@ -19,9 +19,12 @@ class EditTaskForm extends Component {
     this.state = {
 
     }
+    this.formRef = React.createRef()
   }
 
-  componentDidMount() { }
+  componentDidMount() {
+    console.log("FORM NOW STARTED")
+  }
 
   onFinish = fieldValues => {
     var values;
@@ -39,16 +42,23 @@ class EditTaskForm extends Component {
       };
     }
     this.props.onSubmit(values);
-    this.toggleFormVisibility();
+    this.clearAndCloseForm();
   };
+
+  clearAndCloseForm() {
+    this.formRef.current.resetFields();
+    if (this.props.onClose) {
+      this.props.onClose();
+    }
+  }
+
+  clear() {
+    this.formRef.current.resetFields();
+  }
 
   onFinishFailed = errorInfo => {
     console.log('Failed:', errorInfo);
   };
-
-  toggleFormVisibility() {
-    this.setState({ isVisible: !this.state.isVisible })
-  }
 
   onChange(date, dateString) {
     console.log(date, dateString);
@@ -79,10 +89,26 @@ class EditTaskForm extends Component {
         <Button
           htmlType="submit"
           type="primary"
-          onClick={this.toggleFormVisibility.bind(this)}
           style={buttonStyle}
         >
           {buttonText}
+        </Button>
+      </Form.Item>
+    )
+  }
+
+  renderClearButton() {
+    if (this.props.context === 'EDIT') {
+      return null;
+    }
+    return (
+      <Form.Item style={{ marginBottom: 0 }}>
+        <Button
+          onClick={this.clear.bind(this)}
+          style={{float: 'right'}}
+          danger
+        >
+          Clear Input
         </Button>
       </Form.Item>
     )
@@ -110,6 +136,7 @@ class EditTaskForm extends Component {
   render() {
     return (
       <Form
+        ref={this.formRef}
         labelCol={{ span: 24 }}
         wrapperCol={{ span: 24 }}
         layout="vertical"
@@ -119,10 +146,9 @@ class EditTaskForm extends Component {
         onValuesChange={() => { }}
         size={"medium"}
         style={this.getFormStyle()}
-        visible={this.state.isVisible}
       >
         <Form.Item label="Task Name" name="name">
-          <Input />
+          <Input autoFocus/>
         </Form.Item>
         <Form.Item label="Notes" name="notes">
           <TextArea rows={3} />
@@ -142,10 +168,11 @@ class EditTaskForm extends Component {
           </Radio.Group>
         </Form.Item>
         <Form.Item label="Parent" name="parent">
-          <TaskTree tasks={this.props.tasks} disabledNodes={this.getIgnoredChildren()} />
+          <TaskTree tasks={this.props.tasks} disabledNodes={this.getIgnoredChildren()} shouldFocus={false} />
         </Form.Item>
 
         {this.renderSubmitButton()}
+        {this.renderClearButton()}
       </Form>
     )
   }
