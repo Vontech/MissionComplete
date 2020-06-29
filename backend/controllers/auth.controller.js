@@ -59,11 +59,11 @@ module.exports.getUser = async function(username, password) {
 module.exports.saveToken = function(token, client, user) {
   var accessToken = new Tokens({
     accessToken: token.accessToken,
-    accessTokenExpiresAt: moment(token.accessTokenExpiresAt).toDate(),
+    accessTokenExpiresAt: moment(token.accessTokenExpiresAt).add(7, 'days').toDate(),
     client : client,
     clientId: client.clientId,
     refreshToken: token.refreshToken,
-    refreshTokenExpiresAt: moment(token.refreshTokenExpiresAt).toDate(),
+    refreshTokenExpiresAt: moment(token.refreshTokenExpiresAt).add(7, 'days').toDate(),
     user : user,
     userId: user._id,
   });
