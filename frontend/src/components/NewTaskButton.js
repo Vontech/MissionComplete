@@ -2,7 +2,7 @@
 import React, { Component } from "react";
 
 import { Button, Popover } from 'antd';
-import { PlusOutlined } from '@ant-design/icons';
+import { PlusOutlined, CloseOutlined } from '@ant-design/icons';
 import EditTaskForm from "./EditTaskForm";
 
 class NewTaskButton extends Component {
@@ -36,13 +36,22 @@ class NewTaskButton extends Component {
     this.setState({ isVisible: visibility })
   }
 
+  getTitle() {
+    return (
+      <div>
+        Create Task
+        <CloseOutlined style={{cursor: 'pointer', float: 'right', marginTop: 4}} onClick={() => this.setPanelVisibility(false)}/>
+      </div>
+    )
+  }
+
   render() {
     return (
       <div>
         <div style={styles.fixedBottomRight}>
           <Popover
             placement="rightBottom"
-            title={'Create Task'}
+            title={this.getTitle()}
             content={this.getForm()}
             trigger="click"
             visible={this.state.isVisible}

@@ -2,7 +2,7 @@
 import React, { Component } from "react";
 
 import { Card, Popconfirm, Tooltip, message, Popover, Typography, Tag, Input, DatePicker, Radio, Modal } from 'antd';
-import { EditTwoTone, DeleteTwoTone, ApartmentOutlined, CheckOutlined, FlagOutlined, ClockCircleOutlined, FlagTwoTone } from '@ant-design/icons';
+import { EditTwoTone, DeleteTwoTone, ApartmentOutlined, CheckOutlined, FlagOutlined, ClockCircleOutlined, FlagTwoTone, CloseOutlined } from '@ant-design/icons';
 import defaultStyles from '../styles.js';
 import EditTaskForm from "./EditTaskForm";
 import ProgressBar from "./ProgressBar";
@@ -118,6 +118,15 @@ class Task extends Component {
     });
   };
 
+  getNewTaskTitle() {
+    return (
+      <div>
+        Create Task
+        <CloseOutlined style={{cursor: 'pointer', float: 'right', marginTop: 4}} onClick={() => this.setPanelVisibility(false)}/>
+      </div>
+    )
+  }
+
   getActions() {
     if (this.state.isHovered || this.state.isVisible) {
       return [
@@ -138,7 +147,7 @@ class Task extends Component {
         </Tooltip>,
         <Popover 
           placement="rightBottom" 
-          title={'Create Task'} 
+          title={this.getNewTaskTitle()} 
           content={this.getForm()} 
           visible={this.state.isVisible} 
           trigger="click"
