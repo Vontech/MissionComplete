@@ -113,10 +113,6 @@ class EditTaskForm extends Component {
     )
   }
 
-  renderClearButton() {
-    
-  }
-
   getFormStyle() {
     if (this.props.context === 'EDIT') {
       return {}
@@ -175,7 +171,6 @@ class EditTaskForm extends Component {
         </Form.Item>
 
         {this.renderSubmitButton()}
-        {this.renderClearButton()}
       </Form>
     )
   }
