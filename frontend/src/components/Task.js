@@ -10,6 +10,7 @@ import ProgressBar from "./ProgressBar";
 import { ArcherElement } from 'react-archer';
 
 const { Meta } = Card;
+const { Paragraph } = Typography;
 var moment = require('moment');
 
 const PROGRESS_BAR_HEIGHT = 3
@@ -191,9 +192,13 @@ class Task extends Component {
         <Input 
           size="large" 
           onPressEnter={(ev) => {
-            this.props.editTask({'name': ev.target.value})
-            this.setState({titleIsEditing: false})
-            message.info(`Updated task title`);
+						if (!ev.target.value || ev.target.value === '') {
+							message.error(`Cannot have empty task name`);
+						} else {
+							this.props.editTask({'name': ev.target.value})
+            	this.setState({titleIsEditing: false})
+            	message.info(`Updated task title`);
+						}
           }}
           defaultValue={this.props.task.name} />
       )
@@ -248,7 +253,11 @@ class Task extends Component {
             }
 
             {!this.state.notesIsEditing && this.props.task.notes &&
-              <p onClick={() => this.setState({notesIsEditing: true})}>{this.props.task.notes}</p>
+							<Paragraph 
+								onClick={() => this.setState({notesIsEditing: true})}
+								ellipsis={{ rows: 3, expandable: false }} >
+									{this.props.task.notes}
+							</Paragraph>
             }
 
             {!this.state.notesIsEditing && this.state.isHovered && !this.props.task.notes &&
@@ -267,7 +276,7 @@ class Task extends Component {
               />
             }
 
-            {!this.state.dateIsEditing && 
+            {!this.state.dateIsEditing && this.state.isHovered &&
               <Tag 
                 icon={<ClockCircleOutlined />} color={this.getDueDateColor()}
                 onClick={() => this.setState({dateIsEditing: true})}
@@ -275,6 +284,15 @@ class Task extends Component {
                 {this.props.task.dueDate ? moment(this.props.task.dueDate).format('ddd, MMM D') : 'No due date'}
               </Tag>
             }
+
+						{!this.state.dateIsEditing && !this.state.isHovered && this.props.task.dueDate &&
+							<Tag 
+								icon={<ClockCircleOutlined />} color={this.getDueDateColor()}
+								onClick={() => this.setState({dateIsEditing: true})}
+								style={{display: 'inline-block', cursor: 'pointer'}}>
+								{moment(this.props.task.dueDate).format('ddd, MMM D')}
+							</Tag>
+						}
 
             {/*Priority Component*/}
 
@@ -298,11 +316,13 @@ class Task extends Component {
               </Tag>
             }
             
-            {!this.state.isPriorityEditing && priorityStyle && <Tag icon={<FlagOutlined />} color={priorityStyle.priorityColor}
-              onClick={() => this.setState({isPriorityEditing: true})}
-              style={{ display: 'inline-block', cursor: 'pointer'}}>
-              {priorityStyle.priorityText}
-            </Tag>}
+            {!this.state.isPriorityEditing && priorityStyle && 
+							<Tag icon={<FlagOutlined />} color={priorityStyle.priorityColor}
+              	onClick={() => this.setState({isPriorityEditing: true})}
+              	style={{ display: 'inline-block', cursor: 'pointer'}}>
+              	{priorityStyle.priorityText}
+            	</Tag>
+						}
 
           </div>
 
