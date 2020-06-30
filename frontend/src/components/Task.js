@@ -94,7 +94,7 @@ class Task extends Component {
         console.log(taskDetails);
         this.props.createChildTask(taskDetails);
         this.togglePanelVisibility();
-	  }} />
+    }} />
     );
   }
 
@@ -109,12 +109,12 @@ class Task extends Component {
   }
 
   toggleEditModalVisibility() {
-	  this.setState({ isEditModalVisible: !this.state.isEditModalVisible })
+    this.setState({ isEditModalVisible: !this.state.isEditModalVisible })
   }
 
   handleCancel = (e) => {
     this.setState({
-		isEditModalVisible: false,
+    isEditModalVisible: false,
     });
   };
 
@@ -201,13 +201,13 @@ class Task extends Component {
         <Input 
           size="large" 
           onPressEnter={(ev) => {
-						if (!ev.target.value || ev.target.value === '') {
-							message.error(`Cannot have empty task name`);
-						} else {
-							this.props.editTask({'name': ev.target.value})
-            	this.setState({titleIsEditing: false})
-            	message.info(`Updated task title`);
-						}
+            if (!ev.target.value || ev.target.value === '') {
+              message.error(`Cannot have empty task name`);
+            } else {
+              this.props.editTask({'name': ev.target.value})
+              this.setState({titleIsEditing: false})
+              message.info(`Updated task title`);
+            }
           }}
           defaultValue={this.props.task.name} />
       )
@@ -262,11 +262,11 @@ class Task extends Component {
             }
 
             {!this.state.notesIsEditing && this.props.task.notes &&
-							<Paragraph 
-								onClick={() => this.setState({notesIsEditing: true})}
-								ellipsis={{ rows: 3, expandable: false }} >
-									{this.props.task.notes}
-							</Paragraph>
+              <Paragraph 
+                onClick={() => this.setState({notesIsEditing: true})}
+                ellipsis={{ rows: 3, expandable: false }} >
+                  {this.props.task.notes}
+              </Paragraph>
             }
 
             {!this.state.notesIsEditing && this.state.isHovered && !this.props.task.notes &&
@@ -294,14 +294,14 @@ class Task extends Component {
               </Tag>
             }
 
-						{!this.state.dateIsEditing && !this.state.isHovered && this.props.task.dueDate &&
-							<Tag 
-								icon={<ClockCircleOutlined />} color={this.getDueDateColor()}
-								onClick={() => this.setState({dateIsEditing: true})}
-								style={{display: 'inline-block', cursor: 'pointer'}}>
-								{moment(this.props.task.dueDate).format('ddd, MMM D')}
-							</Tag>
-						}
+            {!this.state.dateIsEditing && !this.state.isHovered && this.props.task.dueDate &&
+              <Tag 
+                icon={<ClockCircleOutlined />} color={this.getDueDateColor()}
+                onClick={() => this.setState({dateIsEditing: true})}
+                style={{display: 'inline-block', cursor: 'pointer'}}>
+                {moment(this.props.task.dueDate).format('ddd, MMM D')}
+              </Tag>
+            }
 
             {/*Priority Component*/}
 
@@ -326,12 +326,12 @@ class Task extends Component {
             }
             
             {!this.state.isPriorityEditing && priorityStyle && 
-							<Tag icon={<FlagOutlined />} color={priorityStyle.priorityColor}
-              	onClick={() => this.setState({isPriorityEditing: true})}
-              	style={{ display: 'inline-block', cursor: 'pointer'}}>
-              	{priorityStyle.priorityText}
-            	</Tag>
-						}
+              <Tag icon={<FlagOutlined />} color={priorityStyle.priorityColor}
+                onClick={() => this.setState({isPriorityEditing: true})}
+                style={{ display: 'inline-block', cursor: 'pointer'}}>
+                {priorityStyle.priorityText}
+              </Tag>
+            }
 
           </div>
 
@@ -347,9 +347,9 @@ class Task extends Component {
 
         </Card>
 
-		<div style={{ position: 'absolute', right: 0, bottom: 30 }}>
-		  <Modal 
-		  	title={'Edit Task'} 
+    <div style={{ position: 'absolute', right: 0, bottom: 30 }}>
+      <Modal 
+        title={'Edit Task'} 
         visible={this.state.isEditModalVisible}
         onCancel={this.handleCancel}
         footer={null}
