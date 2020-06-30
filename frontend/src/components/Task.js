@@ -276,7 +276,7 @@ class Task extends Component {
               />
             }
 
-            {!this.state.dateIsEditing && 
+            {!this.state.dateIsEditing && (this.props.task.dueDate || this.state.isHovered) &&
               <Tag 
                 icon={<ClockCircleOutlined />} color={this.getDueDateColor()}
                 onClick={() => this.setState({dateIsEditing: true})}
