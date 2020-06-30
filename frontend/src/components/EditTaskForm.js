@@ -84,8 +84,23 @@ class EditTaskForm extends Component {
     } else {
       buttonText = 'Create Task';
     }
+
+
+    let clearButton = null;
+    if (this.props.context !== 'EDIT') {
+      clearButton = (
+          <Button
+            onClick={this.clear.bind(this)}
+            style={{float: 'right'}}
+            danger
+          >
+            Clear Input
+          </Button>
+      )
+    }
+
     return (
-      <Form.Item style={{ marginBottom: 0 }}>
+      <Form.Item style={{ marginBottom: 0}}>
         <Button
           htmlType="submit"
           type="primary"
@@ -93,25 +108,13 @@ class EditTaskForm extends Component {
         >
           {buttonText}
         </Button>
+        {clearButton}
       </Form.Item>
     )
   }
 
   renderClearButton() {
-    if (this.props.context === 'EDIT') {
-      return null;
-    }
-    return (
-      <Form.Item style={{ marginBottom: 0 }}>
-        <Button
-          onClick={this.clear.bind(this)}
-          style={{float: 'right'}}
-          danger
-        >
-          Clear Input
-        </Button>
-      </Form.Item>
-    )
+    
   }
 
   getFormStyle() {
