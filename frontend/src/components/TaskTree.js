@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 
-import { Tree, Input } from 'antd';
+import { Tree, Input, Button } from 'antd';
 import { DownOutlined } from '@ant-design/icons';
 
 
@@ -42,7 +42,7 @@ class TaskTree extends Component {
   }
 
   updateSearchQuery = (parentId) => {
-    let name = this.props.tasks.taskMap.get(parentId).name;
+    let name = parentId ? this.props.tasks.taskMap.get(parentId).name: null;
     this.setState({searchValue: name})
   }
 
@@ -59,17 +59,19 @@ class TaskTree extends Component {
     
     function getTitle(taskName) {
       const index = taskName.indexOf(searchValue);
-      const beforeStr = taskName.substr(0, index);
-      const afterStr = taskName.substr(index + searchValue.length);
-      return (index > -1) ? (
+      if (index > -1) {
+        const beforeStr = taskName.substr(0, index);
+        const afterStr = taskName.substr(index + searchValue.length);
+        return (
           <span>
             {beforeStr}
             <span style={{color: '#f50'}}>{searchValue}</span>
             {afterStr}
           </span>
-        ) : (
-          <span>{taskName}</span>
-        );
+        )
+      } else {
+        return(<span>{taskName}</span>);
+      }
     };
   
 	  function recurseOverComps(currentTree) {
@@ -127,11 +129,27 @@ class TaskTree extends Component {
 		  autoExpandParent: true,
 		});
   };
+
+  optionalNoParentButton() {
+    return (
+      <div 
+        style={{cursor: 'pointer'}}
+        onClick={() => this.triggerParentSelection(null)}>
+        Clear
+      </div>
+    )
+  }
   
 	render() {
 	  return (
 		<div>
-			<Search style={{ marginBottom: 8 }} placeholder="Search" onChange={this.onChange.bind(this)} value={this.state.searchValue} autoFocus={this.props.shouldFocus}/>
+			<Search
+        style={{ marginBottom: 8 }}
+        placeholder="Search" 
+        onChange={this.onChange.bind(this)} 
+        value={this.state.searchValue} 
+        addonAfter={!this.props.onTaskSelected ? this.optionalNoParentButton() : null}
+        autoFocus={this.props.shouldFocus}/>
 			{this.renderTaskTree()}
 		</div>
 	  )

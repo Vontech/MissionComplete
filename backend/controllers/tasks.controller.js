@@ -167,7 +167,10 @@ controller.updateTask = async (req, res, next) => {
 	let new_priority = (req.body.hasOwnProperty('priority')) ? req.body.priority : currentTask.priority;
 	let new_parent;
 	// If a new parent task ID is given, verify that it is valid
-	if (req.body.parent) {
+	if (req.body.parent == '') {
+		new_parent = null;
+	}
+	else if (req.body.parent) {
 		if (currentTask.id === req.body.parent) {
 			res.status(400);
 			return res.json({ message: `Error updating task - cannot make a task its own parent`});
@@ -185,9 +188,6 @@ controller.updateTask = async (req, res, next) => {
 			res.status(400);
 			return res.json({ message: `${baseError} could not find desired parent task with id '${req.body.parent}'`});
 		}
-
-		// TODO(vontell): Do not all making a a child task it's parent
-		// task, as it can be ambiguous.
 
 		new_parent = req.body.parent;
 	} else {
@@ -214,8 +214,7 @@ controller.updateTask = async (req, res, next) => {
 		} else {
 
 			// Also update new parent if there is a new parent
-			// if (new_parent != currentTask.parent) {
-			// 	// Remove from current parent
+			if (new_parent) {
 				Tasks.findByIdAndUpdate(new_parent, { $addToSet: { children: updatedTask.id }}, 
 					{ new: true }, (err, updatedParent) => {
 						if (err) {
@@ -225,10 +224,10 @@ controller.updateTask = async (req, res, next) => {
 						res.status(200);
 						return res.json(updatedTask);
 					});
-			// } else {
-			// 	res.status(200);
-			// 	return res.json(updatedTask);
-			// }
+			} else {
+				res.status(200);
+				return res.json(updatedTask);
+			}
 			
 		}
 	});
