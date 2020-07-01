@@ -36,8 +36,8 @@ export function getTraversedTree(id, taskMap) {
   for (let child of task.children.sort()) {
     let childResult = getTraversedTree(child, taskMap)
     currentTree.children.push(childResult)
-    currentTree.numTotal += 1 + childResult.numTotal;
-    currentTree.numCompleted += (taskMap.get(child).completed ? 1 : 0) + childResult.numCompleted;
+    currentTree.numTotal += 1 //+ childResult.numTotal;
+    currentTree.numCompleted += (taskMap.get(child).completed ? 1 : 0) //+ childResult.numCompleted;
   }
 
   return currentTree;
