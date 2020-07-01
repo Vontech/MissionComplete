@@ -31,6 +31,7 @@ class EditTaskForm extends Component {
 
     // priority value cannot be undefined, prevents Cast to Number error
     fieldValues.priority = fieldValues.priority || 4;
+    fieldValues.parent = fieldValues.parent == null ? '' : fieldValues.parent;
 
     if (fieldValues.dueDate === undefined) {
       delete fieldValues.dueDate;
@@ -41,6 +42,7 @@ class EditTaskForm extends Component {
         'dueDate': fieldValues.dueDate,
       };
     }
+    console.log(values)
     this.props.onSubmit(values);
     this.clearAndCloseForm();
   };
