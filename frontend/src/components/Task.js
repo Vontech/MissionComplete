@@ -41,7 +41,9 @@ class Task extends Component {
   }
 
   getDueDateColor() {
-    if (!this.props.task.dueDate) {
+    if (this.props.task.completed) {
+      return false;
+    } else if (!this.props.task.dueDate) {
       return '#cdcdcd';
     } else if (moment(this.props.task.dueDate).isAfter(moment(), 'day')) {
       return '#85a5ff';
@@ -53,16 +55,15 @@ class Task extends Component {
   }
 
   getPriorityTag() {
+    let priorityColor, priorityText;
     // eslint-disable-next-line default-case
     switch (this.props.task.priority) {
-      case 1:
-        return { priorityColor: 'magenta', priorityText: 'High' };
-      case 2:
-        return { priorityColor: 'purple', priorityText: 'Medium' };
-      case 3:
-        return { priorityColor: 'blue', priorityText: 'Low' };
+      case 1: priorityColor = 'magenta'; priorityText = 'High'; break;
+      case 2: priorityColor = 'purple'; priorityText = 'Medium'; break;
+      case 3: priorityColor = 'blue'; priorityText = 'Low'; break;
     }
-    return null;
+    if (this.props.task.completed) { priorityColor = false; }
+    return {priorityColor, priorityText};
   }
 
   handleVisibleChange = (show) => {
@@ -289,7 +290,7 @@ class Task extends Component {
               <Tag 
                 icon={<ClockCircleOutlined />} color={this.getDueDateColor()}
                 onClick={() => this.setState({dateIsEditing: true})}
-                style={{display: 'inline-block', cursor: 'pointer'}}>
+                style={(this.props.task.completed) ? styles.tag : {}}>
                 {this.props.task.dueDate ? moment(this.props.task.dueDate).format('ddd, MMM D') : 'No due date'}
               </Tag>
             }
@@ -298,7 +299,7 @@ class Task extends Component {
               <Tag 
                 icon={<ClockCircleOutlined />} color={this.getDueDateColor()}
                 onClick={() => this.setState({dateIsEditing: true})}
-                style={{display: 'inline-block', cursor: 'pointer'}}>
+                style={(this.props.task.completed) ? styles.tag : {}}>
                 {moment(this.props.task.dueDate).format('ddd, MMM D')}
               </Tag>
             }
@@ -318,14 +319,14 @@ class Task extends Component {
             }
 
             {!this.state.isPriorityEditing && (!this.props.task.priority || this.props.task.priority === 4) && this.state.isHovered && 
-              <Tag icon={<FlagOutlined />} color='lightgrey'
+              <Tag icon={<FlagOutlined />} color={priorityStyle.priorityColor}
                 onClick={() => this.setState({isPriorityEditing: true})}
-                style={{ display: 'inline-block', cursor: 'pointer'}}>
+                style={(this.props.task.completed) ? styles.tag : {}}>
                 No Priority
               </Tag>
             }
             
-            {!this.state.isPriorityEditing && priorityStyle && 
+            {!this.state.isPriorityEditing && (this.props.task.priority != 4) &&
               <Tag icon={<FlagOutlined />} color={priorityStyle.priorityColor}
                 onClick={() => this.setState({isPriorityEditing: true})}
                 style={{ display: 'inline-block', cursor: 'pointer'}}>
@@ -409,6 +410,10 @@ const styles = {
     padding: '4px 10px',
     marginBottom: '0px',
     marginRight: '10px'
+  },
+  tag: {
+    display: 'inline-block', 
+    cursor: 'pointer'
   },
 }
 
