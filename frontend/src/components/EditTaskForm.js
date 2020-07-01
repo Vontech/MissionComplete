@@ -64,15 +64,6 @@ class EditTaskForm extends Component {
     console.log(date, dateString);
   }
 
-  // Disable past days (cannot have due date in the past)
-  getDisabledDates(date) {
-    if (date <= moment().subtract(1, 'days')) {
-      return true;
-    } else {
-      return false;
-    }
-  }
-
   renderSubmitButton() {
     let buttonText;
     let buttonStyle = {};
@@ -155,8 +146,7 @@ class EditTaskForm extends Component {
         <Form.Item label="Due Date" name="dueDate">
           <DatePicker
             onChange={this.onChange.bind(this)}
-            format='MM/DD/YYYY'
-            disabledDate={this.getDisabledDates.bind(this)} />
+            format='MM/DD/YYYY' />
         </Form.Item>
         <Form.Item label="Priority" name="priority">
           <Radio.Group onChange={() => console.log('changed')} defaultValue={4}>

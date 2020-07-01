@@ -361,7 +361,8 @@ class Task extends Component {
             name: this.props.task.name,
             notes: this.props.task.notes,
             priority: this.props.task.priority,
-            parent: this.props.task.parent
+            parent: this.props.task.parent,
+            dueDate: (this.props.task.dueDate) ? moment(this.props.task.dueDate) : null
           }}
           context='EDIT'
           onSubmit={(updatedValues) => {
