@@ -1,8 +1,6 @@
 import React, { Component } from "react";
 import { GlobalHotKeys } from "react-hotkeys";
 
-import Colors from "./colors";
-import Board from "./components/Board.js"
 import Task from "./components/Task.js"
 import NewTaskButton from "./components/NewTaskButton.js"
 import LoginPanel from "./components/LoginPanel.js"
@@ -12,6 +10,8 @@ import Taskk from "./Models.js"
 import { getIdTree } from "./utils/algos.js"
 import { message } from 'antd';
 
+import log from 'loglevel';
+
 import { ArcherContainer } from 'react-archer';
 
 import '../node_modules/antd/dist/antd.css';
@@ -20,6 +20,8 @@ import MissionCompleteApi from './utils/api';
 
 import { configure } from 'react-hotkeys';
 
+log.enableAll();
+
 configure({
   /**
    * The level of logging of its own behaviour React HotKeys should perform.
@@ -27,34 +29,6 @@ configure({
   logLevel: 'none',
 
 });
-
-const BezierCurve = (
-  viewBoxWidth,
-  viewBoxHeight,
-  startPoint,
-  firstControlPoint,
-  secondControlPoint,
-  endPoint,
-  stroke
-) => {
-  return (
-    <svg
-      style={{ width: viewBoxWidth, height: viewBoxHeight, zIndex: -10 }}
-      viewBox={`0 0 ${viewBoxWidth} ${viewBoxHeight}`}>
-      <path
-        d={`
-          M ${startPoint}
-          C ${firstControlPoint}
-            ${secondControlPoint}
-            ${endPoint}
-        `}
-        stroke={stroke}
-        strokeWidth={2}
-        fill={"#00000000"}
-      />
-    </svg>
-  );
-}
 
 class App extends Component {
 
@@ -85,10 +59,6 @@ class App extends Component {
   componentDidMount() {
     this.updateTasks()
     this.trackNewTask(null)
-
-    this.api.getPreferences()
-      .then((result) => console.log(result))
-      .catch((result) => console.log(result))
 
     this.api.getPreferences()
       .then((res) => {
@@ -187,10 +157,6 @@ class App extends Component {
         if (this.state.trackedTask == null && tree && tree.children && tree.children.length > 0) {
           this.trackNewTask(tree.children[0].data.id);
         }
-
-        console.log("TASKS UPDATED")
-        console.log(this.state)
-
       })
       .catch((err) => {
         console.log(err);
@@ -373,6 +339,7 @@ class App extends Component {
   }
 
   render() {
+    log.debug('App.js render')
     return (
       <div id="primary-panel">
         {/*BezierCurve(200, 200, "0 0", "20 50", "20 150", "200 200", "red" )*/}
