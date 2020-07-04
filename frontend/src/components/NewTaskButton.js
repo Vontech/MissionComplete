@@ -29,11 +29,26 @@ class NewTaskButton extends Component {
   }
 
   togglePanelVisibility() {
-    this.setState({ isVisible: !this.state.isVisible })
+    let newVisibility = !this.state.isVisible
+    this.setState({ isVisible: newVisibility });
+    if (newVisibility) {
+      this.focusForm();
+    }
   }
 
   setPanelVisibility(visibility) {
-    this.setState({ isVisible: visibility })
+    this.setState({ isVisible: visibility });
+    if (visibility) {
+      this.focusForm();
+    }
+  }
+
+  focusForm() {
+    setTimeout(() => {
+      if (document.getElementById("name")) {
+        document.getElementById("name").focus()
+      }
+    }, 500)
   }
 
   getTitle() {

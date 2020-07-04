@@ -1,7 +1,7 @@
 
 import React, { Component } from "react";
 
-import { Modal, Form, Radio, Input, Select, TreeSelect, Cascader, Switch, InputNumber } from 'antd';
+import { Modal, Form, Switch } from 'antd';
 
 class DevPreferences extends Component {
 

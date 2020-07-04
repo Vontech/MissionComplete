@@ -1,10 +1,8 @@
 import React, { Component } from "react";
 
-import { Tree, Input, Button } from 'antd';
+import { Tree, Input } from 'antd';
 import { DownOutlined } from '@ant-design/icons';
 
-
-const { TreeNode } = Tree;
 const { Search } = Input;
 
 class TaskTree extends Component {
@@ -77,22 +75,18 @@ class TaskTree extends Component {
 	  function recurseOverComps(currentTree) {
       let task = taskMap.get(currentTree.data.id);
       if (!currentTree.data.children || currentTree.data.children.length === 0) {
-        return (
-          <TreeNode
-            disabled={that.props.disabledNodes ? that.props.disabledNodes.includes(task.id) : false}
-            taskRef={currentTree}
-            key={task.id}
-            title={getTitle(task.name)} />);
+        return {
+            disabled: that.props.disabledNodes ? that.props.disabledNodes.includes(task.id) : false,
+            key: task.id,
+            title: getTitle(task.name)
+        };
       }
-      return (
-        <TreeNode
-          taskRef={currentTree}
-          key={task.id}
-          disabled={that.props.disabledNodes ? that.props.disabledNodes.includes(task.id) : false}
-          title={getTitle(task.name)}>
-          {currentTree.children.map((childTree) => { return recurseOverComps(childTree) })}
-        </TreeNode>
-      );
+      return {
+          key: task.id,
+          disabled: that.props.disabledNodes ? that.props.disabledNodes.includes(task.id) : false,
+          title: getTitle(task.name),
+          children: currentTree.children.map((childTree) => { return recurseOverComps(childTree) })
+        };
 	  }
   
     let components = [];
@@ -108,8 +102,8 @@ class TaskTree extends Component {
         expandedKeys={this.state.expandedKeys}
         autoExpandParent={this.state.autoExpandParent}
         onExpand={this.onExpand}
+        treeData={components}
       >
-        {components}
       </Tree>
 	  );
 	}
