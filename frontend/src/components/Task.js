@@ -1,11 +1,14 @@
 
 import React, { Component } from "react";
 
-import { Card, Popconfirm, Tooltip, message, Popover, Typography, Tag, Input, DatePicker, Radio, Modal } from 'antd';
+import { Card, Popconfirm, Tooltip, message, Popover, Tag, Input, DatePicker, Radio, Modal } from 'antd';
 import { EditTwoTone, DeleteTwoTone, ApartmentOutlined, CheckOutlined, FlagOutlined, ClockCircleOutlined, FlagTwoTone, CloseOutlined } from '@ant-design/icons';
 import defaultStyles from '../styles.js';
 import EditTaskForm from "./EditTaskForm";
 import ProgressBar from "./ProgressBar";
+import log from 'loglevel';
+
+import { smoothScroll } from '../utils/ui';
 
 import { ArcherElement } from 'react-archer';
 
@@ -37,7 +40,7 @@ class Task extends Component {
   }
 
   componentDidMount() {
-
+    
   }
 
   getDueDateColor() {
@@ -67,7 +70,7 @@ class Task extends Component {
   }
 
   handleVisibleChange = (show) => {
-    this.setState({ show })
+    this.setState({ show });
   }
 
   mouseOver = () => {
@@ -85,28 +88,59 @@ class Task extends Component {
   getForm() {
     return (
       <EditTaskForm 
-      tasks={this.props.tasks}
-      context={'ADD'}
-      initialValues={{
-        parent: this.props.task.id
-      }}
-      onSubmit={(taskDetails) => {
-        //taskDetails['parent'] = this.props.task.id;
-        console.log(taskDetails);
-        this.props.createChildTask(taskDetails);
-        this.togglePanelVisibility();
-    }} />
+        tasks={this.props.tasks}
+        context={'ADD'}
+        initialValues={{
+          parent: this.props.task.id
+        }}
+        onSubmit={(taskDetails) => {
+          this.props.createChildTask(taskDetails);
+          this.togglePanelVisibility();
+      }} />
     );
   }
 
   togglePanelVisibility() {
-    this.setState({ isVisible: !this.state.isVisible })
-    this.setHover(this.state.isVisible);
+    let newVisibility = !this.state.isVisible;
+    this.setState({ isVisible: newVisibility }, () => {
+      this.setHover(this.state.isVisible);
+      if (newVisibility) {
+        this.scrollToPanel();
+      }
+    })
+    
   }
 
   setPanelVisibility(visible) {
-    this.setState({ isVisible: visible })
-    this.setHover(visible);
+    log.info("CALLED SET")
+    this.setState({ isVisible: visible, isHovered: visible }, () => {
+      if (visible) {
+        this.scrollToPanel();
+      }
+    })
+  }
+
+  scrollToPanel() {
+
+    let numCalls = 0;
+    var checkExist = setInterval(function() {
+        numCalls += 1
+        if (document.getElementById('taskPopover')) {
+
+          clearInterval(checkExist);
+          smoothScroll(document.getElementById('taskPopover'), {
+            behavior: 'smooth',
+            block: 'center',
+            inline: 'center'
+          }).then(() => {
+            document.querySelector('#taskPopover #name').focus()
+          })
+        }
+        else if (numCalls > 10) {
+          clearInterval(checkExist);
+        }
+    }, 100/6); // check every 100ms
+    
   }
 
   toggleEditModalVisibility() {
@@ -147,13 +181,14 @@ class Task extends Component {
           <EditTwoTone onClick={this.toggleEditModalVisibility.bind(this)} />
         </Tooltip>,
         <Popover 
+          id="taskPopover"
           placement="rightBottom" 
           title={this.getNewTaskTitle()} 
           content={this.getForm()} 
           visible={this.state.isVisible} 
           trigger="click"
           onVisibleChange={this.setPanelVisibility.bind(this)} >
-            <ApartmentOutlined key="createBranch" onClick={this.togglePanelVisibility.bind(this)} />
+            <ApartmentOutlined key="createBranch"/>
         </Popover>
       ]
     }
@@ -216,8 +251,10 @@ class Task extends Component {
   }
 
   render() {
+    log.debug('Task.js render')
     let propStyles = { 'top': this.props.y, 'left': this.props.x - 150 }
     let priorityStyle = this.getPriorityTag();
+    let dueDateColor = this.getDueDateColor();
     return (
       <div
         id={this.props.task.id}
@@ -288,7 +325,7 @@ class Task extends Component {
 
             {!this.state.dateIsEditing && this.state.isHovered &&
               <Tag 
-                icon={<ClockCircleOutlined />} color={this.getDueDateColor()}
+                icon={<ClockCircleOutlined />} color={dueDateColor}
                 onClick={() => this.setState({dateIsEditing: true})}
                 style={(this.props.task.completed) ? styles.tag : {}}>
                 {this.props.task.dueDate ? moment(this.props.task.dueDate).format('ddd, MMM D') : 'No due date'}
@@ -385,7 +422,8 @@ class Task extends Component {
 
 const styles = {
   container: {
-    position: 'absolute'
+    position: 'absolute',
+    minWidth: '300px'
   },
   completedCheckStyle: {
     fontSize: '12px',

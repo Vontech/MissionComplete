@@ -23,7 +23,7 @@ class EditTaskForm extends Component {
   }
 
   componentDidMount() {
-    console.log("FORM NOW STARTED")
+    
   }
 
   onFinish = fieldValues => {
@@ -31,6 +31,7 @@ class EditTaskForm extends Component {
 
     // priority value cannot be undefined, prevents Cast to Number error
     fieldValues.priority = fieldValues.priority || 4;
+    fieldValues.parent = fieldValues.parent == null ? '' : fieldValues.parent;
 
     if (fieldValues.dueDate === undefined) {
       delete fieldValues.dueDate;
@@ -133,12 +134,11 @@ class EditTaskForm extends Component {
         onFinish={this.onFinish}
         onFinishFailed={this.onFinishFailed}
         initialValues={this.props.initialValues}
-        onValuesChange={() => { }}
         size={"medium"}
         style={this.getFormStyle()}
       >
         <Form.Item label="Task Name" name="name">
-          <Input autoFocus/>
+          <Input/>
         </Form.Item>
         <Form.Item label="Notes" name="notes">
           <TextArea rows={3} />
@@ -149,7 +149,7 @@ class EditTaskForm extends Component {
             format='MM/DD/YYYY' />
         </Form.Item>
         <Form.Item label="Priority" name="priority">
-          <Radio.Group onChange={() => console.log('changed')} defaultValue={4}>
+          <Radio.Group onChange={() => console.log('changed')}>
             <Radio.Button value={1}><FlagTwoTone twoToneColor="#eb2f96" /></Radio.Button>
             <Radio.Button value={2}><FlagTwoTone twoToneColor="#722ed1" /></Radio.Button>
             <Radio.Button value={3}><FlagTwoTone twoToneColor="#2f54eb" /></Radio.Button>

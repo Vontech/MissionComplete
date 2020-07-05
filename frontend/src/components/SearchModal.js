@@ -1,7 +1,7 @@
 
 import React, { Component } from "react";
 
-import { Modal, AutoComplete } from 'antd';
+import { Modal } from 'antd';
 import TaskTree from './TaskTree'
 
 class SearchModal extends Component {
