@@ -21,6 +21,7 @@
     "react-dom": "^16.7.0",
     "react-grid-system": "^4.4.1",
     "react-hotkeys": "^2.0.0",
+    "react-linkify": "0.2.2",
     "react-move": "^2.8.0",
     "react-scripts": "2.1.2",
     "reactablejs": "^0.2.0"
