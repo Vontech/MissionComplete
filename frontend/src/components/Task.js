@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 
 import { Card, Popconfirm, Tooltip, message, Popover, Tag, Modal, Typography } from 'antd';
-import { EditTwoTone, DeleteTwoTone, ApartmentOutlined, CheckOutlined, FlagOutlined, ClockCircleOutlined, FlagTwoTone, CloseOutlined } from '@ant-design/icons';
+import { EditTwoTone, DeleteTwoTone, ApartmentOutlined, CheckOutlined, FlagOutlined, ClockCircleOutlined, CloseOutlined } from '@ant-design/icons';
 import defaultStyles from '../styles.js';
 import EditTaskForm from "./EditTaskForm";
 import ProgressBar from "./ProgressBar";
@@ -103,7 +103,6 @@ class Task extends Component {
         this.scrollToPanel();
       }
     })
-    
   }
 
   setPanelVisibility(visible) {
@@ -134,7 +133,6 @@ class Task extends Component {
           clearInterval(checkExist);
         }
     }, 100/6); // check every 100ms
-    
   }
 
   toggleEditModalVisibility() {
@@ -343,12 +341,6 @@ const styles = {
     border: '1px solid #52c41a',
     borderRadius: '20px',
     marginLeft: '16px'
-  },
-  dueDate: {
-    borderRadius: '4px',
-    padding: '4px 10px',
-    marginBottom: '0px',
-    marginRight: '10px'
   },
   tag: {
     display: 'inline-block', 
