@@ -1,7 +1,6 @@
-
 import React, { Component } from "react";
 
-import { Card, Popconfirm, Tooltip, message, Popover, Tag, Input, DatePicker, Radio, Modal, Typography } from 'antd';
+import { Card, Popconfirm, Tooltip, message, Popover, Tag, Modal, Typography } from 'antd';
 import { EditTwoTone, DeleteTwoTone, ApartmentOutlined, CheckOutlined, FlagOutlined, ClockCircleOutlined, FlagTwoTone, CloseOutlined } from '@ant-design/icons';
 import defaultStyles from '../styles.js';
 import EditTaskForm from "./EditTaskForm";
@@ -13,7 +12,6 @@ import { smoothScroll } from '../utils/ui';
 import Linkify from 'react-linkify'
 import { ArcherElement } from 'react-archer';
 
-const { Meta } = Card;
 const { Paragraph } = Typography;
 var moment = require('moment');
 
@@ -118,7 +116,6 @@ class Task extends Component {
   }
 
   scrollToPanel() {
-
     let numCalls = 0;
     var checkExist = setInterval(function() {
         numCalls += 1
@@ -197,27 +194,12 @@ class Task extends Component {
     message.info(`Deleted task '${this.props.task.name}'`);
   }
 
-  updateDate(dateMoment, dateStr) {
-    this.props.editTask({'dueDate': dateMoment ? dateMoment.format() : null});
-    message.info(`Updated task due date`);
-  }
-
-  updatePriority(value) {
-    this.props.editTask({'priority': value});
-    this.setState({isPriorityEditing: false})
-    message.info(`Updated task priority`);
-  }
-
   toggleComplete() {
     this.props.completeTaskHandler({ task_id: this.props.task.id, completed: !this.props.task.completed });
   }
 
   setHover(isHovered) {
     this.setState({ isHovered: isHovered })
-  }
-
-  getDateEditFooter() {
-    return "Clear Due Date";
   }
 
   render() {
@@ -231,113 +213,108 @@ class Task extends Component {
         style={{ ...styles.container, ...propStyles, opacity: this.props.task.completed ? 0.5 : 1.0 }}
         onMouseEnter={() => this.setHover(true)}
         onMouseLeave={() => this.setHover(false)}>
-          <ArcherElement
-            id={this.props.task.id}
-            relations={this.props.task.children.map((element) => {
-              return {
-                targetId: element,
-                targetAnchor: 'top',
-                sourceAnchor: 'bottom',
-              }
-            })}
-            >
+        <ArcherElement
+          id={this.props.task.id}
+          relations={this.props.task.children.map((element) => {
+            return {
+              targetId: element,
+              targetAnchor: 'top',
+              sourceAnchor: 'bottom',
+            }
+          })}>
           <div>
-        <Card
-          className="taskCard"
-          actions={this.getActions()}
-          title={this.props.task.name}
-          style={{ width: 300 }}
-          extra={
-            <Tooltip placement="top" title="Mark as Done">
-              <CheckOutlined
-                style={this.props.task.completed ? styles.completedCheckStyle : styles.uncompletedCheckStyle}
-                onClick={this.toggleComplete.bind(this)} />
-            </Tooltip>
-          }>
+            <Card
+              className="taskCard"
+              actions={this.getActions()}
+              title={this.props.task.name}
+              style={{ width: 300 }}
+              extra={
+                <Tooltip placement="top" title="Mark as Done">
+                  <CheckOutlined
+                    style={this.props.task.completed ? styles.completedCheckStyle : styles.uncompletedCheckStyle}
+                    onClick={this.toggleComplete.bind(this)} />
+                </Tooltip>
+              }>
 
-          <div style={{paddingRight: 24, paddingLeft: 24}}>
+              <div style={{paddingRight: 24, paddingLeft: 24}}>
 
-            {this.props.task.notes &&
-              <Paragraph ellipsis={{ rows: 3, expandable: false }} >
-                  <Linkify properties={{target: '_blank'}}>{this.props.task.notes}</Linkify>
-              </Paragraph>
-            }
+                {this.props.task.notes &&
+                  <Paragraph ellipsis={{ rows: 3, expandable: false }} >
+                      <Linkify properties={{target: '_blank'}}>{this.props.task.notes}</Linkify>
+                  </Paragraph>
+                }
 
-            {this.state.isHovered &&
-              <Tag 
-                icon={<ClockCircleOutlined />} color={dueDateColor}
-                style={(this.props.task.completed) ? styles.tag : {}}>
-                {this.props.task.dueDate ? moment(this.props.task.dueDate).format('ddd, MMM D') : 'No due date'}
-              </Tag>
-            }
+                {this.state.isHovered &&
+                  <Tag 
+                    icon={<ClockCircleOutlined />} color={dueDateColor}
+                    style={(this.props.task.completed) ? styles.tag : {}}>
+                    {this.props.task.dueDate ? moment(this.props.task.dueDate).format('ddd, MMM D') : 'No due date'}
+                  </Tag>
+                }
 
-            {!this.state.isHovered && this.props.task.dueDate &&
-              <Tag 
-                icon={<ClockCircleOutlined />} color={this.getDueDateColor()}
-                style={(this.props.task.completed) ? styles.tag : {}}>
-                {moment(this.props.task.dueDate).format('ddd, MMM D')}
-              </Tag>
-            }
+                {!this.state.isHovered && this.props.task.dueDate &&
+                  <Tag 
+                    icon={<ClockCircleOutlined />} color={this.getDueDateColor()}
+                    style={(this.props.task.completed) ? styles.tag : {}}>
+                    {moment(this.props.task.dueDate).format('ddd, MMM D')}
+                  </Tag>
+                }
 
-            {/*Priority Component*/}
+                {(!this.props.task.priority || this.props.task.priority === 4) && this.state.isHovered && 
+                  <Tag icon={<FlagOutlined />} color={priorityStyle.priorityColor}
+                    style={(this.props.task.completed) ? styles.tag : {}}>
+                    No Priority
+                  </Tag>
+                }
+                
+                {(this.props.task.priority !== 4) &&
+                  <Tag icon={<FlagOutlined />} color={priorityStyle.priorityColor}
+                    style={{ display: 'inline-block', cursor: 'pointer'}}>
+                    {priorityStyle.priorityText}
+                  </Tag>
+                }
 
-            {(!this.props.task.priority || this.props.task.priority === 4) && this.state.isHovered && 
-              <Tag icon={<FlagOutlined />} color={priorityStyle.priorityColor}
-                style={(this.props.task.completed) ? styles.tag : {}}>
-                No Priority
-              </Tag>
-            }
-            
-            {(this.props.task.priority !== 4) &&
-              <Tag icon={<FlagOutlined />} color={priorityStyle.priorityColor}
-                style={{ display: 'inline-block', cursor: 'pointer'}}>
-                {priorityStyle.priorityText}
-              </Tag>
-            }
+              </div>
 
+              <div style={{marginBottom: 24 - (this.props.treeTaskData.numTotal > 0 ? PROGRESS_BAR_HEIGHT : 0)}} />
+
+              {this.props.treeTaskData.numTotal > 0 && this.props.context.preferences.useProgressBars && 
+                <ProgressBar 
+                  progress={(this.props.treeTaskData.numCompleted / this.props.treeTaskData.numTotal) * 100.0}
+                  color={defaultStyles.colors.progressGood}
+                  height={PROGRESS_BAR_HEIGHT} />
+              }
+
+            </Card>
+
+            <div style={{ position: 'absolute', right: 0, bottom: 30 }}>
+              <Modal 
+                title={'Edit Task'} 
+                visible={this.state.isEditModalVisible}
+                onCancel={this.handleCancel}
+                footer={null}
+                destroyOnClose={true}
+                maskClosable={true} >
+                <EditTaskForm
+                  initialValues={{
+                    name: this.props.task.name,
+                    notes: this.props.task.notes,
+                    priority: this.props.task.priority,
+                    parent: this.props.task.parent,
+                    dueDate: (this.props.task.dueDate) ? moment(this.props.task.dueDate) : null
+                  }}
+                  context='EDIT'
+                  onSubmit={(updatedValues) => {
+                    this.props.editTask(updatedValues);
+                    this.setState({ isEditModalVisible: false });
+                  }} 
+                  thisTaskId={this.props.task.id}
+                  onTaskSelected={this.props.onTaskSelected.bind(this)}
+                  tasks={this.props.tasks} />
+              </Modal>
+            </div>
           </div>
-
-          <div style={{marginBottom: 24 - (this.props.treeTaskData.numTotal > 0 ? PROGRESS_BAR_HEIGHT : 0)}}></div>
-
-          {this.props.treeTaskData.numTotal > 0 && this.props.context.preferences.useProgressBars && 
-            <ProgressBar 
-              progress={(this.props.treeTaskData.numCompleted / this.props.treeTaskData.numTotal) * 100.0}
-              color={defaultStyles.colors.progressGood}
-              height={PROGRESS_BAR_HEIGHT} />
-          }
-
-
-        </Card>
-
-    <div style={{ position: 'absolute', right: 0, bottom: 30 }}>
-      <Modal 
-        title={'Edit Task'} 
-        visible={this.state.isEditModalVisible}
-        onCancel={this.handleCancel}
-        footer={null}
-        destroyOnClose={true}
-        maskClosable={true}
-        >
-        <EditTaskForm
-          initialValues={{
-            name: this.props.task.name,
-            notes: this.props.task.notes,
-            priority: this.props.task.priority,
-            parent: this.props.task.parent,
-            dueDate: (this.props.task.dueDate) ? moment(this.props.task.dueDate) : null
-          }}
-          context='EDIT'
-          onSubmit={(updatedValues) => {
-            this.props.editTask(updatedValues);
-            this.setState({ isEditModalVisible: false });
-          }} 
-          thisTaskId={this.props.task.id}
-          onTaskSelected={this.props.onTaskSelected.bind(this)}
-          tasks={this.props.tasks} />
-      </Modal>
-        </div>
-      </div>
-      </ArcherElement>
+        </ArcherElement>
       </div>
     )
   }
