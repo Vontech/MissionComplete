@@ -2,6 +2,7 @@ import React, { Component } from "react";
 import { GlobalHotKeys } from "react-hotkeys";
 
 import Task from "./components/Task.js"
+import TaskV2 from "./components/TaskV2.js"
 import NewTaskButton from "./components/NewTaskButton.js"
 import LoginPanel from "./components/LoginPanel.js"
 import DrawerPanel from "./components/DrawerPanel.js"
@@ -262,7 +263,7 @@ class App extends Component {
     
     const that = this;
     let taskViews = listOfTaskComps.map((propArr) => {
-      return (<Task
+      return (<TaskV2
         context={getContext()}
         key={propArr[0]}
         x={propArr[1] + horizontalOffset}
@@ -301,7 +302,7 @@ class App extends Component {
         style={{width: paneWidth}}
         >
         <GlobalHotKeys keyMap={this.keyMap} handlers={{ TOGGLE_SEARCH: this.toggleSearchModal.bind(this) }} />
-        <div style={{background: '#efefef', width: paneWidth}}>
+        <div style={{background: '#F5F6F8', width: paneWidth}}>
           {renderedTaskGraph}
           <NewTaskButton createNewTask={this.addTask.bind(this)} tasks={{ taskTree: this.state.taskTree, taskMap: this.state.taskMap }}/>
         </div>
