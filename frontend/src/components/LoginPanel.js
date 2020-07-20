@@ -10,7 +10,7 @@ class LoginPanel extends Component {
     this.state = {
       isRegistering: false,
       errorMessage: null,
-      isLoading: null
+      isLoading: false
     };
   }
 

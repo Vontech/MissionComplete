@@ -27,7 +27,8 @@ const STYLES = {
         position: 'absolute',
         width: DIMENSIONS.CARD_WIDTH,
         height: DIMENSIONS.CARD_HEIGHT,
-        fontFamily: 'Avenir'
+        fontFamily: 'Avenir',
+        cursor: 'pointer'
     },
     card: {
         background: COLORS.CARD_BACKGROUND,
@@ -57,7 +58,7 @@ const STYLES = {
 class TaskV2 extends Component {
 
     state = {
-      
+      isHovered: false
     }
   
     constructor(props) {
@@ -93,18 +94,31 @@ class TaskV2 extends Component {
         return (
             <div style={{
                 //filter: 'drop-shadow(0px 2px 50px #40000000)',
-                boxShadow: 'rgba(0, 0, 0, 0.15) 0px 2px 50px',
+                boxShadow: this.state.isHovered ? 'rgba(0, 0, 0, 0.35) 0px 2px 50px' : 'rgba(0, 0, 0, 0.20) 0px 2px 50px',
                 width: DIMENSIONS.CARD_WIDTH / 1.3,
                 height: DIMENSIONS.CARD_HEIGHT / 2,
-                zIndex: 5
+                zIndex: 5,
+                transition: '0.3s'
             }}>
             </div>
         )
     }
 
+    getCardScaling() {
+        return this.state.isHovered ? {
+            transform: 'scale(1.05)',
+            transition: '0.3s'
+        } : {
+            transform: 'scale(1.00)',
+            transition: '0.3s'
+        }
+    }
+
     render() {
         return (
-            <div style={{...STYLES.cardContainer, ...this.getPositionStyle()}}>
+            <div style={{...STYLES.cardContainer, ...this.getPositionStyle(), ...this.getCardScaling()}} 
+                 onMouseEnter={() => this.setState({isHovered: true})}
+                 onMouseLeave={() => this.setState({isHovered: false})}>
                 
                 <div style={{...STYLES.card, zIndex: 10}}>
                     <div>
