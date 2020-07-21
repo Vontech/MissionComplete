@@ -23,6 +23,9 @@ const DIMENSIONS = {
 }
 
 const STYLES = {
+    taskContainer: {
+
+    },
     cardContainer: {
         position: 'absolute',
         width: DIMENSIONS.CARD_WIDTH,
@@ -52,7 +55,18 @@ const STYLES = {
         fontSize: DIMENSIONS.CAPTION_SIZE,
         fontWeight: 'bold',
         marginTop: '2px'
+    },
+    taskOptionButtonContainer: {
+        background: COLORS.CARD_BACKGROUND,
+        borderRadius: '8px',
+        height: '32px',
+        position: 'absolute',
+        zIndex: 8
     }
+}
+
+function getVerticalDivider(size) {
+    return <div style={{background: COLORS.ICON_GRAY, minWidth: size, display: 'inline-block', borderRadius: 2, marginTop: 8, marginBottom: 8}}></div>
 }
 
 class TaskV2 extends Component {
@@ -114,6 +128,40 @@ class TaskV2 extends Component {
         }
     }
 
+    getButtonPanel() {
+
+        let dropShadow = (
+            <div style={{
+                    position: 'absolute',
+                    boxShadow: 'rgba(0, 0, 0, 0.35) 0px 2px 50px',
+                    width: 44,
+                    height: 16,
+                    top: 16,
+                    left: 8,
+                    zIndex: 6,
+                }}>
+            </div>)
+
+        return (
+            <div style={{
+                position: 'absolute',
+                top: DIMENSIONS.CARD_HEIGHT - 50,
+                transition: '0.3s ease-in-out 0.0s',
+                transform: this.state.isHovered ? 'translateY(68px)' : 'translateY(0px)',
+                right: 74
+            }}>
+                <div style={{...STYLES.taskOptionButtonContainer}}>
+                    <div style={{paddingLeft: 4, paddingRight: 4, fontSize: 16, display: 'flex'}}>
+                        <ApartmentOutlined style={{margin: '8px'}} />
+                        {getVerticalDivider(1)}
+                        <DeleteTwoTone style={{margin: '8px'}} twoToneColor={COLORS.PRIORITY_RED} />
+                    </div>
+                </div>
+                {dropShadow}
+            </div>
+        )
+    }
+
     render() {
         return (
             <div style={{...STYLES.cardContainer, ...this.getPositionStyle(), ...this.getCardScaling()}} 
@@ -136,9 +184,10 @@ class TaskV2 extends Component {
                     </div>
                     
                 </div>
+                {this.getButtonPanel()}
                 <div style={{
                     position: 'absolute',
-                    top: DIMENSIONS.CARD_HEIGHT / 2 + 10,
+                    top: DIMENSIONS.CARD_HEIGHT / 2,
                     left: (DIMENSIONS.CARD_WIDTH - (DIMENSIONS.CARD_WIDTH / 1.3))/2.0
                 }}>
                     {this.getDropShadowComponent()}
