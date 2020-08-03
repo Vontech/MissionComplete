@@ -1,8 +1,10 @@
 
 import React, { Component } from "react";
+import { ArcherElement } from 'react-archer';
 
 import { EditTwoTone, DeleteTwoTone, ApartmentOutlined, CheckOutlined, FlagOutlined, ClockCircleOutlined, CloseOutlined } from '@ant-design/icons';
 var moment = require('moment');
+
 
 const COLORS = {
     PRIORITY_RED: '#EB3B67',
@@ -155,6 +157,8 @@ class TaskV2 extends Component {
                         <ApartmentOutlined style={{margin: '8px'}} />
                         {getVerticalDivider(1)}
                         <DeleteTwoTone style={{margin: '8px'}} twoToneColor={COLORS.PRIORITY_RED} />
+                        {getVerticalDivider(1)}
+                        <CheckOutlined style={{margin: '8px'}} twoToneColor={COLORS.PRIORITY_RED} />
                     </div>
                 </div>
                 {dropShadow}
@@ -185,13 +189,23 @@ class TaskV2 extends Component {
                     
                 </div>
                 {this.getButtonPanel()}
+                <ArcherElement
+                    id={this.props.task.id}
+                    relations={this.props.task.children.map((element) => {
+                      return {
+                        targetId: element,
+                        targetAnchor: 'top',
+                        sourceAnchor: 'bottom',
+                      }
+                    })}>
                 <div style={{
                     position: 'absolute',
                     top: DIMENSIONS.CARD_HEIGHT / 2,
                     left: (DIMENSIONS.CARD_WIDTH - (DIMENSIONS.CARD_WIDTH / 1.3))/2.0
                 }}>
-                    {this.getDropShadowComponent()}
+                        {this.getDropShadowComponent()}
                 </div>
+                </ArcherElement>
             </div>
         )
     }

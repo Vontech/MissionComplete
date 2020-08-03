@@ -296,8 +296,8 @@ class App extends Component {
     return (
       <ArcherContainer 
         svgContainerStyle={{}/*{width: 10000}*/}
-        strokeColor="#b8b8b8"
-        strokeWidth={1.2}
+        strokeColor="rgb(227 227 227)"
+        strokeWidth={3}
         noCurves={true}
         style={{width: paneWidth}}
         >
