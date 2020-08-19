@@ -10,7 +10,9 @@ class Taskk {
         this.parent = api_obj.parent;
 		this.children = api_obj.children;
 		this.dueDate = api_obj.dueDate;
-		this.priority = api_obj.priority;
+        this.priority = api_obj.priority;
+        this.category = api_obj.category;
+        this.categoryColor = api_obj.categoryColor
     }
 
 }
