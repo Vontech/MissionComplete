@@ -10,7 +10,6 @@
     "animejs": "^3.0.1",
     "antd": "^4.1.4",
     "axios": "^0.19.2",
-    "babel-loader": "^8.1.0",
     "d3-ease": "^1.0.5",
     "d3-hierarchy": "^1.1.9",
     "interactjs": "^1.9.10",
