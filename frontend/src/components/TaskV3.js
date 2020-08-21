@@ -63,7 +63,7 @@ const STYLES = {
   dueDate: {
       fontSize: DIMENSIONS.CAPTION_SIZE,
       fontWeight: 'bold',
-      marginTop: '8px'
+      marginTop: '10px'
   },
   taskOptionButtonContainer: {
       background: COLORS.CARD_BACKGROUND,
@@ -73,6 +73,25 @@ const STYLES = {
       zIndex: 8
   }
 }
+
+function hexToRgbA(hex, alpha){
+  var c;
+  if(/^#([A-Fa-f0-9]{3}){1,2}$/.test(hex)){
+    c= hex.substring(1).split('');
+    if(c.length== 3){
+      c= [c[0], c[0], c[1], c[1], c[2], c[2]];
+    }
+    c= '0x'+c.join('');
+    return 'rgba('+[(c>>16)&255, (c>>8)&255, c&255].join(',')+',' + alpha + ')';
+  }
+  else {
+    var numbers = hex.substring(5)
+    numbers = numbers.substring(0, numbers.length - 2);
+    var rgba = numbers.split(',');
+    return 'rgba('+[rgba[0], rgba[1], rgba[2]].join(',')+',' + alpha + ')';
+  }
+}
+
 
 function getDueDateColor(task) {
   if (task.completed) {
@@ -145,11 +164,56 @@ function getCategoryTag(task) {
   }
 
   return (
-    <div>
-      <div>{task.category}</div>
+    <div style={{
+      backgroundColor: hexToRgbA(task.categoryColor, 0.14),
+      padding: 4,
+      paddingLeft: 10,
+      paddingRight: 10,
+      width: 'fit-content',
+      borderRadius: 100,
+      marginTop: 6,
+      marginLeft: 14,
+      marginRight: 14,
+      overflow: 'hidden'
+    }}>
+      <p style={{
+        color: task.categoryColor, 
+        fontWeight: 'bolder', 
+        fontSize: 14,
+        textOverflow: 'ellipsis',
+        overflow: 'hidden',
+        whiteSpace: 'nowrap',
+        margin: 0
+        }}>
+          {task.category}
+        </p>
     </div>
   )
 
+}
+
+function getProfilePicture(imageSource, isFirst) {
+  return (
+    <div style={{display: 'inline', marginLeft: isFirst ? 0 : -10}}>
+      <img 
+        style={{width: 28, height: 28, borderRadius: 100}}
+        src={imageSource} />
+    </div>
+  );
+}
+
+function getProfilePictures(task) {
+  let pics = [
+    "https://avatars0.githubusercontent.com/u/8053203?s=460&u=c07080d2d7457de295e46ac7efff1e391ea54267&v=4",
+    "https://avatars2.githubusercontent.com/u/20176827?s=460&u=d166b912b6caee597d3a1eb7664385d404f875b4&v=4",
+    "https://avatars0.githubusercontent.com/u/8053203?s=460&u=c07080d2d7457de295e46ac7efff1e391ea54267&v=4",
+    "https://avatars2.githubusercontent.com/u/20176827?s=460&u=d166b912b6caee597d3a1eb7664385d404f875b4&v=4"
+  ];
+  return (
+    <div style={{marginRight: 'auto'}}>
+      {pics.map((val, i) => getProfilePicture(val, i === 0))}
+    </div>
+  )
 }
 
 export default function TaskV3({ task, progress, onTaskSelected, onTaskEdited, onTaskDeleted, onTaskCompleted, onChildCreated }) {
@@ -178,19 +242,22 @@ export default function TaskV3({ task, progress, onTaskSelected, onTaskEdited, o
           <p style={STYLES.cardTitle}>{task.name}</p>
           {getPriorityTag(task.priority, 18)}
         </div>
-        <div>
-          {task.dueDate &&
-            <div style={{ color: getDueDateColor(task), ...STYLES.dueDate }}>
-              <ClockCircleOutlined style={{ marginRight: 8, fontSize: 18 }} />
-              <span style={{ top: '-1px', position: 'relative' }}>{moment(task.dueDate).format('ddd, MMM D')}</span>
-            </div>
-          }
+        <div style={{display: 'flex'}}>
+          <div>
+            {task.dueDate &&
+              <div style={{ color: getDueDateColor(task), ...STYLES.dueDate, whiteSpace: 'nowrap', }}>
+                <ClockCircleOutlined style={{ marginRight: 8, fontSize: 18 }} />
+                <span style={{ top: '-1px', position: 'relative' }}>{moment(task.dueDate).format('ddd, MMM D')}</span>
+              </div>
+            }
+          </div>
+          {getCategoryTag(task)}
+          {task.notes && <span style={{ display: 'inline', float: 'right', marginTop: 13, marginLeft: 'auto' }}>{getNotesTag()}</span>}
         </div>
-        <span>{getCategoryTag(task)}</span>
-        {task.notes && <span style={{ display: 'inline', float: 'right' }}>{getNotesTag()}</span>}
-        <div style={{marginTop: '8px', float: 'right'}}>
-          <div style={{display: 'flex'}}>
-            <span style={{color: COLORS.ACCENT_GRAY, fontSize: 16, fontWeight: 'bold', transform: 'translateY(-5px)', marginRight: '6px'}}>{progressText}</span>
+        <div style={{marginTop: '8px'}}>
+          <div style={{display: 'flex', alignItems: 'center'}}>
+            {getProfilePictures(task)}
+            <span style={{color: COLORS.ACCENT_GRAY, fontSize: 16, fontWeight: 'bold', marginRight: '6px'}}>{progressText}</span>
             <div style={{display: 'inline'}}>{getProgressBar(scaledProgress, 12, 75)}</div>
           </div>
         </div>
