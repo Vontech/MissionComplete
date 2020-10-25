@@ -5,6 +5,8 @@ import { DownOutlined } from '@ant-design/icons';
 
 const { Search } = Input;
 
+// TODO(vontell) - Allow for non-case matching
+
 class TaskTree extends Component {
 
 	constructor(props) {

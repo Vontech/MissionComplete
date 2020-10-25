@@ -21,6 +21,11 @@ import MissionCompleteApi from './utils/api';
 
 import { configure } from 'react-hotkeys';
 
+
+import { TaskGraph } from './features/tasks/TaskGraph'
+import { TaskForm } from './features/tasks/TaskForm'
+
+
 log.enableAll();
 
 configure({
@@ -297,7 +302,7 @@ class App extends Component {
       <ArcherContainer 
         svgContainerStyle={{}/*{width: 10000}*/}
         strokeColor="rgb(227 227 227)"
-        strokeWidth={3}
+        strokeWidth={5}
         noCurves={true}
         style={{width: paneWidth}}
         >
@@ -339,18 +344,28 @@ class App extends Component {
     )
   }
 
+  // render() {
+  //   log.debug('App.js render')
+  //   return (
+  //     <div id="primary-panel">
+  //       {/*BezierCurve(200, 200, "0 0", "20 50", "20 150", "200 200", "red" )*/}
+  //       {this.state.appState === 'unknown' && <div />}
+  //       {this.state.appState === 'logged-out' && this.getLoginPane()}
+  //       {this.state.appState === 'registering' && this.getRegistrationPane()}
+  //       {this.state.appState === 'logged-in' && this.getTasksPane()}
+  //     </div>
+  //   );
+  // }
+
   render() {
-    log.debug('App.js render')
     return (
-      <div id="primary-panel">
-        {/*BezierCurve(200, 200, "0 0", "20 50", "20 150", "200 200", "red" )*/}
-        {this.state.appState === 'unknown' && <div />}
-        {this.state.appState === 'logged-out' && this.getLoginPane()}
-        {this.state.appState === 'registering' && this.getRegistrationPane()}
-        {this.state.appState === 'logged-in' && this.getTasksPane()}
+      <div>
+        <TaskGraph />
+        <TaskForm />
       </div>
-    );
+    )
   }
+
 }
 
 export default App;
