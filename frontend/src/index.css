@@ -42,3 +42,43 @@ code {
   padding-right: 0px;
   padding-bottom: 0px;
 }
+
+.scale-on-hover:hover {
+  transform: scale(1.10);
+  transition: 0.3s;
+  /* border-bottom: 1.5px rgba(255, 0, 0, 0.4) solid;
+  padding-bottom: 2px; */
+}
+
+.scale-on-hover {
+  transform: scale(1.00);
+  transition: 0.3s;
+  /* border-bottom: 1.5px transparent solid;
+  padding-bottom: 2px; */
+}
+
+@font-face {
+  font-family: Avenir;
+  src: url("fonts/AvenirLTStd-Roman.otf") format("opentype");
+}
+
+@font-face {
+  font-family: Avenir;
+  font-weight: bold;
+  src: url("fonts/Avenir-Heavy-05.ttf") format("truetype");
+}
+
+@font-face {
+  font-family: Avenir;
+  font-weight: lighter;
+  src: url("fonts/AvenirLTStd-Book.otf") format("opentype");
+}
+
+.fade-in {
+  opacity: 100%;
+  transition: opacity 0.8s
+}
+
+.ant-modal-content {
+  border-radius: 12px !important;
+}

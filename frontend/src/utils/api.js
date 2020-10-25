@@ -95,10 +95,12 @@ function storeAccessToken(token) {
     localStorage.accessToken = token;
 }
 
-function deleteAccessToken(token) {
+export function deleteAccessToken() {
     localStorage.removeItem('accessToken');
 }
 
 function getAccessToken() {
     return localStorage.accessToken;
 }
+
+export const api = new MissionCompleteApi()

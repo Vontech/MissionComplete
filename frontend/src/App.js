@@ -2,6 +2,7 @@ import React, { Component } from "react";
 import { GlobalHotKeys } from "react-hotkeys";
 
 import Task from "./components/Task.js"
+import TaskV2 from "./components/TaskV2.js"
 import NewTaskButton from "./components/NewTaskButton.js"
 import LoginPanel from "./components/LoginPanel.js"
 import DrawerPanel from "./components/DrawerPanel.js"
@@ -19,6 +20,11 @@ import '../node_modules/antd/dist/antd.css';
 import MissionCompleteApi from './utils/api';
 
 import { configure } from 'react-hotkeys';
+
+
+import { TaskGraph } from './features/tasks/TaskGraph'
+import { TaskForm } from './features/tasks/TaskForm'
+
 
 log.enableAll();
 
@@ -262,7 +268,7 @@ class App extends Component {
     
     const that = this;
     let taskViews = listOfTaskComps.map((propArr) => {
-      return (<Task
+      return (<TaskV2
         context={getContext()}
         key={propArr[0]}
         x={propArr[1] + horizontalOffset}
@@ -295,13 +301,13 @@ class App extends Component {
     return (
       <ArcherContainer 
         svgContainerStyle={{}/*{width: 10000}*/}
-        strokeColor="#b8b8b8"
-        strokeWidth={1.2}
+        strokeColor="rgb(227 227 227)"
+        strokeWidth={5}
         noCurves={true}
         style={{width: paneWidth}}
         >
         <GlobalHotKeys keyMap={this.keyMap} handlers={{ TOGGLE_SEARCH: this.toggleSearchModal.bind(this) }} />
-        <div style={{background: '#efefef', width: paneWidth}}>
+        <div style={{background: '#F5F6F8', width: paneWidth}}>
           {renderedTaskGraph}
           <NewTaskButton createNewTask={this.addTask.bind(this)} tasks={{ taskTree: this.state.taskTree, taskMap: this.state.taskMap }}/>
         </div>
@@ -338,18 +344,28 @@ class App extends Component {
     )
   }
 
+  // render() {
+  //   log.debug('App.js render')
+  //   return (
+  //     <div id="primary-panel">
+  //       {/*BezierCurve(200, 200, "0 0", "20 50", "20 150", "200 200", "red" )*/}
+  //       {this.state.appState === 'unknown' && <div />}
+  //       {this.state.appState === 'logged-out' && this.getLoginPane()}
+  //       {this.state.appState === 'registering' && this.getRegistrationPane()}
+  //       {this.state.appState === 'logged-in' && this.getTasksPane()}
+  //     </div>
+  //   );
+  // }
+
   render() {
-    log.debug('App.js render')
     return (
-      <div id="primary-panel">
-        {/*BezierCurve(200, 200, "0 0", "20 50", "20 150", "200 200", "red" )*/}
-        {this.state.appState === 'unknown' && <div />}
-        {this.state.appState === 'logged-out' && this.getLoginPane()}
-        {this.state.appState === 'registering' && this.getRegistrationPane()}
-        {this.state.appState === 'logged-in' && this.getTasksPane()}
+      <div>
+        <TaskGraph />
+        <TaskForm />
       </div>
-    );
+    )
   }
+
 }
 
 export default App;
