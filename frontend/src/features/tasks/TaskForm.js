@@ -1,4 +1,10 @@
 import React, { useState, useRef, useCallback, useEffect } from 'react'
+
+import Card from '../common/Card';
+import TaskTree from './TaskTree';
+import { addNewTask, updateTask } from './tasksSlice'
+
+
 import { useDispatch } from 'react-redux'
 import { unwrapResult } from '@reduxjs/toolkit'
 
@@ -7,12 +13,6 @@ import { FlagTwoTone, FlagOutlined } from '@ant-design/icons';
 
 const { TextArea } = Input;
 const { Text } = Typography;
-
-
-import { addNewTask, updateTask } from './tasksSlice'
-
-import Card from '../common/Card';
-import TaskTree from './TaskTree';
 
 export const TaskForm = ({initialValues = {}, onFormSubmitted = (values) => {}, onFormCancelled = () => {}, editMode = false}) => {
 
