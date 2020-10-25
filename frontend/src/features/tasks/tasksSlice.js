@@ -102,19 +102,8 @@ const tasksSlice = createSlice({
     [updateTask.fulfilled]: (state, action) => {
       // Update parent if parent changed
       let originalParent = state.entities[action.payload._id].parent;
-      console.log("UPDATING TASKsss")
-      console.log(action.payload._id)
-      console.log(action.payload)
       let redux_req = {'id': action.payload._id, 'changes': action.payload};
-      console.log("UHHH")
-      console.log(state, redux_req)
-      try {
-        tasksAdapter.updateOne(state, redux_req);
-      } catch (err) {
-        console.log(err)
-      }
-      
-      console.log('UPDATED')
+      tasksAdapter.updateOne(state, redux_req);
       if (action.payload.parent !== originalParent) {
 
         // If there was a parent before, remove this child
