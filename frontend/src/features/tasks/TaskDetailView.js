@@ -1,4 +1,5 @@
 import React, { useState, useRef, useCallback, useEffect } from 'react'
+import Card from '../common/Card';
 import { useDispatch } from 'react-redux'
 import { unwrapResult } from '@reduxjs/toolkit'
 
@@ -10,8 +11,6 @@ const { Text } = Typography;
 
 const ReactMarkdown = require('react-markdown')
 // const gfm = require('remark-gfm')
-
-import Card from '../common/Card';
 
 export const TaskDetailView = ({task}) => {
 
