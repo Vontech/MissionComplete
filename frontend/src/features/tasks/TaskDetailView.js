@@ -4,11 +4,14 @@ import { useDispatch } from 'react-redux'
 import { unwrapResult } from '@reduxjs/toolkit'
 
 import { Button, Form, Input, DatePicker, Radio, Typography } from 'antd';
-import { FlagTwoTone, FlagOutlined } from '@ant-design/icons';
+import { FlagTwoTone, FlagOutlined, ClockCircleOutlined } from '@ant-design/icons';
 
 const { TextArea } = Input;
 const { Text } = Typography;
 
+import { COLORS, getDueDateColor, getPriorityTagSvg } from './utils';
+
+var moment = require('moment');
 const ReactMarkdown = require('react-markdown')
 // const gfm = require('remark-gfm')
 
@@ -21,7 +24,12 @@ export const TaskDetailView = ({task}) => {
       <div>
         <div style={{display: 'flex'}}>
           <p style={STYLES.cardTitle}>{task.name}</p>
-          {getPriorityTag(task.priority, 18)}
+          <div style={{marginLeft: '12px', marginTop: '6px', display: 'inline'}}>
+            {getPriorityTagSvg(task.priority, 18)}
+          </div>
+        </div>
+        <div>
+          {getDateText(task)}
         </div>
         <div style={{marginTop: '16px'}}>
           <ReactMarkdown plugins={[]} children={task.notes} />
@@ -30,18 +38,6 @@ export const TaskDetailView = ({task}) => {
     </Card>
   )
 
-}
-
-const COLORS = {
-  PRIORITY_RED: '#EB3B67',
-  PRIORITY_ORANGE: '#FAAD53',
-  ICON_GRAY: '#B0B7CB',
-  ACCENT_GRAY: '#B0B7CB',
-  BLACK: '#232227',
-  BACKGROUND_GREY: '#F5F6F8',
-  CARD_BACKGROUND: '#FFFFFF',
-  PROGRESS_BACKGROUND: '#EAEFFE',
-  PROGRESS_FOREGROUND: '#8F7CFF'
 }
 
 const DIMENSIONS = {
@@ -66,25 +62,16 @@ const STYLES = {
   }
 }
 
-function getPriorityTag(priority, size) {
-  if (priority === 0) {
+function getDateText(task) {
+  if (!task.dueDate) {
     return null;
   }
-  var color = COLORS.PRIORITY_RED;
-  if (priority === 1) {
-    color = COLORS.PRIORITY_ORANGE;
-  }
   return (
-    <div style={{marginLeft: '12px', marginTop: '4px', display: 'inline'}}>
-      <svg
-        xmlns='http://www.w3.org/2000/svg'
-        viewBox='0 0 64 64'
-        width={size} height={size}
-        fill={color}>
-        <path d='M0 64 L64 64 L34 32 L64 0 L0 0 Z' />
-      </svg>
+    <div style={{ color: getDueDateColor(task), fontWeight: 'bold', whiteSpace: 'nowrap', fontSize: 18}}>
+      <ClockCircleOutlined style={{ marginRight: 8, fontSize: 18 }} />
+      <span style={{ top: '-1px', position: 'relative' }}>{moment(task.dueDate).format('ddd, MMM D')}</span>
     </div>
-  )
+  );
 }
 
 export default TaskDetailView;

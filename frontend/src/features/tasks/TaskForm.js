@@ -14,6 +14,10 @@ import { FlagTwoTone, FlagOutlined } from '@ant-design/icons';
 const { TextArea } = Input;
 const { Text } = Typography;
 
+import { COLORS } from './utils';
+
+var moment = require('moment');
+
 export const TaskForm = ({initialValues = {}, onFormSubmitted = (values) => {}, onFormCancelled = () => {}, editMode = false}) => {
 
   const dispatch = useDispatch()
@@ -30,7 +34,7 @@ export const TaskForm = ({initialValues = {}, onFormSubmitted = (values) => {}, 
       var values;
 
       // priority value cannot be undefined, prevents Cast to Number error
-      fieldValues.priority = fieldValues.priority || 4;
+      fieldValues.priority = fieldValues.priority || 0;
       fieldValues.parent = fieldValues.parent == null ? '' : fieldValues.parent;
 
       if (fieldValues.dueDate === undefined) {
@@ -80,6 +84,14 @@ export const TaskForm = ({initialValues = {}, onFormSubmitted = (values) => {}, 
 
   useEffect(() => form.resetFields(), [initialValues]);
 
+  console.log(initialValues)
+
+  // Preprocess for form
+  let processedInitialValues = {...initialValues}
+  if (processedInitialValues.dueDate) {
+    processedInitialValues.dueDate = moment(processedInitialValues.dueDate);
+  }
+
   return (
     <Card>
       <div>
@@ -91,7 +103,7 @@ export const TaskForm = ({initialValues = {}, onFormSubmitted = (values) => {}, 
           hideRequiredMark={true}
           onFinish={onSubmit}
           onFinishFailed={console.log}
-          initialValues={initialValues}
+          initialValues={processedInitialValues}
           size={"medium"}
         >
           <Form.Item label="Task Name" name="name" rules={[{ required: true }]}>
@@ -105,10 +117,10 @@ export const TaskForm = ({initialValues = {}, onFormSubmitted = (values) => {}, 
           </Form.Item>
           <Form.Item label="Priority" name="priority">
             <Radio.Group>
-              <Radio.Button value={1}><FlagTwoTone twoToneColor="#eb2f96" /></Radio.Button>
-              <Radio.Button value={2}><FlagTwoTone twoToneColor="#722ed1" /></Radio.Button>
-              <Radio.Button value={3}><FlagTwoTone twoToneColor="#2f54eb" /></Radio.Button>
-              <Radio.Button value={4}><FlagOutlined style={{ color: "#595959" }} /></Radio.Button>
+              <Radio.Button value={0}><FlagOutlined style={{ color: COLORS.ICON_GRAY }} /></Radio.Button>
+              <Radio.Button value={1}><FlagTwoTone twoToneColor={COLORS.PRIORITY_BLUE} /></Radio.Button>
+              <Radio.Button value={2}><FlagTwoTone twoToneColor={COLORS.PRIORITY_ORANGE} /></Radio.Button>
+              <Radio.Button value={3}><FlagTwoTone twoToneColor={COLORS.PRIORITY_RED} /></Radio.Button>
             </Radio.Group>
           </Form.Item>
           <Form.Item label="Parent" name="parent" style={{marginBottom: createError ? 12 : null}}>
