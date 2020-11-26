@@ -2,14 +2,14 @@ import React, { useState } from 'react';
 import Rodal from 'rodal';
 import 'rodal/lib/rodal.css';
 import PropTypes from 'prop-types';
-import { useDispatch } from 'react-redux'
-import { unwrapResult } from '@reduxjs/toolkit'
+import { useDispatch, useSelector } from 'react-redux';
+import { unwrapResult } from '@reduxjs/toolkit';
 import { Modal, Button } from 'antd';
 
 
 import { ArcherElement } from 'react-archer';
 
-import { removeTask, updateCurrentSelectedTask, updateTask } from './tasksSlice';
+import { removeTask, updateCurrentSelectedTask, updateTask, selectTaskTree } from './tasksSlice';
 import { TaskForm } from './TaskForm';
 import { TaskDetailView } from './TaskDetailView';
 
@@ -189,6 +189,8 @@ export default function Task({ task, progress }) {
   const [viewEditModalVisible, setViewEditModalVisible] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
 
+  const {tree, taskMap} = useSelector(selectTaskTree)
+
   // This is a location to mount modals
   const modalRoot = document.getElementById('modal-root');
 
@@ -214,6 +216,12 @@ export default function Task({ task, progress }) {
   } : {
     transform: 'scale(1.00)',
     transition: '0.3s'
+  }
+
+  let showProgress = false;
+  if (task.numTotal && task.numTotal > 0) {
+    showProgress = true;
+    progress = task.numCompleted / task.numTotal;
   }
 
   let scaledProgress = (progress > 0 && progress < .16 ? .16 : progress) * 100;
@@ -291,8 +299,12 @@ export default function Task({ task, progress }) {
         <div style={{marginTop: '8px'}}>
           <div style={{display: 'flex', alignItems: 'center'}}>
             {getProfilePictures(task)}
-            <span style={{color: COLORS.ACCENT_GRAY, fontSize: 16, fontWeight: 'bold', marginRight: '6px'}}>{progressText}</span>
-            <div style={{display: 'inline'}}>{getProgressBar(scaledProgress, 12, 75)}</div>
+            {showProgress && 
+              <span style={{color: COLORS.ACCENT_GRAY, fontSize: 16, fontWeight: 'bold', marginRight: '6px'}}>{progressText}</span>
+            }
+            {showProgress && 
+              <div style={{display: 'inline'}}>{getProgressBar(scaledProgress, 12, 75)}</div>
+            }
           </div>
         </div>
       </div>

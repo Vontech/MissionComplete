@@ -22,7 +22,7 @@ export function getTaskMapAndRoots(tasks) {
   let taskMap = new Map();
   let roots = [];
   for (let task of tasks) {
-    taskMap.set(task._id, task);
+    taskMap.set(task._id, {...task, numCompleted: 0, numTotal: 0});
     if (task.parent == null) {
       roots.push(task._id);
     }
@@ -46,6 +46,8 @@ export function getTraversedTree(id, taskMap) {
     currentTree.children.push(childResult)
     currentTree.numTotal += 1;
     currentTree.numCompleted += (taskMap.get(child).completed ? 1 : 0);
+    task.numTotal = currentTree.numTotal;
+    task.numCompleted = currentTree.numCompleted;
   }
 
   return currentTree;
