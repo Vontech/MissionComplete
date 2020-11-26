@@ -11,10 +11,10 @@ import { unwrapResult } from '@reduxjs/toolkit'
 import { Button, Form, Input, DatePicker, Radio, Typography } from 'antd';
 import { FlagTwoTone, FlagOutlined } from '@ant-design/icons';
 
+import { COLORS } from './utils';
+
 const { TextArea } = Input;
 const { Text } = Typography;
-
-import { COLORS } from './utils';
 
 var moment = require('moment');
 

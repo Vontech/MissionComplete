@@ -6,14 +6,13 @@ import { unwrapResult } from '@reduxjs/toolkit'
 import { Button, Form, Input, DatePicker, Radio, Typography } from 'antd';
 import { FlagTwoTone, FlagOutlined, ClockCircleOutlined } from '@ant-design/icons';
 
+import { COLORS, getDueDateColor, getPriorityTagSvg } from './utils';
+
 const { TextArea } = Input;
 const { Text } = Typography;
 
-import { COLORS, getDueDateColor, getPriorityTagSvg } from './utils';
-
 var moment = require('moment');
 const ReactMarkdown = require('react-markdown')
-// const gfm = require('remark-gfm')
 
 export const TaskDetailView = ({task}) => {
 
