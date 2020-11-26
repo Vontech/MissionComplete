@@ -9,7 +9,7 @@ import { Modal, Button } from 'antd';
 
 import { ArcherElement } from 'react-archer';
 
-import { removeTask, updateCurrentSelectedTask } from './tasksSlice';
+import { removeTask, updateCurrentSelectedTask, updateTask } from './tasksSlice';
 import { TaskForm } from './TaskForm';
 import { TaskDetailView } from './TaskDetailView';
 
@@ -168,10 +168,10 @@ function getProfilePicture(imageSource, isFirst, index) {
 
 function getProfilePictures(task) {
   let pics = [
-    "https://avatars0.githubusercontent.com/u/8053203?s=460&u=c07080d2d7457de295e46ac7efff1e391ea54267&v=4",
-    "https://avatars2.githubusercontent.com/u/20176827?s=460&u=d166b912b6caee597d3a1eb7664385d404f875b4&v=4",
-    "https://avatars0.githubusercontent.com/u/8053203?s=460&u=c07080d2d7457de295e46ac7efff1e391ea54267&v=4",
-    "https://avatars2.githubusercontent.com/u/20176827?s=460&u=d166b912b6caee597d3a1eb7664385d404f875b4&v=4"
+    // "https://avatars0.githubusercontent.com/u/8053203?s=460&u=c07080d2d7457de295e46ac7efff1e391ea54267&v=4",
+    // "https://avatars2.githubusercontent.com/u/20176827?s=460&u=d166b912b6caee597d3a1eb7664385d404f875b4&v=4",
+    // "https://avatars0.githubusercontent.com/u/8053203?s=460&u=c07080d2d7457de295e46ac7efff1e391ea54267&v=4",
+    // "https://avatars2.githubusercontent.com/u/20176827?s=460&u=d166b912b6caee597d3a1eb7664385d404f875b4&v=4"
   ];
   return (
     <div style={{marginRight: 'auto'}}>
@@ -196,6 +196,14 @@ export default function Task({ task, progress }) {
   const onTaskRemoved = async () => {
     const resultAction = await dispatch(
       removeTask(task._id)
+    )
+    unwrapResult(resultAction)
+  }
+
+  const onTaskChecked = async () => {
+    let req = {task_id: task._id, completed: !task.completed}
+    const resultAction = await dispatch(
+      updateTask(req)
     )
     unwrapResult(resultAction)
   }
@@ -241,7 +249,7 @@ export default function Task({ task, progress }) {
           {/*getVerticalDivider(1)*/}
           <DeleteTwoTone style={{ margin: '8px' }} twoToneColor={COLORS.PRIORITY_RED} className="scale-on-hover" onClick={onTaskRemoved}/>
           {/*getVerticalDivider(1)*/}
-          <CheckOutlined style={{ margin: '8px' }} twoToneColor={COLORS.PRIORITY_RED} className="scale-on-hover" />
+          <CheckOutlined style={{ margin: '8px' }} twoToneColor={COLORS.PRIORITY_RED} className="scale-on-hover" onClick={onTaskChecked}/>
         </div>
       </div>
       {dropShadow}
@@ -252,6 +260,11 @@ export default function Task({ task, progress }) {
     <div style={{ ...STYLES.cardContainer, ...cardScaling }}
       onMouseEnter={() => setHovering(true)}
       onMouseLeave={() => setHovering(false)}>
+
+      {task.completed && 
+        <div style={{backgroundColor: 'white', width: '100%', height: '100%', position: 'absolute', zIndex: 100, opacity: 0.65, borderRadius: DIMENSIONS.CARD_RADIUS}}>
+        </div>
+      }
 
       <div style={{ ...STYLES.card, zIndex: 10 }} onClick={(ev) => {
         setViewEditModalVisible(true)
