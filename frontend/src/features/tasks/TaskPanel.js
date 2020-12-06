@@ -24,10 +24,17 @@ export const TaskPanel = () => {
      * Alert if clicked on outside of element
      */
     function handleClickOutside(event) {
+
+      // This means that the button was clicked
       if (buttonRef.current && buttonRef.current.contains(event.target)) {
         return;
       }
-      if (addFormRef.current && !addFormRef.current.contains(event.target) && addNewOpen) {
+
+      // This means that the addForm dialog did not contain the event
+      // and that the ant picker for the date did not contain the event
+      let datePicker = document.getElementsByClassName('ant-picker-dropdown');
+      let clickedDatePicker = datePicker.length > 0 ? datePicker[0].contains(event.target) : false;
+      if (addFormRef.current && !addFormRef.current.contains(event.target) && addNewOpen && !clickedDatePicker) {
         setAddNewOpen(false)
       }
     }

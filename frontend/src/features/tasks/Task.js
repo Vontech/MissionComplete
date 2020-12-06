@@ -6,16 +6,13 @@ import { useDispatch, useSelector } from 'react-redux';
 import { unwrapResult } from '@reduxjs/toolkit';
 import { Modal, Button } from 'antd';
 
-
-import { ArcherElement } from 'react-archer';
-
 import { removeTask, updateCurrentSelectedTask, updateTask, selectTaskTree } from './tasksSlice';
 import { TaskForm } from './TaskForm';
 import { TaskDetailView } from './TaskDetailView';
 
 import { COLORS, getDueDateColor, getPriorityTagSvg } from './utils';
 
-import { EditTwoTone, DeleteTwoTone, ApartmentOutlined, CheckOutlined, FlagOutlined, ClockCircleOutlined, CloseOutlined } from '@ant-design/icons';
+import { DeleteTwoTone, ApartmentOutlined, CheckOutlined, ClockCircleOutlined } from '@ant-design/icons';
 var moment = require('moment');
 
 const DIMENSIONS = {
