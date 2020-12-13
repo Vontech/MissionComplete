@@ -2,6 +2,26 @@ import bcrypt from 'bcrypt';
 import Users from '../models/users.model';
 import Tokens from '../models/tokens.model';
 import logger from '../setup/logger';
+import s3 from '../setup/s3';
+import config from '../setup/config';
+
+var multer = require('multer')
+var multerS3 = require('multer-s3')
+
+import { getProfileImage } from '../setup/s3';
+
+var upload = multer({
+  storage: multerS3({
+    s3: s3,
+    bucket: config.awsProfilePictureBucket,
+    metadata: function (req, file, cb) {
+      cb(null, {fieldName: file.fieldname});
+    },
+    key: function (req, file, cb) {
+      cb(null, new Date().toISOString() + '-' + file.originalname);
+    }
+  })
+})
 
 const controller = {};
 
@@ -69,6 +89,73 @@ controller.saveUserPreferences = async (req, res, next) => {
 			return res.json({ message: `Error saving preferences: ${err}` });
 		}
     next();
+	});
+}
+
+controller.getUserInformation = async (req, res, next) => {
+  Users.findById(req.session.userId, (err, user) => {
+		if (err) {
+			res.status(400);
+			return res.json({ message: `Error getting user: ${err}` });
+		}
+    res.status(200);
+		res.json({
+      username: user.username,
+      email: user.email
+    });
+	});
+}
+
+controller.prepareProfilePicture = upload.single("file")
+
+controller.uploadProfilePicture = (req, res, next) => {
+  let profileLocation = req.file.key;
+  Users.findByIdAndUpdate(req.session.userId, {'$set': {'profilePicture': profileLocation}},  { new: true }, (err, user) => {
+    if (err) {
+			res.status(400);
+			return res.json({ message: `Error setting profile picture: ${err}` });
+		}
+    res.status(200);
+    res.json({
+      status: 'success'
+    })
+	});
+}
+
+controller.getProfilePicture = (req, res, next) => {
+  let username = req.params.username;
+  if (username === 0 || username === '0') {
+    username = req.session.user.username;
+  }
+  Users.findOne({username: username}, (err, user) => {
+		if (err) {
+			res.status(400);
+			return res.json({ message: `Error getting user: ${err}` });
+    }
+    let s3Key = user.profilePicture;
+    if (s3Key) {
+      getProfileImage(s3Key).then((img) => {
+        let buf = Buffer.from(img.Body);
+        let base64 = buf.toString('base64');
+        let extension = s3Key.split('.').pop();
+        let htmlString = 'data:image/' + extension + ';base64,' + base64;
+        res.status(200);
+        res.json({
+          imageData: htmlString,
+        });
+      })
+      .catch(() => {
+        res.status(200);
+        res.json({
+          imageData: null,
+        });
+      })
+    } else {
+      res.status(200);
+        res.json({
+          imageData: null,
+        });
+    }
 	});
 }
 
