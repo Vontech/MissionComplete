@@ -23,7 +23,7 @@ const getBase64 = (file) => new Promise(function (resolve, reject) {
 export const getProfile = createAsyncThunk('profile/getProfile', async () => {
   const response = await api.getUserInfo();
   const image = await api.getProfilePicture();
-  response.data.profilePicture = image.data.imageData;
+  response.data.profilePicture = image.data.imageData || '/default_profile_pic.jpg';
   return response.data;
 });
 
