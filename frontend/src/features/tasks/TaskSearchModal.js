@@ -32,4 +32,4 @@ export const TaskSearchModal = () => {
   )
 }
   
-  export default TaskSearchModal;
+export default TaskSearchModal;

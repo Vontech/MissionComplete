@@ -1,5 +1,8 @@
 import path from 'path';
 
+const dotenv = require('dotenv');
+dotenv.config();
+
 const config = {};
 
 config.logFileDir = path.join(__dirname, '../../log');
@@ -18,6 +21,11 @@ config.clientId = process.env.authClient || 'tassk-client';
 config.clientSecret = process.env.authSecret || '97H7F4FD72JF7BPQL0GACZ1';
 
 config.serverPort = process.env.PORT || 5000;
+
+// AWS configs
+config.awsAccessKeyId = process.env.awsAccessKeyId;
+config.awsSecretAccessKey = process.env.awsSecretAccessKey;
+config.awsProfilePictureBucket = process.env.awsProfilePictureBucket;
 
 if (process.env.NODE_ENV == 'test') {
     console.log("USING TEST ENV")

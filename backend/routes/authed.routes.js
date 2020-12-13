@@ -8,6 +8,9 @@ const router = express.Router();
 router.post('/logout', userController.logoutUser);
 router.get('/preferences', userController.getUserPreferences);
 router.post('/preferences', userController.saveUserPreferences, userController.getUserPreferences);
+router.get('/userInfo', userController.getUserInformation);
+router.post('/uploadProfilePicture', userController.prepareProfilePicture, userController.uploadProfilePicture);
+router.get('/getProfilePicture/:username', userController.getProfilePicture);
 
 // Task Routes
 router.post('/task', taskController.createTask);

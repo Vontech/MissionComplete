@@ -7,6 +7,9 @@ import {
   selectTaskIds,
   selectTaskById
 } from '../tasks/tasksSlice'
+import { getProfile } from '../profile/profileSlice';
+
+import ProfileView from '../profile/ProfileView';
 
 import TaskPanel from '../tasks/TaskPanel';
 import HotkeyHandler from './HotkeyHandler';
@@ -15,6 +18,7 @@ export const AppContainer = () => {
 
   const dispatch = useDispatch()
   const taskStatus = useSelector(state => state.tasks.status)
+  const profileFetchingStatus = useSelector(state => state.profile.profileFetchingStatus)
 
   useEffect(() => {
     if (taskStatus === 'idle') {
@@ -22,10 +26,17 @@ export const AppContainer = () => {
     }
   }, [taskStatus, dispatch])
 
+  useEffect(() => {
+    if (profileFetchingStatus === 'idle') {
+      dispatch(getProfile())
+    }
+  }, [profileFetchingStatus, dispatch])
+
   return (
     <div id="primary-panel">
       <HotkeyHandler />
       <TaskPanel />
+      <ProfileView />
     </div>
   )
 

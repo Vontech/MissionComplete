@@ -5,10 +5,13 @@ const Endpoints = {
     USERS: '/api/users',
     LOGIN: '/oauth/token',
     LOGOUT: '/api/s/logout',
+    USER_INFO: '/api/s/userInfo',
     ALL_TASKS: '/api/s/allTasks',
     TASK: '/api/s/task',
     UPDATE_TASK: '/api/s/updateTask',
-    PREFERENCES: 'api/s/preferences'
+    PREFERENCES: 'api/s/preferences',
+    PROFILE_PIC_UPLOAD: 'api/s/uploadProfilePicture',
+    PROFILE_PIC_GET: '/api/s/getProfilePicture'
 }
 
 export default class MissionCompleteApi {
@@ -57,6 +60,22 @@ export default class MissionCompleteApi {
     logout() {
         return this.getBearerInstance().post(Endpoints.LOGOUT)
             .then(() => deleteAccessToken())
+    }
+
+    getUserInfo() {
+        return this.getBearerInstance().get(Endpoints.USER_INFO)
+    }
+
+    uploadProfilePicture(image) {
+        let formData = new FormData();
+        formData.set('file', image);
+        return this.getBearerInstance().post(Endpoints.PROFILE_PIC_UPLOAD, formData, {
+            'content-type': 'multipart/form-data'
+        })
+    }
+
+    getProfilePicture(username) {
+        return this.getBearerInstance().get(Endpoints.PROFILE_PIC_GET + '/' + (username || 0));
     }
 
     getTasks() {

@@ -3,11 +3,13 @@ import { configureStore } from '@reduxjs/toolkit'
 
 import tasksReducer from '../features/tasks/tasksSlice';
 import usersReducer from '../features/users/usersSlice';
+import profileReducer from '../features/profile/profileSlice';
 import {attachTaskListeners} from '../features/tasks/tasksSlice';
 
 export const appReducer = {
   tasks: tasksReducer,
-  users: usersReducer
+  users: usersReducer,
+  profile: profileReducer
 };
 
 let store = configureStore({
