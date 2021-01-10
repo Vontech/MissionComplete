@@ -96,8 +96,17 @@ export default class MissionCompleteApi {
 		return this.getBearerInstance().post(Endpoints.UPDATE_TASK, updateValues, {headers: {'Content-Type': 'application/json'}})
 	}
 
-    isLoggedIn() {
-        return localStorage.accessToken != null;
+    async isLoggedIn() {
+        // A user is logged in if they have an access token AND can access their profile
+        if (localStorage.accessToken == null) {
+            return false;
+        }
+        try {
+            await this.getUserInfo();
+            return true;
+        } catch (e) {
+            return false;
+        }
     }
 
     getPreferences() {

@@ -27,3 +27,5 @@ yarn-error.log*
 
 package-lock.json
 .nyc_output
+
+.env

@@ -24,7 +24,7 @@ export const LoginContainer = () => {
   )
 
   const finishLogin = useCallback(
-    () => dispatch(userStateUpdated(api.isLoggedIn() ? UserStatus.LOGGED_IN : UserStatus.LOGGED_OUT)),
+    async () => location.reload(),//dispatch(userStateUpdated(await api.isLoggedIn() ? UserStatus.LOGGED_IN : UserStatus.LOGGED_OUT)),
     [dispatch]
   )
 

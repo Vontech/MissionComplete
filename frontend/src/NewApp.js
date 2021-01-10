@@ -8,12 +8,9 @@ import LoginContainer from './features/users/LoginContainer';
 import RegisterContainer from './features/users/RegisterContainer';
 import AppContainer from './features/appPeripherals/AppContainer';
 
-// const task = useSelector(state => selectTaskById(state, taskId))
-
 export const App = () => {
 
   const userState = useSelector(state => state.users.userState);
-  console.log('[App] Current user state: ' + userState);
 
   return (
     <div>

@@ -3,17 +3,29 @@ import ReactDOM from 'react-dom';
 import './index.css';
 import App from './NewApp';
 import * as serviceWorker from './serviceWorker';
-import { api } from './utils/api';
-import { userStateUpdated } from './features/users/usersSlice';
+import { api, deleteAccessToken } from './utils/api';
+import { userStateUpdated, UserStatus } from './features/users/usersSlice';
 
 import store from './lib/store'
 import { Provider } from 'react-redux'
 
-console.log(api.isLoggedIn())
 
-store.dispatch(userStateUpdated({
-    status: api.isLoggedIn() ? 'logged-in' : 'logged-out'
-}));
+store.dispatch(userStateUpdated(UserStatus.UNKNOWN));
+
+// Update the state based on whether logged in
+api.isLoggedIn()
+  .then((isLoggedIn) => { 
+    // If not logged in, lets make sure to delete leftover access Tokens
+    if (!isLoggedIn) {
+      deleteAccessToken()
+    }
+    store.dispatch(userStateUpdated(isLoggedIn ? UserStatus.LOGGED_IN : UserStatus.LOGGED_OUT));
+  })
+  .catch(() => {
+    deleteAccessToken()
+    store.dispatch(userStateUpdated(UserStatus.LOGGED_OUT));
+  })
+
 
 ReactDOM.render(
   <Provider store={store}>
