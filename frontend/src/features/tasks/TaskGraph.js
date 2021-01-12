@@ -123,7 +123,14 @@ export const TaskGraph = () => {
   const {tree, taskMap} = getIdTree(allTasks)
 
   if (!tree || !taskMap) {
-    return (<div></div>)
+    return (
+    <div>
+      <div style={{textAlign: 'center', paddingTop: 132}}>
+        <img src="/empty_graphic.png" style={{height: 256, width: 256, opacity: 0.5}}/>
+        <div style={{marginTop: 52, marginBottom: 64, fontFamily: "'Noto Sans JP', sans-serif", fontSize: 24}}>Click the button below to create your first task!</div>
+        <img src="/arrow.png" style={{height: 72, width: 72, opacity: 0.5, transform: 'scaleX(-1)'}}/>
+      </div>
+    </div>)
   }
   
   const renderedTaskGraph = renderTaskGraph({tree, taskMap})
