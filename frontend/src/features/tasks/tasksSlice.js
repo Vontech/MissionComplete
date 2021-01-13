@@ -3,6 +3,7 @@ import { createSlice, createAsyncThunk, createEntityAdapter, createSelector, sel
 import { api } from '../../utils/api';
 import { getIdTree } from '../../utils/algos';
 import { message } from 'antd';
+import { trackAction } from '../../utils/tracking';
 
 const tasksAdapter = createEntityAdapter({
   selectId: entity => entity._id
@@ -95,6 +96,7 @@ const tasksSlice = createSlice({
         state.entities[parent].children.push(child)
       }
       message.success('Created new task "' + action.payload.name + '"')
+      trackAction('CREATE_TASK')
     },
     [updateTask.rejected]: () => {
       message.error('Failed to update task - try again later')
