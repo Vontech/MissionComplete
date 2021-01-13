@@ -1,15 +1,15 @@
 
 
 export const startTracking = async (user) => {
-  woopra.identify({
+  window.woopra.identify({
     email: user.email,
     name: user.username
   });
 
   // The identify code should be added before the "track()" function
-  woopra.track();
+  window.woopra.track();
 }
 
 export const trackAction = (actionType, metadata = {}) => {
-  woopra.track(actionType, metadata);
+  window.woopra.track(actionType, metadata);
 }
