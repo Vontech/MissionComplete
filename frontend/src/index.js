@@ -4,6 +4,7 @@ import './index.css';
 import App from './NewApp';
 import * as serviceWorker from './serviceWorker';
 import { api, deleteAccessToken } from './utils/api';
+import { startTracking } from './utils/tracking';
 import { userStateUpdated, UserStatus } from './features/users/usersSlice';
 
 import store from './lib/store'
@@ -19,7 +20,20 @@ api.isLoggedIn()
     if (!isLoggedIn) {
       deleteAccessToken()
     }
-    store.dispatch(userStateUpdated(isLoggedIn ? UserStatus.LOGGED_IN : UserStatus.LOGGED_OUT));
+
+    console.log("NICE")
+    console.log(isLoggedIn)
+
+    // Trigger user logging
+    if (isLoggedIn) {
+      store.dispatch(userStateUpdated(UserStatus.LOGGED_IN));
+      api.getUserInfo().then((userResp) => {
+        startTracking(userResp.data);
+      })
+    } else {
+      store.dispatch(userStateUpdated(UserStatus.LOGGED_OUT));
+    }
+    
   })
   .catch(() => {
     deleteAccessToken()
