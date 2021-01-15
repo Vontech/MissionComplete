@@ -10,7 +10,7 @@ import {
 import { getProfile } from '../profile/profileSlice';
 
 import ProfileView from '../profile/ProfileView';
-
+import FeedbackForm from '../users/FeedbackForm'
 import TaskPanel from '../tasks/TaskPanel';
 import HotkeyHandler from './HotkeyHandler';
 
@@ -37,6 +37,7 @@ export const AppContainer = () => {
       <HotkeyHandler />
       <TaskPanel />
       <ProfileView />
+      <FeedbackForm />
     </div>
   )
 
