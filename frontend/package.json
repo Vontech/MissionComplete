@@ -28,6 +28,7 @@
     "react-move": "^2.8.0",
     "react-redux": "^7.2.1",
     "react-scripts": "3.4.3",
+    "react-typeform-embed": "^0.2.1",
     "reactablejs": "^0.2.0",
     "redux": "^4.0.5",
     "rodal": "^1.8.1"
